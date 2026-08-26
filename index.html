@@ -182,6 +182,15 @@
       border:1px solid #d7dee9;background:#fff;color:#334155;border-radius:999px;padding:8px 11px;
       font-size:12px;font-weight:900;cursor:pointer;
     }
+    .app-refresh-btn{
+      width:36px;height:36px;border:1px solid #d7dee9;background:#fff;color:#173f8f;border-radius:999px;
+      display:inline-grid;place-items:center;cursor:pointer;transition:.18s ease;flex:0 0 auto;
+    }
+    .app-refresh-btn:hover{background:#eef4ff;border-color:#b9cae7}
+    .app-refresh-btn:disabled{opacity:.55;cursor:wait}
+    .app-refresh-btn svg{width:18px;height:18px}
+    .app-refresh-btn.refreshing svg{animation:appRefreshSpin .75s linear infinite}
+    @keyframes appRefreshSpin{to{transform:rotate(360deg)}}
     .user-admin-view{grid-column:1/-1}
     .user-admin-shell{display:grid;gap:18px}
     .user-admin-form{
@@ -430,6 +439,7 @@
     }
 
     .menu-card{
+      position:relative;
       min-width:0;
       min-height:172px;
       padding:18px;
@@ -476,6 +486,44 @@
       font-size:12px;
       line-height:1.45;
     }
+
+    .view-visibility-switch{
+      position:absolute;
+      top:18px;
+      right:18px;
+      width:48px;
+      height:28px;
+      padding:0;
+      border:0;
+      border-radius:999px;
+      background:#c8cbd1;
+      box-shadow:inset 0 1px 2px rgba(15,23,42,.14);
+      cursor:pointer;
+      transition:background .18s ease,box-shadow .18s ease;
+      z-index:3;
+    }
+
+    .view-visibility-switch::after{
+      content:"";
+      position:absolute;
+      top:3px;
+      left:3px;
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      background:#fff;
+      box-shadow:0 2px 5px rgba(15,23,42,.24);
+      transition:transform .18s ease;
+    }
+
+    .view-visibility-switch.active{
+      background:#2f6fe5;
+      box-shadow:inset 0 1px 2px rgba(23,63,143,.16),0 0 0 2px rgba(47,111,229,.06);
+    }
+
+    .view-visibility-switch.active::after{transform:translateX(20px)}
+    .view-visibility-switch:disabled{opacity:.55;cursor:wait}
+    .view-visibility-switch:focus-visible{outline:3px solid rgba(49,95,178,.24);outline-offset:2px}
 
     .view-toolbar{
       display:none;
@@ -1507,6 +1555,23 @@
     }
     .equipment-status.ok{color:#177245;font-weight:700}
     .equipment-status.error{color:#a32020;font-weight:700}
+    .movement-equipment-autocomplete{position:relative}
+    .movement-equipment-input-row{display:block}
+    .movement-equipment-suggestions{
+      position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:80;
+      max-height:280px;overflow:auto;background:#fff;border:1px solid #cfd9e8;
+      border-radius:12px;box-shadow:0 14px 34px rgba(23,63,143,.17);padding:6px
+    }
+    .movement-equipment-suggestion{
+      width:100%;border:0;background:#fff;border-radius:9px;cursor:pointer;
+      display:grid;grid-template-columns:minmax(90px,135px) 1fr;gap:12px;align-items:center;
+      padding:10px 11px;text-align:left;color:#172033
+    }
+    .movement-equipment-suggestion:hover,.movement-equipment-suggestion:focus{background:#eef4ff;outline:none}
+    .movement-equipment-suggestion + .movement-equipment-suggestion{margin-top:2px}
+    .movement-equipment-code{font-size:13px;font-weight:950;color:#173f8f;letter-spacing:.2px}
+    .movement-equipment-type{font-size:11px;font-weight:850;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .movement-equipment-empty{padding:12px 11px;font-size:11px;font-weight:800;color:#64748b;text-align:center}
     .new-equipment-box{
       display:grid;
       grid-template-columns:minmax(0,1fr) auto;
@@ -1751,6 +1816,156 @@
       .equipment-list-count{align-self:flex-start}
       .equipment-type-suggestions{top:calc(100% - 25px)}
     }
+
+
+    /* ===== MENÚ DE INICIO · DISEÑO DE REFERENCIA ===== */
+    .dashboard-menu{gap:10px}
+    .dashboard-hero{
+      border-radius:14px;
+      padding:20px 22px;
+      background:linear-gradient(105deg,#23499b 0%,#2f61b7 55%,#4176ce 100%);
+    }
+    .dashboard-hero h2{font-size:24px;font-weight:900}
+    .dashboard-hero p{font-size:13px;margin-top:7px}
+    .dashboard-kpis-cache{display:none !important}
+
+    .dashboard-consumption-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .dashboard-consumption-card{
+      min-width:0;
+      background:#fff;
+      border:1px solid #e1e7f0;
+      border-radius:13px;
+      box-shadow:0 5px 18px rgba(30,55,100,.07);
+      padding:12px 16px 14px;
+    }
+    .dashboard-consumption-head{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:9px;
+    }
+    .dashboard-consumption-icon{
+      width:38px;
+      height:38px;
+      flex:0 0 38px;
+      border-radius:11px;
+      display:grid;
+      place-items:center;
+      background:#eef4ff;
+      color:#2864cb;
+    }
+    .dashboard-consumption-icon svg{width:23px;height:23px}
+    .dashboard-consumption-head strong{
+      display:block;
+      color:#172033;
+      font-size:13px;
+      font-weight:900;
+      line-height:1.15;
+    }
+    .dashboard-consumption-head span:not(.dashboard-consumption-icon){
+      display:block;
+      margin-top:3px;
+      color:#718096;
+      font-size:10px;
+      font-weight:600;
+    }
+    .dashboard-consumption-rows{display:grid;gap:10px}
+    .dashboard-consumption-row{
+      display:grid;
+      grid-template-columns:minmax(98px,125px) minmax(120px,1fr) minmax(72px,auto);
+      align-items:center;
+      gap:12px;
+      min-height:28px;
+    }
+    .dashboard-consumption-period strong{
+      display:block;
+      font-size:11px;
+      color:#243047;
+      font-weight:900;
+      text-transform:capitalize;
+      line-height:1.1;
+    }
+    .dashboard-consumption-period span{
+      display:block;
+      margin-top:3px;
+      font-size:8.5px;
+      color:#7b8799;
+      white-space:nowrap;
+    }
+    .dashboard-consumption-track{
+      width:100%;
+      height:7px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#f0f2f6;
+    }
+    .dashboard-consumption-bar{
+      height:100%;
+      min-width:0;
+      border-radius:inherit;
+      background:#2f6fe5;
+      transition:width .28s ease;
+    }
+    .dashboard-consumption-value{
+      min-width:72px;
+      text-align:right;
+      color:#172033;
+      font-size:11px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .dashboard-consumption-loading,
+    .dashboard-consumption-error{
+      min-height:92px;
+      display:grid;
+      place-items:center;
+      color:#7b8799;
+      font-size:11px;
+      font-weight:700;
+    }
+    .dashboard-consumption-error{color:#a04b4b}
+
+    .menu-cards{
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:12px;
+    }
+    .menu-card{
+      min-height:178px;
+      padding:16px;
+      border-radius:14px;
+      box-shadow:0 5px 18px rgba(30,55,100,.07);
+    }
+    .menu-card-icon{
+      width:42px;
+      height:42px;
+      border-radius:11px;
+      margin-bottom:14px;
+      color:#2458af;
+    }
+    .menu-card h3{font-size:15px;line-height:1.2;font-weight:900;padding-right:48px}
+    .menu-card p{font-size:11px;line-height:1.45;margin-top:8px}
+    .view-visibility-switch{top:16px;right:16px;width:44px;height:25px}
+    .view-visibility-switch::after{top:3px;left:3px;width:19px;height:19px}
+    .view-visibility-switch.active::after{transform:translateX(19px)}
+
+    @media (max-width:1450px){
+      .menu-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media (max-width:980px){
+      .dashboard-consumption-grid{grid-template-columns:1fr}
+      .menu-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:560px){
+      .dashboard-consumption-card{padding:12px}
+      .dashboard-consumption-row{grid-template-columns:90px minmax(70px,1fr) 62px;gap:8px}
+      .dashboard-consumption-value{min-width:62px;font-size:10px}
+      .menu-cards{grid-template-columns:1fr}
+    }
+
 </style>
 </head>
 <body class="auth-locked">
@@ -1799,6 +2014,9 @@
       </div>
       <div class="topbar-status">
         <div id="currentUserChip" class="user-session-chip hidden"></div>
+        <button id="appRefreshBtn" type="button" class="app-refresh-btn hidden" title="Actualizar datos de la aplicación" aria-label="Actualizar datos de la aplicación">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M18.2 9A7 7 0 0 0 6.4 6.4L4 9M5.8 15A7 7 0 0 0 17.6 17.6L20 15" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
         <button id="logoutBtn" type="button" class="logout-btn hidden">CERRAR SESIÓN</button>
       </div>
     </header>
@@ -1809,23 +2027,55 @@
         <p>Seleccione la opción que desea utilizar en el registro de combustible.</p>
       </div>
 
-      <div class="dashboard-kpis">
-        <div class="dashboard-kpi">
-          <span>Movimientos guardados</span>
-          <strong id="menuMovementCount">0</strong>
-        </div>
-        <div class="dashboard-kpi">
-          <span>Inventarios guardados</span>
-          <strong id="menuInventoryCount">0</strong>
-        </div>
-        <div class="dashboard-kpi">
-          <span>Equipos agregados</span>
-          <strong id="menuEquipmentCount">0</strong>
-        </div>
+      <div class="dashboard-consumption-grid" aria-label="Consumo de combustibles de los últimos 3 meses">
+        <section class="dashboard-consumption-card" data-dashboard-product="GASOLINA">
+          <div class="dashboard-consumption-head">
+            <span class="dashboard-consumption-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 3h8a2 2 0 0 1 2 2v16H4V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="M7 6h6v5H7zM16 8h2.1l1.9 2.1V18a2 2 0 0 1-4 0v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <div>
+              <strong>Consumo de Gasolina</strong>
+              <span>Últimos 3 meses</span>
+            </div>
+          </div>
+          <div id="dashboardGasolineRows" class="dashboard-consumption-rows">
+            <div class="dashboard-consumption-loading">Cargando consumo...</div>
+          </div>
+        </section>
+
+        <section class="dashboard-consumption-card" data-dashboard-product="DIESEL">
+          <div class="dashboard-consumption-head">
+            <span class="dashboard-consumption-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 3h8a2 2 0 0 1 2 2v16H4V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="M7 6h6v5H7zM16 8h2.1l1.9 2.1V18a2 2 0 0 1-4 0v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 14.5c1.35 1.6 2 2.55 2 3.45a2 2 0 1 1-4 0c0-.9.65-1.85 2-3.45Z" fill="currentColor" opacity=".75"/>
+              </svg>
+            </span>
+            <div>
+              <strong>Consumo de Diesel</strong>
+              <span>Últimos 3 meses</span>
+            </div>
+          </div>
+          <div id="dashboardDieselRows" class="dashboard-consumption-rows">
+            <div class="dashboard-consumption-loading">Cargando consumo...</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Contadores internos conservados para compatibilidad con la lógica existente. -->
+      <div class="dashboard-kpis dashboard-kpis-cache" aria-hidden="true">
+        <div class="dashboard-kpi"><span>Movimientos guardados</span><strong id="menuMovementCount">0</strong></div>
+        <div class="dashboard-kpi"><span>Inventarios guardados</span><strong id="menuInventoryCount">0</strong></div>
+        <div class="dashboard-kpi"><span>Equipos agregados</span><strong id="menuEquipmentCount">0</strong></div>
       </div>
 
       <div class="menu-cards">
         <button type="button" class="menu-card" data-view="entry">
+          <span class="view-visibility-switch hidden active" data-view-toggle="entry" role="switch" aria-checked="true" tabindex="0" title="Visible para usuarios y supervisores" aria-label="Controlar visibilidad de Ingreso de movimiento e inventario"></span>
           <span class="menu-card-icon" aria-hidden="true">
             <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="4" width="8" height="16" rx="1.5" stroke="currentColor" stroke-width="1.8"/>
@@ -1838,6 +2088,7 @@
         </button>
 
         <button type="button" class="menu-card" data-view="history">
+          <span class="view-visibility-switch hidden active" data-view-toggle="history" role="switch" aria-checked="true" tabindex="0" title="Visible para usuarios y supervisores" aria-label="Controlar visibilidad de Registro de movimientos e inventario"></span>
           <span class="menu-card-icon" aria-hidden="true">
             <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
               <path d="M5 4h14v16H5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -1850,6 +2101,7 @@
         </button>
 
         <button type="button" class="menu-card" data-view="all">
+          <span class="view-visibility-switch hidden active" data-view-toggle="all" role="switch" aria-checked="true" tabindex="0" title="Visible para usuarios y supervisores" aria-label="Controlar visibilidad de Vista PC"></span>
           <span class="menu-card-icon" aria-hidden="true">
             <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="4" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/>
@@ -1862,6 +2114,7 @@
         </button>
 
         <button type="button" class="menu-card" data-view="reports">
+          <span class="view-visibility-switch hidden active" data-view-toggle="reports" role="switch" aria-checked="true" tabindex="0" title="Visible para usuarios y supervisores" aria-label="Controlar visibilidad de Reportes"></span>
           <span class="menu-card-icon" aria-hidden="true">
             <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
               <path d="M5 3.5h10l4 4V20.5H5v-17Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -1874,6 +2127,7 @@
         </button>
 
         <button id="equipmentAdminMenuCard" type="button" class="menu-card hidden" data-view="equipment-admin">
+          <span class="view-visibility-switch hidden active" data-view-toggle="equipment-admin" role="switch" aria-checked="true" tabindex="0" title="Visible para usuarios y supervisores" aria-label="Controlar visibilidad de Agregar nuevo equipo"></span>
           <span class="menu-card-icon" aria-hidden="true">
             <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="7" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
@@ -1886,6 +2140,7 @@
         </button>
 
         <button id="userAdminMenuCard" type="button" class="menu-card hidden" data-view="users">
+          <span class="view-visibility-switch hidden active" data-view-toggle="users" role="switch" aria-checked="true" tabindex="0" title="Visible para usuarios y supervisores" aria-label="Controlar visibilidad de Gestión de usuarios"></span>
           <span class="menu-card-icon" aria-hidden="true">
             <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
               <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/>
@@ -1938,7 +2193,12 @@
 
           <div class="field">
             <label for="equipo">EQUIPO</label>
-            <input id="equipo" type="text" inputmode="text" maxlength="20" autocomplete="off" placeholder="Ingrese el código del equipo">
+            <div class="movement-equipment-autocomplete">
+              <div class="movement-equipment-input-row">
+                <input id="equipo" type="text" inputmode="text" maxlength="20" autocomplete="off" placeholder="Ingrese el código del equipo" aria-autocomplete="list" aria-expanded="false" aria-controls="movementEquipmentSuggestions">
+              </div>
+              <div id="movementEquipmentSuggestions" class="movement-equipment-suggestions hidden" role="listbox"></div>
+            </div>
             <div id="equipmentStatus" class="equipment-status">Ingrese el código del equipo para comprobarlo.</div>
           </div>
 
@@ -1994,7 +2254,7 @@
                 <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
               </svg>
               <strong>Seleccione fecha e ingrese la planta</strong>
-              <span>La app consultará únicamente el último inventario de esa planta y colocará su saldo FINAL en IVFA.</span>
+              <span>La app tomará el FINAL del último inventario ANTERIOR como IVFA e INICIAL, y calculará SALIDA únicamente con los movimientos de Supabase de la fecha seleccionada.</span>
             </div>
           </div>
         </div>
@@ -2370,9 +2630,11 @@
     const loginSubmitBtn = document.getElementById("loginSubmitBtn");
     const loginMessage = document.getElementById("loginMessage");
     const currentUserChip = document.getElementById("currentUserChip");
+    const appRefreshBtn = document.getElementById("appRefreshBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const equipoInput = document.getElementById("equipo");
     const equipmentStatus = document.getElementById("equipmentStatus");
+    const movementEquipmentSuggestions = document.getElementById("movementEquipmentSuggestions");
     const equipmentAdminView = document.getElementById("equipmentAdminView");
     const equipmentAdminMenuCard = document.getElementById("equipmentAdminMenuCard");
     const equipmentAdminForm = document.getElementById("equipmentAdminForm");
@@ -2408,6 +2670,8 @@
     const menuMovementCount = document.getElementById("menuMovementCount");
     const menuInventoryCount = document.getElementById("menuInventoryCount");
     const menuEquipmentCount = document.getElementById("menuEquipmentCount");
+    const dashboardGasolineRows = document.getElementById("dashboardGasolineRows");
+    const dashboardDieselRows = document.getElementById("dashboardDieselRows");
     const historyView = document.getElementById("historyView");
     const reportsView = document.getElementById("reportsView");
     const generateReportBtn = document.getElementById("generateReportBtn");
@@ -2564,6 +2828,86 @@
     let currentUser = null;
     let currentSessionToken = "";
 
+    const VIEW_VISIBILITY_DEFAULTS = Object.freeze({
+      entry:true,
+      history:true,
+      all:true,
+      reports:true,
+      "equipment-admin":true,
+      users:true
+    });
+    const ADMIN_ONLY_VIEWS = new Set(["equipment-admin","users"]);
+    let viewVisibilityConfig = {...VIEW_VISIBILITY_DEFAULTS};
+    let viewVisibilityLoaded = false;
+
+    function isViewEnabledForNonAdmin(view){
+      if(ADMIN_ONLY_VIEWS.has(view)) return false;
+      return viewVisibilityConfig[view] !== false;
+    }
+
+    function updateViewVisibilitySwitches(){
+      const isAdmin = currentUser?.rol === "admin";
+      dashboardMenu?.querySelectorAll("[data-view-toggle]").forEach(toggle => {
+        const view = String(toggle.dataset.viewToggle || "");
+        const enabled = viewVisibilityConfig[view] !== false;
+        toggle.classList.toggle("active", enabled);
+        toggle.classList.toggle("hidden", !isAdmin);
+        toggle.setAttribute("aria-checked", enabled ? "true" : "false");
+        toggle.title = enabled
+          ? "ACTIVO · Visible para USUARIO y SUPERVISOR cuando el rol lo permita"
+          : "INACTIVO · Oculto para USUARIO y SUPERVISOR";
+      });
+    }
+
+    async function loadViewVisibilityConfig({force=false} = {}){
+      if(viewVisibilityLoaded && !force) return viewVisibilityConfig;
+      if(!currentSessionToken) return viewVisibilityConfig;
+      try{
+        const data = await sbRpc("obtener_configuracion_vistas", {p_token:currentSessionToken});
+        const config = {...VIEW_VISIBILITY_DEFAULTS};
+        if(data && typeof data === "object" && !Array.isArray(data)){
+          Object.keys(config).forEach(key => {
+            if(Object.prototype.hasOwnProperty.call(data,key)) config[key] = data[key] !== false;
+          });
+        }
+        viewVisibilityConfig = config;
+        viewVisibilityLoaded = true;
+      }catch(error){
+        console.warn("No se pudo cargar la configuración de vistas:", error);
+        viewVisibilityConfig = {...VIEW_VISIBILITY_DEFAULTS};
+        viewVisibilityLoaded = false;
+      }
+      applyRoleVisibility();
+      return viewVisibilityConfig;
+    }
+
+    async function setViewVisibility(view, enabled, toggle){
+      if(currentUser?.rol !== "admin" || !currentSessionToken){
+        showToast("Solo un administrador puede cambiar la visibilidad de las vistas.", true);
+        return;
+      }
+      if(!(view in VIEW_VISIBILITY_DEFAULTS)) return;
+      const previous = viewVisibilityConfig[view] !== false;
+      if(toggle) toggle.disabled = true;
+      try{
+        const result = await sbRpc("actualizar_configuracion_vista", {
+          p_token:currentSessionToken,
+          p_vista:view,
+          p_visible:Boolean(enabled)
+        });
+        viewVisibilityConfig[view] = result?.visible !== undefined ? Boolean(result.visible) : Boolean(enabled);
+        viewVisibilityLoaded = true;
+        applyRoleVisibility();
+        showToast((viewVisibilityConfig[view] ? "Vista activada" : "Vista desactivada") + " para USUARIO y SUPERVISOR.");
+      }catch(error){
+        viewVisibilityConfig[view] = previous;
+        updateViewVisibilitySwitches();
+        showToast("No se pudo cambiar la visibilidad: " + (error.message || String(error)), true);
+      }finally{
+        if(toggle) toggle.disabled = false;
+      }
+    }
+
     async function sbRpc(functionName, body={}){
       return sbRequest("rpc/" + functionName, {
         method:"POST",
@@ -2593,6 +2937,8 @@
       localStorage.removeItem(AUTH_STORAGE_KEY);
       currentUser = null;
       currentSessionToken = "";
+      viewVisibilityConfig = {...VIEW_VISIBILITY_DEFAULTS};
+      viewVisibilityLoaded = false;
     }
 
     function getStoredAuthSession(){
@@ -2602,13 +2948,23 @@
 
     function applyRoleVisibility(){
       const isAdmin = currentUser?.rol === "admin";
-      userAdminMenuCard?.classList.toggle("hidden", !isAdmin);
-      equipmentAdminMenuCard?.classList.toggle("hidden", !isAdmin);
+      dashboardMenu?.querySelectorAll(".menu-card[data-view]").forEach(card => {
+        const view = String(card.dataset.view || "");
+        let visible = Boolean(currentUser);
+        if(ADMIN_ONLY_VIEWS.has(view)){
+          visible = isAdmin;
+        }else if(!isAdmin){
+          visible = visible && isViewEnabledForNonAdmin(view);
+        }
+        card.classList.toggle("hidden", !visible);
+      });
       currentUserChip?.classList.toggle("hidden", !currentUser);
+      appRefreshBtn?.classList.toggle("hidden", !currentUser);
       logoutBtn?.classList.toggle("hidden", !currentUser);
       if(currentUserChip && currentUser){
         currentUserChip.textContent = `${currentUser.nombre} · ${String(currentUser.rol || "").toUpperCase()}`;
       }
+      updateViewVisibilitySwitches();
     }
 
     async function enterAuthenticatedApp(data){
@@ -2721,6 +3077,7 @@
     async function hydrateFromSupabase(){
       try{
         await testSupabaseConnection();
+        await loadViewVisibilityConfig({force:true});
         // No se descargan listas completas al iniciar.
         // EQUIPOS: la lista se consulta solo al entrar en LISTA DE EQUIPOS.
         // MOVIMIENTOS / INVENTARIOS: se consultan directamente por PLANTA + FECHA.
@@ -3007,6 +3364,7 @@
       else equipmentAdminListCache.push(normalized);
       equipmentAdminListCache.sort((a,b) => a.codigo.localeCompare(b.codigo, "es", {numeric:true}));
       rebuildEquipmentTypeCatalogFromEquipmentCache();
+      movementEquipmentPrefixCache.clear();
       renderEquipmentAdminList(equipmentAdminListSearch?.value || "");
     }
 
@@ -3015,6 +3373,7 @@
       const normal = sanitizeEquipmentCode(code);
       equipmentAdminListCache = equipmentAdminListCache.filter(item => item.codigo !== normal);
       rebuildEquipmentTypeCatalogFromEquipmentCache();
+      movementEquipmentPrefixCache.clear();
       renderEquipmentAdminList(equipmentAdminListSearch?.value || "");
     }
 
@@ -3058,6 +3417,99 @@
       }else{
         loadEquipmentTypeCatalogFromSupabase();
         setTimeout(() => adminEquipmentCode?.focus(), 0);
+      }
+    }
+
+    const movementEquipmentPrefixCache = new Map();
+    let movementEquipmentSuggestionRequest = 0;
+
+    function hideMovementEquipmentSuggestions(){
+      movementEquipmentSuggestions?.classList.add("hidden");
+      equipoInput?.setAttribute("aria-expanded", "false");
+    }
+
+    function renderMovementEquipmentSuggestions(rows, typedCode=""){
+      if(!movementEquipmentSuggestions) return;
+      const query = sanitizeEquipmentCode(typedCode);
+      if(query.length < 2){
+        hideMovementEquipmentSuggestions();
+        return;
+      }
+
+      const matches = (rows || [])
+        .filter(item => sanitizeEquipmentCode(item.codigo).startsWith(query))
+        .slice(0, 15);
+
+      movementEquipmentSuggestions.innerHTML = matches.length
+        ? matches.map(item => {
+            const code = sanitizeEquipmentCode(item.codigo);
+            const tipo = String(item.tipo || "").trim().toLocaleUpperCase("es") || "SIN TIPO";
+            return `<button type="button" class="movement-equipment-suggestion" role="option" data-movement-equipment-code="${escapeHtml(code)}" data-movement-equipment-type="${escapeHtml(tipo)}">
+              <span class="movement-equipment-code">${escapeHtml(code)}</span>
+              <span class="movement-equipment-type">${escapeHtml(tipo)}</span>
+            </button>`;
+          }).join("")
+        : `<div class="movement-equipment-empty">NO HAY EQUIPOS QUE COINCIDAN CON ${escapeHtml(query)}.</div>`;
+
+      movementEquipmentSuggestions.classList.remove("hidden");
+      equipoInput?.setAttribute("aria-expanded", "true");
+    }
+
+    async function loadMovementEquipmentSuggestions(typedCode, forceRefresh=false){
+      const query = sanitizeEquipmentCode(typedCode);
+      if(query.length < 2){
+        hideMovementEquipmentSuggestions();
+        return;
+      }
+
+      // La referencia se obtiene por los primeros 2 caracteres y se reutiliza
+      // mientras la aplicación permanezca abierta.
+      const prefix = query.slice(0, 2);
+      const requestId = ++movementEquipmentSuggestionRequest;
+
+      try{
+        let rows;
+        if(forceRefresh){
+          movementEquipmentPrefixCache.delete(prefix);
+          const result = await sbRequest("combustible_equipos", {
+            query:`?select=codigo,tipo&activo=eq.true&codigo=ilike.${encodeURIComponent(prefix + "*")}&order=codigo.asc&limit=60`
+          });
+          rows = (result || []).map(item => ({
+            codigo:sanitizeEquipmentCode(item.codigo),
+            tipo:String(item.tipo || "").trim().toLocaleUpperCase("es") || "SIN TIPO"
+          }));
+          movementEquipmentPrefixCache.set(prefix, rows);
+          if(equipmentAdminListLoaded){
+            const outsidePrefix = equipmentAdminListCache.filter(item => !item.codigo.startsWith(prefix));
+            equipmentAdminListCache = [...outsidePrefix, ...rows].sort((a,b) => a.codigo.localeCompare(b.codigo, "es", {numeric:true}));
+            syncEquipmentTypesFromListCache();
+          }
+        }else if(movementEquipmentPrefixCache.has(prefix)){
+          rows = movementEquipmentPrefixCache.get(prefix);
+        }else if(equipmentAdminListLoaded){
+          rows = equipmentAdminListCache.filter(item => item.codigo.startsWith(prefix));
+          movementEquipmentPrefixCache.set(prefix, rows);
+        }else{
+          const result = await sbRequest("combustible_equipos", {
+            query:`?select=codigo,tipo&activo=eq.true&codigo=ilike.${encodeURIComponent(prefix + "*")}&order=codigo.asc&limit=60`
+          });
+          rows = (result || []).map(item => ({
+            codigo:sanitizeEquipmentCode(item.codigo),
+            tipo:String(item.tipo || "").trim().toLocaleUpperCase("es") || "SIN TIPO"
+          }));
+          movementEquipmentPrefixCache.set(prefix, rows);
+        }
+
+        if(requestId !== movementEquipmentSuggestionRequest) return;
+        if(sanitizeEquipmentCode(equipoInput?.value || "").slice(0,2) !== prefix) return;
+        renderMovementEquipmentSuggestions(rows, equipoInput?.value || query);
+      }catch(error){
+        console.error("Referencias de equipos:", error);
+        if(requestId === movementEquipmentSuggestionRequest){
+          movementEquipmentSuggestions.innerHTML = `<div class="movement-equipment-empty">NO SE PUDIERON CARGAR LAS REFERENCIAS.</div>`;
+          movementEquipmentSuggestions.classList.remove("hidden");
+          equipoInput?.setAttribute("aria-expanded", "true");
+        }
       }
     }
 
@@ -3211,51 +3663,57 @@
       if(savedInventoryDate) savedInventoryDate.value = todayISO;
     }
 
-    function getDailyOutputsByProduct(planta, fecha){
-      const plantKey = String(planta || "").trim();
-      const dateKey = normalizeDateKey(fecha);
-      const totals = Object.fromEntries(PRODUCTOS.map(nombre => [nombre, 0]));
-
-      if(!plantKey || !dateKey) return totals;
-
-      getLocalMovements().forEach(registro => {
-        if(String(registro.planta || "").trim() !== plantKey) return;
-        if(normalizeDateKey(registro.fecha) !== dateKey) return;
-
-        (registro.productos || []).forEach(item => {
-          const producto = String(item.producto || "").trim();
-          const cantidad = Number(item.cantidad || 0);
-          if(producto in totals && Number.isFinite(cantidad)){
-            totals[producto] += cantidad;
-          }
-        });
-      });
-
-      return totals;
-    }
-
     async function fetchDailyOutputsFromSupabase(planta, fecha){
       const plantKey = String(planta || "").trim();
       const dateKey = normalizeDateKey(fecha);
       const totals = Object.fromEntries(PRODUCTOS.map(nombre => [nombre, 0]));
       if(!plantKey || !dateKey) return totals;
+
+      // SALIDA se calcula exclusivamente desde Supabase.
+      // Se suman todos los detalles registrados para la planta + fecha seleccionadas,
+      // agrupados por producto. localStorage nunca participa en este cálculo.
       const rows = await sbRequest("combustible_movimientos", {
         query:`?select=id,combustible_movimiento_detalle(producto,cantidad)&fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`
       });
+
       (rows || []).forEach(registro => {
         (registro.combustible_movimiento_detalle || []).forEach(item => {
           const producto = String(item.producto || "").trim().toUpperCase();
           const cantidad = Number(item.cantidad || 0);
-          if(producto in totals && Number.isFinite(cantidad)) totals[producto] += cantidad;
+          if(producto in totals && Number.isFinite(cantidad) && cantidad > 0){
+            totals[producto] += cantidad;
+          }
         });
       });
+      return totals;
+    }
+
+    let lastDailyOutputsKey = "";
+    let lastDailyOutputs = null;
+
+    function cacheDailyOutputs(planta, fecha, totals){
+      const plantKey = String(planta || "").trim();
+      const dateKey = normalizeDateKey(fecha);
+      lastDailyOutputsKey = plantKey && dateKey ? `${plantKey}|${dateKey}` : "";
+      lastDailyOutputs = totals ? {...totals} : null;
+    }
+
+    async function refreshDailyOutputsFromSupabase(planta, fecha){
+      const totals = await fetchDailyOutputsFromSupabase(planta, fecha);
+      cacheDailyOutputs(planta, fecha, totals);
+      applyDailyOutputsToInventory(totals);
       return totals;
     }
 
     function applyDailyOutputsToInventory(totalsOverride=null){
       if(!currentPlant || !inventoryBody.querySelector("tr")) return;
 
-      const totals = totalsOverride || getDailyOutputsByProduct(currentPlant, fechaInput.value);
+      // Si no se pasa un resultado explícito, solo se permite reutilizar la última
+      // respuesta obtenida de Supabase para ESTA MISMA planta + fecha.
+      // Nunca se reconstruyen SALIDAS con datos de localStorage.
+      const currentKey = `${String(currentPlant || "").trim()}|${normalizeDateKey(fechaPicker.value || fechaInput.value)}`;
+      const totals = totalsOverride || (lastDailyOutputsKey === currentKey ? lastDailyOutputs : null);
+      if(!totals) return;
 
       inventoryBody.querySelectorAll("tr").forEach(row => {
         const producto = row.dataset.product;
@@ -3354,10 +3812,10 @@
       }
 
       // Solo se solicita UN registro: el inventario más reciente de esta planta
-      // cuya fecha sea igual o anterior a la fecha seleccionada.
+      // cuya fecha sea estrictamente ANTERIOR a la fecha seleccionada.
       // Del detalle únicamente necesitamos PRODUCTO + FINAL, porque FINAL pasa a IVFA.
       const rows = await sbRequest("combustible_inventarios", {
-        query:`?select=id,fecha,planta,created_at,combustible_inventario_detalle(producto,final)&planta=eq.${encodeURIComponent(plantKey)}&fecha=lte.${encodeURIComponent(selectedDate)}&order=fecha.desc,created_at.desc&limit=1`,
+        query:`?select=id,fecha,planta,created_at,combustible_inventario_detalle(producto,final)&planta=eq.${encodeURIComponent(plantKey)}&fecha=lt.${encodeURIComponent(selectedDate)}&order=fecha.desc,created_at.desc&limit=1`,
         prefer:""
       });
 
@@ -3411,10 +3869,10 @@
         const ivfa = Number(previous.final ?? previous.ivfa ?? 0);
 
         return `
-          <tr data-product="${nombre}" data-ivfa="${ivfa}">
+          <tr class="${ivfa > 0 ? "row-active-stock" : ""}" data-product="${nombre}" data-ivfa="${ivfa}">
             <td class="ivfa-value ivfa-cell">${formatNumber(ivfa)}</td>
             <td style="text-align:left">${nombre}</td>
-            <td><input class="inventory-input initial-input" type="text" inputmode="decimal" autocomplete="off" value="0"></td>
+            <td><input class="inventory-input initial-input" type="text" inputmode="decimal" autocomplete="off" value="${ivfa}"></td>
             <td><input class="inventory-input entry-input" type="text" inputmode="decimal" autocomplete="off" value="0"></td>
             <td class="money-like exit-value" data-value="0">0.00</td>
             <td class="money-like final-value">0.00</td>
@@ -3435,15 +3893,17 @@
         });
       });
 
-      ivfaFilterActive = false;
-      ivfaHeader.classList.remove("active");
-      resetCombustibleOptions();
+      // IVFA pasa automáticamente a INICIAL al cargar el inventario.
+      // Los productos con saldo anterior quedan activos desde el inicio.
+      inventoryBody.querySelectorAll("tr").forEach(row => updateRowTotals(row));
+      const hasIvfa = [...inventoryBody.querySelectorAll("tr")].some(row => Number(row.dataset.ivfa || 0) > 0);
+      ivfaFilterActive = hasIvfa;
+      ivfaHeader.classList.toggle("active", hasIvfa);
+      if(hasIvfa) updateCombustibleOptions();
+      else resetCombustibleOptions();
       inventoryFooter.classList.remove("hidden");
 
-      // Relación automática:
-      // todos los movimientos registrados para esta planta y fecha
-      // se suman en la columna SALIDA por cada artículo.
-      applyDailyOutputsToInventory();
+      // SALIDA se aplica después, únicamente con la respuesta de Supabase.
     }
 
     function captureCombustibleState(){
@@ -3857,6 +4317,8 @@
     function clearInventoryLookup(message="Seleccione la fecha e ingrese la planta para consultar el último inventario."){
       currentPlant = "";
       lastInventoryLookupKey = "";
+      lastDailyOutputsKey = "";
+      lastDailyOutputs = null;
       inventoryBody.innerHTML = "";
       inventoryEmpty.classList.remove("hidden");
       inventoryFooter.classList.add("hidden");
@@ -3882,8 +4344,11 @@
       currentPlant = plantKey;
       const lookupKey = `${plantKey}|${selectedDate}`;
       if(!force && lookupKey === lastInventoryLookupKey && inventoryBody.querySelector("tr")){
-        applyDailyOutputsToInventory();
-        return;
+        if(lastDailyOutputsKey === lookupKey && lastDailyOutputs){
+          applyDailyOutputsToInventory(lastDailyOutputs);
+          return;
+        }
+        // Si por alguna razón no existe caché proveniente de Supabase, continúa y consulta nuevamente.
       }
 
       const requestId = ++inventoryLookupRequestId;
@@ -3901,19 +4366,20 @@
         if(requestId !== inventoryLookupRequestId) return;
 
         lastInventoryLookupKey = lookupKey;
+        cacheDailyOutputs(plantKey, selectedDate, dailyOutputs);
         renderInventory(result.items || []);
         applyDailyOutputsToInventory(dailyOutputs);
 
         if(result.source === "supabase"){
           const previousDate = formatDateDisplay(result.fecha || "");
           setLookupStatus(
-            "IVFA cargado con el saldo FINAL del último inventario de la planta " + plantKey
-            + (previousDate ? " (" + previousDate + ")" : "") + ". Se consultó un solo registro.",
+            "IVFA cargado con el saldo FINAL del último inventario ANTERIOR de la planta " + plantKey
+            + (previousDate ? " (" + previousDate + ")" : "") + ". IVFA se pasó automáticamente a INICIAL y SALIDA se obtuvo de Supabase.",
             "ok"
           );
         }else{
           setLookupStatus(
-            "No existe un inventario anterior para la planta " + plantKey + " hasta la fecha seleccionada. IVFA inicia en 0.",
+            "No existe un inventario anterior para la planta " + plantKey + ". IVFA e INICIAL comienzan en 0; SALIDA se obtuvo de Supabase.",
             "warn"
           );
         }
@@ -4089,6 +4555,7 @@
           prefer:"return=minimal"
         });
         closeRecordEditor();
+        dashboardConsumptionLoaded = false;
         await loadRecordsFromSupabase();
         if(currentPlant) requestInventoryIfReady({force:true});
         showToast("Registro actualizado correctamente.");
@@ -4128,6 +4595,7 @@
         }else if(target?.detalle_id){
           await sbRequest("combustible_movimiento_detalle", {method:"DELETE", query:`?id=eq.${encodeURIComponent(target.detalle_id)}`, prefer:"return=minimal"});
         }
+        dashboardConsumptionLoaded = false;
         await loadRecordsFromSupabase();
         if(currentPlant) requestInventoryIfReady({force:true});
         showToast("Registro eliminado de Supabase.");
@@ -4147,6 +4615,7 @@
           query:`?fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`,
           prefer:"return=minimal"
         });
+        dashboardConsumptionLoaded = false;
         await loadRecordsFromSupabase();
         if(currentPlant) requestInventoryIfReady({force:true});
         showToast("Registros eliminados de Supabase.");
@@ -5024,9 +5493,113 @@
     updateReportGenerateState();
 
     function updateMenuCounters(){
-      menuMovementCount.textContent = getLocalMovements().length;
-      menuInventoryCount.textContent = getLocalDb().length;
-      menuEquipmentCount.textContent = getCustomEquipments().length;
+      if(menuMovementCount) menuMovementCount.textContent = getLocalMovements().length;
+      if(menuInventoryCount) menuInventoryCount.textContent = getLocalDb().length;
+      if(menuEquipmentCount) menuEquipmentCount.textContent = getCustomEquipments().length;
+    }
+
+    let dashboardConsumptionLoaded = false;
+    let dashboardConsumptionLoading = false;
+
+    function dashboardIsoDate(date){
+      const y=date.getFullYear();
+      const m=String(date.getMonth()+1).padStart(2,"0");
+      const d=String(date.getDate()).padStart(2,"0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function dashboardMonthPeriods(){
+      const now=new Date();
+      const periods=[];
+      for(let offset=2;offset>=0;offset--){
+        const start=new Date(now.getFullYear(),now.getMonth()-offset,1,12,0,0,0);
+        const naturalEnd=new Date(start.getFullYear(),start.getMonth()+1,0,12,0,0,0);
+        const end=offset===0 ? new Date(now.getFullYear(),now.getMonth(),now.getDate(),12,0,0,0) : naturalEnd;
+        const rawMonth=start.toLocaleDateString("es-PA",{month:"long"});
+        const monthName=rawMonth ? rawMonth.charAt(0).toUpperCase()+rawMonth.slice(1) : "Mes";
+        periods.push({
+          key:`${start.getFullYear()}-${String(start.getMonth()+1).padStart(2,"0")}`,
+          monthName,
+          year:start.getFullYear(),
+          start:dashboardIsoDate(start),
+          end:dashboardIsoDate(end)
+        });
+      }
+      return periods;
+    }
+
+    function formatDashboardConsumption(value){
+      return Number(value || 0).toLocaleString("es-PA",{maximumFractionDigits:0});
+    }
+
+    function renderDashboardConsumptionRows(target, periods, stats){
+      if(!target) return;
+      const maximum=Math.max(1,...periods.map(period=>Number(stats[period.key]?.cantidad || 0)));
+      target.innerHTML=periods.map(period=>{
+        const item=stats[period.key] || {cantidad:0,registros:0};
+        const qty=Number(item.cantidad || 0);
+        const width=qty>0 ? Math.max(2,(qty/maximum)*100) : 0;
+        return `
+          <div class="dashboard-consumption-row">
+            <div class="dashboard-consumption-period">
+              <strong>${escapeHtml(period.monthName)}</strong>
+              <span>${String(period.start).slice(5,7)}/${period.year} · ${Number(item.registros || 0)} registros</span>
+            </div>
+            <div class="dashboard-consumption-track" aria-hidden="true">
+              <div class="dashboard-consumption-bar" style="width:${width.toFixed(2)}%"></div>
+            </div>
+            <div class="dashboard-consumption-value">${formatDashboardConsumption(qty)} L</div>
+          </div>`;
+      }).join("");
+    }
+
+    async function loadDashboardConsumption(force=false){
+      if(!currentUser || dashboardConsumptionLoading) return;
+      if(dashboardConsumptionLoaded && !force) return;
+      dashboardConsumptionLoading=true;
+      const periods=dashboardMonthPeriods();
+      if(dashboardGasolineRows) dashboardGasolineRows.innerHTML='<div class="dashboard-consumption-loading">Cargando consumo...</div>';
+      if(dashboardDieselRows) dashboardDieselRows.innerHTML='<div class="dashboard-consumption-loading">Cargando consumo...</div>';
+      try{
+        const monthRows=await Promise.all(periods.map(period=>
+          sbRequest("combustible_movimientos",{
+            query:`?select=id,fecha,combustible_movimiento_detalle(producto,cantidad,tipo_movimiento)&fecha=gte.${encodeURIComponent(period.start)}&fecha=lte.${encodeURIComponent(period.end)}&order=fecha.asc`,
+            prefer:""
+          })
+        ));
+        const gasoline={};
+        const diesel={};
+        periods.forEach(period=>{
+          gasoline[period.key]={cantidad:0,registros:0};
+          diesel[period.key]={cantidad:0,registros:0};
+        });
+        monthRows.forEach((rows,index)=>{
+          const period=periods[index];
+          (rows || []).forEach(movement=>{
+            (movement.combustible_movimiento_detalle || []).forEach(detail=>{
+              const product=String(detail.producto || "").trim().toUpperCase();
+              const movementType=String(detail.tipo_movimiento || "CONSUMO").trim().toUpperCase();
+              if(movementType === "TRANSFERENCIA") return;
+              if(product !== "GASOLINA" && product !== "DIESEL") return;
+              const qty=Number(detail.cantidad || 0);
+              if(!Number.isFinite(qty) || qty <= 0) return;
+              const bucket=product === "GASOLINA" ? gasoline[period.key] : diesel[period.key];
+              bucket.cantidad += qty;
+              bucket.registros += 1;
+            });
+          });
+        });
+        renderDashboardConsumptionRows(dashboardGasolineRows,periods,gasoline);
+        renderDashboardConsumptionRows(dashboardDieselRows,periods,diesel);
+        dashboardConsumptionLoaded=true;
+      }catch(error){
+        console.error("Dashboard consumos:",error);
+        const message='<div class="dashboard-consumption-error">No se pudo cargar el consumo.</div>';
+        if(dashboardGasolineRows) dashboardGasolineRows.innerHTML=message;
+        if(dashboardDieselRows) dashboardDieselRows.innerHTML=message;
+      }finally{
+        dashboardConsumptionLoading=false;
+      }
     }
 
     let currentAppView = "dashboard";
@@ -5084,9 +5657,15 @@
       mainWorkspace.classList.remove("single-view");
       currentViewLabel.textContent = "";
       updateMenuCounters();
+      loadDashboardConsumption();
     }
 
     function openAppView(view){
+      if(currentUser?.rol !== "admin" && !isViewEnabledForNonAdmin(view)){
+        showToast("Esta vista está desactivada por el administrador.", true);
+        showDashboard();
+        return;
+      }
       currentAppView = view;
       dashboardMenu.classList.add("hidden-view");
       mainWorkspace.classList.remove("hidden-view");
@@ -5178,13 +5757,83 @@
       }
     }
 
+    async function refreshApplicationData(){
+      if(!currentUser || !appRefreshBtn) return;
+      appRefreshBtn.disabled = true;
+      appRefreshBtn.classList.add("refreshing");
+      showToast("Actualizando datos de la aplicación...");
+
+      // Limpiar únicamente cachés temporales de esta sesión.
+      movementEquipmentPrefixCache.clear();
+      hideMovementEquipmentSuggestions();
+      equipmentAdminListCache = [];
+      equipmentAdminListLoaded = false;
+      adminUsersCache = [];
+      filteredMovementsCache = [];
+      filteredMovementsKey = "";
+      filteredInventoriesCache = [];
+      filteredInventoriesKey = "";
+      lastInventoryLookupKey = "";
+      dashboardConsumptionLoaded = false;
+
+      try{
+        await hydrateFromSupabase();
+
+        // Actualizar solo los datos correspondientes a la vista que el usuario tiene abierta.
+        if(currentAppView === "equipment-admin"){
+          if(equipmentAdminListPanel && !equipmentAdminListPanel.classList.contains("hidden")){
+            await loadEquipmentAdminListFromSupabase(true);
+          }else{
+            await loadEquipmentTypeCatalogFromSupabase();
+          }
+        }else if(currentAppView === "users" && currentUser?.rol === "admin"){
+          await loadAdminUsers();
+        }else if(currentAppView === "history"){
+          if(recordsView?.classList.contains("active")) await loadRecordsFromSupabase();
+          else await loadSavedInventoriesFromSupabase();
+        }else if(isMovementEntryContextActive() && plantaInput?.value && fechaPicker?.value){
+          await cargarInventario(plantaInput.value, fechaPicker.value, {force:true});
+        }
+        if(currentAppView === "dashboard") await loadDashboardConsumption(true);
+
+        updateMenuCounters();
+        showToast("Datos de la aplicación actualizados.");
+      }catch(error){
+        console.error(error);
+        showToast("No se pudieron actualizar los datos: " + (error.message || String(error)), true);
+      }finally{
+        appRefreshBtn.disabled = false;
+        appRefreshBtn.classList.remove("refreshing");
+      }
+    }
+
+    appRefreshBtn?.addEventListener("click", refreshApplicationData);
+
     entryMovementTab.addEventListener("click", () => setEntryTab("movement"));
     entryInventoryTab.addEventListener("click", () => setEntryTab("inventory"));
     historyMovementsTab.addEventListener("click", () => setHistoryTab("records"));
     historyInventoriesTab.addEventListener("click", () => setHistoryTab("inventories"));
 
+    dashboardMenu.querySelectorAll("[data-view-toggle]").forEach(toggle => {
+      const activate = async event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if(currentUser?.rol !== "admin") return;
+        const view = String(toggle.dataset.viewToggle || "");
+        const next = !(viewVisibilityConfig[view] !== false);
+        await setViewVisibility(view, next, toggle);
+      };
+      toggle.addEventListener("click", activate);
+      toggle.addEventListener("keydown", event => {
+        if(event.key === "Enter" || event.key === " ") activate(event);
+      });
+    });
+
     dashboardMenu.querySelectorAll(".menu-card[data-view]").forEach(card => {
-      card.addEventListener("click", () => openAppView(card.dataset.view));
+      card.addEventListener("click", event => {
+        if(event.target.closest("[data-view-toggle]")) return;
+        openAppView(card.dataset.view);
+      });
     });
 
     backToMenuBtn.addEventListener("click", showDashboard);
@@ -5414,7 +6063,8 @@
     refreshEquipmentTypeOptions();
     updateMenuCounters();
 
-    // EQUIPO: letras y números. La existencia se valida directamente en Supabase.
+    // EQUIPO: al escribir 2 caracteres se muestran referencias de código + tipo.
+    // La validación exacta se hace al seleccionar, salir del campo o guardar.
     enforceEquipmentInput(equipoInput);
     let equipmentLookupTimer = null;
     equipoInput.addEventListener("input", () => {
@@ -5422,16 +6072,41 @@
       if(equipoInput.value !== code) equipoInput.value = code;
       equipoAceptado = false;
       clearTimeout(equipmentLookupTimer);
+
       if(!code){
+        hideMovementEquipmentSuggestions();
         setEquipmentStatus("Ingrese el código del equipo para comprobarlo.");
         return;
       }
-      setEquipmentStatus("Comprobando equipo...");
-      equipmentLookupTimer = setTimeout(() => validateEquipmentFromSupabase(), 350);
+      if(code.length < 2){
+        hideMovementEquipmentSuggestions();
+        setEquipmentStatus("Escriba al menos 2 caracteres para ver referencias de equipos.");
+        return;
+      }
+
+      setEquipmentStatus("Seleccione una referencia o termine de escribir el equipo.");
+      equipmentLookupTimer = setTimeout(() => loadMovementEquipmentSuggestions(code), 220);
     });
+
+    movementEquipmentSuggestions?.addEventListener("mousedown", (event) => {
+      const option = event.target.closest("[data-movement-equipment-code]");
+      if(!option) return;
+      event.preventDefault();
+      const code = sanitizeEquipmentCode(option.dataset.movementEquipmentCode || "");
+      const tipo = String(option.dataset.movementEquipmentType || "").trim().toLocaleUpperCase("es");
+      equipoInput.value = code;
+      equipoAceptado = true;
+      setEquipmentStatus("Equipo aceptado" + (tipo && tipo !== "SIN TIPO" ? " · " + tipo : ""), "ok");
+      hideMovementEquipmentSuggestions();
+      equipoInput.focus();
+    });
+
     equipoInput.addEventListener("blur", () => {
       clearTimeout(equipmentLookupTimer);
-      validateEquipmentFromSupabase();
+      setTimeout(() => hideMovementEquipmentSuggestions(), 120);
+      const code = sanitizeEquipmentCode(equipoInput.value);
+      if(code) validateEquipmentFromSupabase();
+      else setEquipmentStatus("Ingrese el código del equipo para comprobarlo.");
     });
 
     adminEquipmentCode?.addEventListener("input", () => {
@@ -5630,7 +6305,10 @@
         const registros = getLocalMovements();
         registros.push(registro);
         saveLocalMovements(registros);
-        applyDailyOutputsToInventory();
+        // Refrescar SALIDA directamente desde Supabase después del movimiento.
+        if(currentPlant && normalizeDateKey(fechaPicker.value) === normalizeDateKey(fechaInput.value)){
+          await refreshDailyOutputsFromSupabase(currentPlant, fechaPicker.value);
+        }
         showToast("Movimiento guardado en Supabase.");
         updateMenuCounters();
         renderRecordsView();
@@ -5645,8 +6323,6 @@
     });
 
     saveInventoryBtn.addEventListener("click", async ()=>{
-      applyDailyOutputsToInventory();
-
       if(!currentPlant){
         showToast("Primero ingrese una planta.", true);
         plantaInput.focus();
@@ -5656,6 +6332,16 @@
       const rows = [...inventoryBody.querySelectorAll("tr")];
       if(!rows.length){
         showToast("No hay inventario cargado para registrar.", true);
+        return;
+      }
+
+      // Antes de guardar, SALIDA se vuelve a consultar en Supabase para evitar
+      // guardar un inventario con consumos viejos o provenientes de otro navegador.
+      try{
+        await refreshDailyOutputsFromSupabase(currentPlant, fechaPicker.value);
+      }catch(error){
+        console.error(error);
+        showToast("No se pudo actualizar las SALIDAS desde Supabase. El inventario no se guardó.", true);
         return;
       }
 
