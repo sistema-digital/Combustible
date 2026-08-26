@@ -1,0 +1,4987 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2f5fb3" />
+  <title>Registro de Combustible</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+  <style>
+    :root{
+      --blue:#315fb2;
+      --blue-dark:#173f8f;
+      --blue-soft:#eef4ff;
+      --border:#dfe5ee;
+      --text:#111827;
+      --muted:#6b7280;
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --shadow:0 6px 22px rgba(27,46,94,.08);
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box}
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{
+      -webkit-appearance:none;
+      margin:0;
+    }
+    input[type=number]{
+      -moz-appearance:textfield;
+      appearance:textfield;
+    }
+
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .app-shell{
+      min-height:100vh;
+      padding:14px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      padding:15px 18px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .brand-icon{
+      width:46px;
+      height:46px;
+      border-radius:13px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(145deg,var(--blue),var(--blue-dark));
+      color:#fff;
+      flex:0 0 auto;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:21px;
+      line-height:1.1;
+      letter-spacing:.2px;
+    }
+
+    .brand p{
+      margin:4px 0 0;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .date-chip{
+      font-size:13px;
+      color:#24457d;
+      background:var(--blue-soft);
+      border:1px solid #d6e4ff;
+      padding:9px 12px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+    .supabase-status{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      border-radius:999px;
+      padding:8px 11px;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+      border:1px solid #cbd5e1;
+      background:#f8fafc;
+      color:#475569;
+    }
+    .supabase-status::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#94a3b8;
+    }
+    .supabase-status.connecting::before{background:#d97706}
+    .supabase-status.connected{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+    .supabase-status.connected::before{background:#10b981}
+    .supabase-status.error{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+    .supabase-status.error::before{background:#ef4444}
+    .topbar-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+    body.auth-locked .app-shell{display:none}
+    body:not(.auth-locked) .auth-screen{display:none}
+    .auth-screen{
+      min-height:100vh;
+      padding:24px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(145deg,#f7f9fd,#eef4ff);
+    }
+    .auth-card{
+      width:min(760px,100%);
+      background:#fff;
+      border:1px solid #dce4ef;
+      border-radius:24px;
+      box-shadow:0 18px 50px rgba(23,63,143,.12);
+      padding:28px;
+    }
+    .auth-brand{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+    .auth-brand-icon{
+      width:54px;height:54px;border-radius:16px;display:grid;place-items:center;
+      color:#fff;background:linear-gradient(145deg,var(--blue),var(--blue-dark));
+    }
+    .auth-brand h1{margin:0;font-size:24px;color:#0f172a}
+    .auth-brand p{margin:5px 0 0;color:var(--muted);font-size:14px}
+    .auth-title{font-size:13px;font-weight:900;color:#173f8f;letter-spacing:.08em;margin-bottom:16px}
+    .auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .auth-field{display:grid;gap:7px}
+    .auth-field.full{grid-column:1/-1}
+    .auth-field label,.user-admin-form label{font-size:12px;font-weight:900;color:#60708e;letter-spacing:.05em}
+    .auth-field input,.user-admin-form input,.user-admin-form select{
+      width:100%;height:50px;border:1px solid #d8e0eb;border-radius:12px;padding:0 14px;
+      font:inherit;background:#f8fafc;color:#0f172a;outline:none;
+    }
+    .auth-field input:focus,.user-admin-form input:focus,.user-admin-form select:focus{
+      border-color:#315fb2;box-shadow:0 0 0 3px rgba(49,95,178,.1);background:#fff;
+    }
+    .password-wrap{position:relative}
+    .password-wrap input{padding-right:50px}
+    .password-toggle{
+      position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;
+      border:0;background:transparent;color:#64748b;cursor:pointer;border-radius:9px;font-size:17px;
+    }
+    .auth-submit{
+      grid-column:1/-1;height:52px;border:0;border-radius:12px;background:#0f1a33;color:#fff;
+      font-size:14px;font-weight:900;letter-spacing:.08em;cursor:pointer;margin-top:4px;
+      box-shadow:0 8px 18px rgba(15,26,51,.16);
+    }
+    .auth-submit:disabled{opacity:.65;cursor:not-allowed}
+    .auth-message{min-height:20px;margin-top:12px;font-size:13px;font-weight:700;color:#64748b}
+    .auth-message.error{color:#b91c1c}
+    .user-session-chip{
+      display:inline-flex;align-items:center;gap:7px;border:1px solid #d7e3f8;background:#f5f8ff;
+      color:#173f8f;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900;white-space:nowrap;
+    }
+    .logout-btn{
+      border:1px solid #d7dee9;background:#fff;color:#334155;border-radius:999px;padding:8px 11px;
+      font-size:12px;font-weight:900;cursor:pointer;
+    }
+    .user-admin-view{grid-column:1/-1}
+    .user-admin-shell{display:grid;gap:18px}
+    .user-admin-form{
+      display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px;border:1px solid #dfe5ee;
+      border-radius:16px;background:#fbfcfe;
+    }
+    .user-admin-form .form-field{display:grid;gap:7px}
+    .user-admin-form .full{grid-column:1/-1}
+    .user-admin-submit{
+      grid-column:1/-1;height:50px;border:0;border-radius:11px;background:#0f1a33;color:#fff;
+      font-weight:900;letter-spacing:.06em;cursor:pointer;
+    }
+    .users-table-wrap{overflow:auto;border:1px solid #dfe5ee;border-radius:14px}
+    .users-table{width:100%;border-collapse:collapse;min-width:650px}
+    .users-table th,.users-table td{padding:11px 12px;border-bottom:1px solid #edf1f6;text-align:left;font-size:12px}
+    .users-table th{background:#f8fafc;color:#60708e;font-weight:900}
+    .role-pill{display:inline-flex;padding:5px 8px;border-radius:999px;background:#eef4ff;color:#173f8f;font-weight:900}
+
+
+    .reports-view{grid-column:1/-1}
+    .report-filters{
+      display:grid;grid-template-columns:minmax(190px,.9fr) minmax(330px,1.4fr) auto;
+      gap:12px;align-items:end;padding:16px 18px;border:1px solid #dfe5ee;border-radius:16px;background:#fbfcfe;margin-bottom:12px;
+    }
+    .report-filter-field{display:grid;gap:6px}
+    .report-filter-field label{font-size:11px;font-weight:950;color:#60708e;letter-spacing:.05em;text-transform:uppercase}
+    .report-date-range-inputs{display:grid;grid-template-columns:1fr;gap:8px}
+    .report-date-range-picker{position:relative}
+    .report-date-range-picker .report-filter-input{padding-left:42px;cursor:pointer;text-transform:none}
+    .report-calendar-icon{
+      position:absolute;left:13px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:#315fb2;
+      display:grid;place-items:center;pointer-events:none;z-index:2;
+    }
+    .report-filter-input{
+      width:100%;height:44px;border:1px solid #d8e0eb;border-radius:10px;padding:0 12px;font:inherit;
+      outline:none;background:#fff;color:#0f172a;text-transform:uppercase;
+    }
+    .report-date-range-picker .report-filter-input::placeholder{color:#94a3b8;text-transform:uppercase}
+    .flatpickr-calendar{
+      border:1px solid #dfe5ee!important;border-radius:14px!important;box-shadow:0 14px 34px rgba(15,23,42,.16)!important;
+      font-family:Inter,Segoe UI,Arial,sans-serif!important;overflow:hidden;
+    }
+    .flatpickr-months{padding:7px 5px 2px;background:#fff}
+    .flatpickr-current-month{font-size:14px!important;font-weight:900!important;color:#0f172a!important}
+    .flatpickr-current-month .flatpickr-monthDropdown-months,.flatpickr-current-month input.cur-year{font-weight:900!important}
+    span.flatpickr-weekday{font-size:12px!important;font-weight:800!important;color:#7b8798!important}
+    .flatpickr-day{border-radius:999px!important;color:#27364b!important}
+    .flatpickr-day.today{border-color:#8ec5eb!important}
+    .flatpickr-day.inRange{
+      border-radius:0!important;background:#e8f3fb!important;border-color:#e8f3fb!important;box-shadow:-5px 0 0 #e8f3fb,5px 0 0 #e8f3fb!important;
+    }
+    .flatpickr-day.startRange,.flatpickr-day.endRange,.flatpickr-day.selected{
+      background:#3498db!important;border-color:#3498db!important;color:#fff!important;border-radius:999px!important;box-shadow:none!important;
+    }
+    .flatpickr-day.startRange + .endRange:not(:nth-child(7n+1)),.flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n+1)){box-shadow:none!important}
+    .chart-product-label{display:flex;align-items:center;gap:7px;min-width:0}
+    .chart-product-icon{
+      width:26px;height:26px;border-radius:8px;background:#eef4ff;color:#315fb2;display:grid;place-items:center;flex:0 0 auto;
+    }
+    .chart-product-icon.gasoline{background:#fff7ed;color:#c2410c}
+    .chart-product-icon.diesel{background:#ecfeff;color:#0e7490}
+    .chart-product-icon.lubricant{background:#eef4ff;color:#315fb2}
+    .fuel-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:2px}
+    .fuel-summary-card{border:1px solid #dfe5ee;border-radius:13px;padding:12px;background:#fff;display:flex;align-items:center;gap:10px}
+    .fuel-summary-card .fuel-summary-icon{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto}
+    .fuel-summary-card.gasoline .fuel-summary-icon{background:#fff7ed;color:#c2410c}
+    .fuel-summary-card.diesel .fuel-summary-icon{background:#ecfeff;color:#0e7490}
+    .fuel-summary-card span{display:block;font-size:10px;font-weight:900;color:#64748b;letter-spacing:.04em}
+    .fuel-summary-card strong{display:block;margin-top:3px;color:#0f172a;font-size:17px}
+    .report-filter-input{
+      width:100%;height:44px;border:1px solid #d8e0eb;border-radius:10px;padding:0 12px;font:inherit;
+      outline:none;background:#fff;color:#0f172a;text-transform:uppercase;
+    }
+    .report-filter-input:focus{border-color:#315fb2;box-shadow:0 0 0 3px rgba(49,95,178,.08)}
+    .generate-report-btn{
+      min-height:44px;border:0;border-radius:11px;background:#173f8f;color:#fff;padding:0 18px;
+      display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:900;letter-spacing:.04em;cursor:pointer;
+      box-shadow:0 7px 16px rgba(23,63,143,.16);white-space:nowrap;
+    }
+    .generate-report-btn:disabled{opacity:.48;cursor:not-allowed;box-shadow:none}
+    .reports-status{display:none;font-size:12px;font-weight:800;color:#64748b;margin:0 0 12px}
+    .reports-status.error{display:block;color:#b91c1c}.reports-status.ok{display:none;color:#047857}
+    .report-result-panel{border:1px solid #dfe5ee;border-radius:16px;background:#fff;padding:18px;min-height:470px}
+    .report-detail-empty{min-height:420px;display:grid;place-items:center;text-align:center;color:#64748b;padding:28px}
+    .report-detail-empty svg{width:52px;height:52px;color:#94a3b8;margin-bottom:10px}
+    .report-detail-empty strong{display:block;color:#334155;margin-bottom:5px}
+    .report-detail{display:grid;gap:18px}
+    .report-detail-title{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+    .report-detail-title h3{margin:0;color:#0f172a;font-size:20px;text-transform:uppercase}
+    .report-detail-title p{margin:4px 0 0;color:#64748b;font-size:12px;text-transform:uppercase}
+    .report-info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .report-info-card{border:1px solid #dfe5ee;border-radius:13px;padding:12px;display:flex;align-items:center;gap:10px;background:#fbfcfe;min-width:0}
+    .report-info-card-icon{width:38px;height:38px;border-radius:10px;background:#eef4ff;color:#173f8f;display:grid;place-items:center;flex:0 0 auto}
+    .report-info-card span{display:block;font-size:10px;font-weight:900;color:#64748b;letter-spacing:.05em;text-transform:uppercase}
+    .report-info-card strong{display:block;margin-top:3px;font-size:13px;color:#0f172a;text-transform:uppercase;overflow-wrap:anywhere}
+    .report-section{display:grid;gap:10px}
+    .report-section-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:950;color:#173f8f;text-transform:uppercase}
+    .consumption-chart{display:grid;gap:10px;border:1px solid #e2e8f0;border-radius:14px;padding:14px;background:#fbfcfe}
+    .chart-row{display:grid;grid-template-columns:minmax(100px,160px) minmax(120px,1fr) auto;gap:10px;align-items:center}
+    .chart-label{font-size:11px;font-weight:900;color:#334155;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .chart-track{height:22px;border-radius:999px;background:#e8eef8;overflow:hidden;position:relative}
+    .chart-bar{height:100%;min-width:4px;border-radius:999px;background:#315fb2;transition:width .25s ease}
+    .chart-value{min-width:70px;text-align:right;font-size:11px;font-weight:950;color:#173f8f}
+    .chart-footer{font-size:10px;color:#64748b;text-align:right;text-transform:uppercase}
+    .oil-history{display:grid;gap:9px}
+    .oil-history-item{border:1px solid #dfe5ee;border-radius:13px;padding:12px;background:#fff;display:grid;gap:7px}
+    .oil-history-top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+    .oil-history-date{font-size:12px;font-weight:950;color:#173f8f}
+    .oil-history-qty{font-size:11px;font-weight:900;background:#eef4ff;color:#173f8f;border-radius:999px;padding:5px 8px}
+    .oil-history-type{font-size:12px;font-weight:900;color:#0f172a;text-transform:uppercase}
+    .oil-history-meta{font-size:11px;color:#64748b;text-transform:uppercase}
+    .oil-history-comment{font-size:11px;color:#475569;background:#f8fafc;border-radius:8px;padding:7px 9px;text-transform:uppercase}
+    .report-section-subtitle{margin:-4px 0 2px;font-size:11px;color:#64748b;line-height:1.45}
+    .diesel-comparison-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .diesel-comparison-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:#ecfeff;color:#0e7490;padding:6px 9px;font-size:10px;font-weight:950;text-transform:uppercase}
+    .diesel-comparison-chart{display:grid;gap:10px;border:1px solid #d7e7ed;border-radius:14px;padding:14px;background:#f8fdff}
+    .diesel-period-row{display:grid;grid-template-columns:minmax(120px,190px) minmax(120px,1fr) auto;gap:10px;align-items:center}
+    .diesel-period-label{font-size:11px;font-weight:900;color:#334155;text-transform:uppercase}
+    .diesel-period-track{height:24px;border-radius:999px;background:#dff4f8;overflow:hidden}
+    .diesel-period-bar{height:100%;min-width:4px;border-radius:999px;background:#1590a8}
+    .diesel-period-row.highest .diesel-period-track{outline:2px solid rgba(21,144,168,.22)}
+    .diesel-period-row.highest .diesel-period-label,.diesel-period-row.highest .diesel-period-value{color:#0e7490}
+    .diesel-period-value{min-width:78px;text-align:right;font-size:11px;font-weight:950;color:#173f8f}
+    .diesel-highest-card{display:flex;align-items:center;gap:10px;border:1px solid #bae6ee;background:#ecfeff;border-radius:13px;padding:11px 12px;color:#155e75}
+    .diesel-highest-card svg{flex:0 0 auto}
+    .diesel-highest-card span{display:block;font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+    .diesel-highest-card strong{display:block;margin-top:2px;font-size:13px;text-transform:uppercase}
+    .report-no-data{border:1px dashed #cbd5e1;border-radius:12px;padding:16px;text-align:center;color:#64748b;font-size:12px}
+    .download-report-btn{
+      min-height:40px;border:1px solid #cbd8ef;border-radius:10px;background:#f5f8ff;color:#173f8f;padding:0 14px;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:11px;font-weight:950;letter-spacing:.04em;
+      cursor:pointer;white-space:nowrap;box-shadow:0 4px 10px rgba(23,63,143,.08);
+    }
+    .download-report-btn:hover{background:#eef4ff}
+    .download-report-btn:disabled{opacity:.55;cursor:wait}
+    .pdf-report-export{position:fixed;left:-100000px;top:0;width:900px;background:#fff;padding:16px;color:#111827;z-index:-1}
+    .pdf-report-export .report-detail{gap:10px}
+    .pdf-report-export .report-detail-title h3{font-size:21px}
+    .pdf-report-export .report-section{gap:7px}
+    .pdf-report-export .report-section-title{font-size:12px}
+    .pdf-report-export .report-detail-title p{font-size:11px}
+    .pdf-report-export .fuel-summary-card span{font-size:10px}
+    .pdf-report-export .fuel-summary-card strong{font-size:17px}
+    .pdf-report-export .fuel-summary-grid{gap:7px}
+    .pdf-report-export .fuel-summary-card{padding:8px 10px}
+    .pdf-report-export .fuel-summary-card .fuel-summary-icon{width:32px;height:32px}
+    .pdf-report-export .consumption-chart{padding:9px;gap:6px}
+    .pdf-report-export .chart-row{gap:8px;grid-template-columns:minmax(115px,145px) minmax(120px,1fr) auto}
+    .pdf-report-export .chart-track{height:16px}
+    .pdf-report-export .chart-product-icon{width:24px;height:24px}
+    .pdf-report-export .diesel-comparison-chart{padding:9px;gap:6px}
+    .pdf-report-export .diesel-period-row{gap:7px}
+    .pdf-report-export .diesel-period-track{height:16px}
+    .pdf-report-export .oil-history{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+    .pdf-report-export .oil-history-item{padding:7px 8px;gap:3px}
+    .pdf-report-export .oil-history-date{font-size:11px}
+    .pdf-report-export .oil-history-type{font-size:11px}
+    .pdf-report-export .oil-history-meta,.pdf-report-export .oil-history-comment{font-size:10px}
+
+
+    @media (max-width:700px){
+      .report-filters{grid-template-columns:1fr}
+      .report-date-range-inputs{grid-template-columns:1fr}
+      .generate-report-btn{width:100%}
+      .report-info-grid{grid-template-columns:1fr}
+      .chart-row{grid-template-columns:125px minmax(80px,1fr) auto}
+      .diesel-period-row{grid-template-columns:110px minmax(70px,1fr) auto}
+      .fuel-summary-grid{grid-template-columns:1fr}
+      .auth-screen{padding:12px}.auth-card{padding:20px;border-radius:18px}
+      .auth-grid,.user-admin-form{grid-template-columns:1fr}
+      .auth-field.full,.user-admin-form .full,.auth-submit,.user-admin-submit{grid-column:1}
+    }
+
+
+    .workspace{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
+      gap:14px;
+      align-items:stretch;
+    }
+
+    .dashboard-menu{
+      display:grid;
+      gap:14px;
+    }
+
+    .dashboard-menu.hidden-view,
+    .workspace.hidden-view{
+      display:none !important;
+    }
+
+    .dashboard-hero{
+      background:linear-gradient(135deg,#214494,#3f6fc5);
+      color:#fff;
+      border-radius:16px;
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+
+    .dashboard-hero h2{
+      margin:0;
+      font-size:24px;
+      letter-spacing:.2px;
+    }
+
+    .dashboard-hero p{
+      margin:7px 0 0;
+      color:rgba(255,255,255,.82);
+      font-size:13px;
+    }
+
+    .dashboard-kpis{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .dashboard-kpi{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:15px;
+      box-shadow:var(--shadow);
+    }
+
+    .dashboard-kpi span{
+      display:block;
+      font-size:11px;
+      font-weight:800;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.5px;
+    }
+
+    .dashboard-kpi strong{
+      display:block;
+      margin-top:7px;
+      font-size:24px;
+      color:#173f8f;
+    }
+
+    .menu-cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+      gap:14px;
+    }
+
+    .menu-card{
+      min-width:0;
+      min-height:172px;
+      padding:18px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:#fff;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      text-align:left;
+      transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
+      color:var(--text);
+    }
+
+    .menu-card:hover{
+      transform:translateY(-2px);
+      border-color:#b9cae8;
+      box-shadow:0 10px 28px rgba(27,46,94,.12);
+    }
+
+    .menu-card:focus-visible{
+      outline:3px solid rgba(49,95,178,.22);
+      outline-offset:2px;
+    }
+
+    .menu-card-icon{
+      width:46px;
+      height:46px;
+      border-radius:13px;
+      display:grid;
+      place-items:center;
+      background:var(--blue-soft);
+      color:#173f8f;
+      margin-bottom:16px;
+    }
+
+    .menu-card h3{
+      margin:0;
+      font-size:17px;
+    }
+
+    .menu-card p{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .view-toolbar{
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+      padding:10px 12px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:12px;
+      box-shadow:var(--shadow);
+    }
+
+    .view-toolbar.show{
+      display:flex;
+    }
+
+    .back-menu-btn{
+      height:38px;
+      border:1.5px solid #214494;
+      border-radius:9px;
+      background:#fff;
+      color:#173f8f;
+      padding:0 13px;
+      font-weight:800;
+      font-size:12px;
+      cursor:pointer;
+    }
+
+    .current-view-label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .single-view{
+      grid-template-columns:minmax(0,1fr) !important;
+    }
+
+    .app-view-card.view-hidden{
+      display:none !important;
+    }
+
+    .entry-tabs{
+      grid-column:1 / -1;
+      margin:0 0 14px;
+    }
+
+    .entry-tabs.view-hidden{
+      display:none !important;
+    }
+
+    .history-view{
+      min-width:0;
+    }
+
+    .history-tabs{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin:0 20px 18px;
+      padding:6px;
+      background:#f1f5f9;
+      border:1px solid #dfe5ee;
+      border-radius:12px;
+    }
+
+    .history-tab{
+      min-height:44px;
+      border:0;
+      border-radius:9px;
+      background:transparent;
+      color:#475569;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.16s ease;
+    }
+
+    .history-tab:hover{
+      background:#e8eef8;
+      color:#173f8f;
+    }
+
+    .history-tab.active{
+      background:#fff;
+      color:#173f8f;
+      box-shadow:0 3px 10px rgba(27,46,94,.10);
+    }
+
+    .history-panel{
+      display:none;
+      min-width:0;
+    }
+
+    .history-panel.active{
+      display:block;
+    }
+
+    .history-panel .card-header{
+      padding-top:2px;
+    }
+
+    .records-view{
+      min-width:0;
+    }
+
+    .records-filters{
+      display:grid;
+      grid-template-columns:minmax(180px,1fr) minmax(180px,1fr);
+      gap:12px;
+      padding:0 20px 16px;
+    }
+
+    .records-filter-field label{
+      display:block;
+      margin-bottom:7px;
+      font-size:12px;
+      font-weight:800;
+      color:#374151;
+    }
+
+    .records-filter-field input{
+      width:100%;
+      height:44px;
+      border:2px solid #214494;
+      border-radius:9px;
+      padding:0 12px;
+      font-size:15px;
+      background:#fff;
+    }
+
+    .records-summary{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:0 20px 12px;
+      color:var(--muted);
+      font-size:12px;
+      flex-wrap:wrap;
+    }
+
+    .records-count{
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--blue-soft);
+      color:#173f8f;
+      font-weight:800;
+      border:1px solid #d6e4ff;
+    }
+
+    .records-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-left:auto;
+    }
+
+    .delete-filtered-btn{
+      height:34px;
+      border:1px solid #dc2626;
+      border-radius:9px;
+      background:#fff;
+      color:#b91c1c;
+      padding:0 12px;
+      font-size:11px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .delete-filtered-btn:hover{
+      background:#fff1f2;
+    }
+
+    .delete-filtered-btn:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+    }
+
+    .delete-record-btn{
+      width:30px;
+      height:30px;
+      border:1px solid #fecaca;
+      border-radius:8px;
+      background:#fff;
+      color:#b91c1c;
+      font-size:17px;
+      font-weight:900;
+      line-height:1;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      margin:auto;
+    }
+
+    .delete-record-btn:hover{
+      background:#fee2e2;
+    }
+
+    .delete-confirm-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(17,24,39,.28);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:9997;
+    }
+
+    .delete-confirm-overlay.show{
+      display:flex;
+    }
+
+    .delete-confirm-card{
+      width:min(92vw,420px);
+      background:#fff;
+      border:1px solid #dfe5ee;
+      border-radius:14px;
+      box-shadow:0 18px 50px rgba(17,24,39,.24);
+      padding:18px;
+    }
+
+    .delete-confirm-card h3{
+      margin:0 0 8px;
+      font-size:17px;
+      color:#991b1b;
+    }
+
+    .delete-confirm-card p{
+      margin:0 0 16px;
+      font-size:13px;
+      line-height:1.45;
+      color:#4b5563;
+    }
+
+    .delete-confirm-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .delete-confirm-actions button{
+      height:42px;
+      border-radius:9px;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .delete-confirm-cancel{
+      border:1.5px solid #214494;
+      background:#fff;
+      color:#173f8f;
+    }
+
+    .delete-confirm-ok{
+      border:0;
+      background:#b91c1c;
+      color:#fff;
+    }
+
+    .records-table-wrap{
+      width:100%;
+      overflow:auto;
+      border-top:1px solid #edf0f5;
+    }
+
+    .records-table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:auto;
+      min-width:900px;
+    }
+
+    .records-table th{
+      position:sticky;
+      top:0;
+      z-index:1;
+      padding:12px 10px;
+      background:#f8fafc;
+      border-bottom:1px solid #e5e7eb;
+      color:#374151;
+      font-size:12px;
+      white-space:nowrap;
+      text-align:left;
+    }
+
+    .records-table td{
+      padding:12px 10px;
+      border-bottom:1px solid #eef1f5;
+      font-size:12px;
+      color:#374151;
+      vertical-align:top;
+    }
+
+    .records-table tbody tr:nth-child(even){
+      background:#f8fbff;
+    }
+
+    .record-product{
+      font-weight:800;
+      color:#173f8f;
+    }
+
+    .record-qty{
+      font-weight:900;
+      color:#111827;
+    }
+
+    .record-oil-yes{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:4px 7px;
+      border-radius:999px;
+      background:#eef4ff;
+      color:#173f8f;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .records-empty{
+      padding:46px 20px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .records-empty strong{
+      display:block;
+      color:#4b5563;
+      font-size:15px;
+      margin-bottom:5px;
+    }
+
+    .saved-inventories-view{
+      min-width:0;
+    }
+
+    .saved-inventories-filters{
+      display:grid;
+      grid-template-columns:minmax(180px,1fr) minmax(180px,1fr);
+      gap:12px;
+      padding:0 20px 16px;
+    }
+
+    .saved-inventories-filter-field label{
+      display:block;
+      margin-bottom:7px;
+      font-size:12px;
+      font-weight:800;
+      color:#374151;
+    }
+
+    .saved-inventories-filter-field input{
+      width:100%;
+      height:44px;
+      border:2px solid #214494;
+      border-radius:9px;
+      padding:0 12px;
+      font-size:15px;
+      background:#fff;
+    }
+
+    .saved-inventories-summary{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:0 20px 12px;
+      color:var(--muted);
+      font-size:12px;
+      flex-wrap:wrap;
+    }
+
+    .saved-inventories-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-left:auto;
+    }
+
+    .saved-inventories-count{
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--blue-soft);
+      color:#173f8f;
+      font-weight:800;
+      border:1px solid #d6e4ff;
+    }
+
+    .saved-inventories-table-wrap{
+      width:100%;
+      overflow:auto;
+      border-top:1px solid #edf0f5;
+    }
+
+    .saved-inventories-table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:980px;
+    }
+
+    .saved-inventories-table th{
+      position:sticky;
+      top:0;
+      z-index:1;
+      padding:12px 10px;
+      background:#f8fafc;
+      border-bottom:1px solid #e5e7eb;
+      color:#374151;
+      font-size:12px;
+      white-space:nowrap;
+      text-align:left;
+    }
+
+    .saved-inventories-table td{
+      padding:12px 10px;
+      border-bottom:1px solid #eef1f5;
+      font-size:12px;
+      color:#374151;
+      vertical-align:top;
+    }
+
+    .saved-inventories-table tbody tr:nth-child(even){
+      background:#f8fbff;
+    }
+
+    .saved-inventory-product{
+      font-weight:800;
+      color:#173f8f;
+    }
+
+    .saved-inventory-final{
+      font-weight:900;
+      color:#111827;
+    }
+
+    .saved-inventories-empty{
+      padding:46px 20px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .saved-inventories-empty strong{
+      display:block;
+      color:#4b5563;
+      font-size:15px;
+      margin-bottom:5px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-header{
+      padding:20px 20px 12px;
+    }
+
+    .card-header h2{
+      margin:0;
+      font-size:22px;
+      letter-spacing:.4px;
+    }
+
+    .card-header p{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .form-area{
+      padding:6px 20px 20px;
+    }
+
+    .field{
+      margin-bottom:18px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:700;
+      font-size:14px;
+      letter-spacing:.2px;
+    }
+
+    input, select{
+      width:100%;
+      height:48px;
+      border:2px solid #214494;
+      border-radius:10px;
+      padding:0 14px;
+      font-size:16px;
+      color:#111827;
+      background:#fff;
+      outline:none;
+      transition:.18s ease;
+    }
+
+    input:focus, select:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 4px rgba(49,95,178,.12);
+    }
+
+    .input-wrap{
+      position:relative;
+    }
+
+    .input-wrap input{
+      padding-right:48px;
+    }
+    .date-wrap{
+      position:relative;
+    }
+    .native-date-picker{
+      position:relative;
+      inset:auto;
+      width:100%;
+      height:48px;
+      opacity:1;
+      cursor:pointer;
+      z-index:1;
+      color:#111827;
+      background:#fff;
+    }
+    .native-date-picker::-webkit-calendar-picker-indicator{
+      opacity:0;
+      position:absolute;
+      right:0;
+      width:48px;
+      height:100%;
+      cursor:pointer;
+    }
+
+    .input-icon{
+      position:absolute;
+      top:0;
+      right:0;
+      height:48px;
+      width:48px;
+      display:grid;
+      place-items:center;
+      background:var(--blue);
+      color:#fff;
+      border-radius:0 9px 9px 0;
+      pointer-events:none;
+    }
+
+    select{
+      appearance:none;
+      -webkit-appearance:none;
+      padding-right:48px;
+      background:
+        linear-gradient(45deg,transparent 50%,white 50%) calc(100% - 21px) 19px/8px 8px no-repeat,
+        linear-gradient(135deg,white 50%,transparent 50%) calc(100% - 15px) 19px/8px 8px no-repeat,
+        linear-gradient(to right,var(--blue),var(--blue)) 100% 0/48px 100% no-repeat,
+        #fff;
+    }
+
+    .primary-btn{
+      width:100%;
+      height:50px;
+      border:0;
+      border-radius:11px;
+      background:linear-gradient(145deg,#3f6fc5,#315fb2);
+      color:#fff;
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:.2px;
+      cursor:pointer;
+      transition:.18s ease;
+      box-shadow:0 5px 14px rgba(49,95,178,.22);
+    }
+
+    .primary-btn:hover{transform:translateY(-1px)}
+    .primary-btn:active{transform:translateY(0)}
+
+    .inventory-card{
+      display:flex;
+      flex-direction:column;
+      min-height:610px;
+    }
+
+    .inventory-toolbar{
+      padding:18px 18px 12px;
+      border-bottom:1px solid #edf0f5;
+    }
+
+    .inventory-title-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .inventory-title-row h2{
+      margin:0;
+      font-size:22px;
+    }
+
+    .inventory-title-row span{
+      font-size:12px;
+      color:var(--muted);
+      background:#f6f8fc;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid #e5eaf2;
+    }
+
+    .table-wrap{
+      width:100%;
+      overflow:auto;
+      flex:1;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:fixed;
+      min-width:0;
+    }
+
+    thead th{
+      position:sticky;
+      top:0;
+      background:#fbfcfe;
+      color:#111;
+      font-size:14px;
+      letter-spacing:.3px;
+      text-align:center;
+      padding:12px 5px;
+      border-bottom:1px solid #e7ebf1;
+      white-space:nowrap;
+    }
+
+    tbody td{
+      padding:11px 5px;
+      text-align:center;
+      border-bottom:1px solid #f0f2f6;
+      color:#4b5563;
+      font-size:14px;
+    }
+
+    .empty-state{
+      min-height:360px;
+      display:grid;
+      place-items:center;
+      padding:30px;
+      text-align:center;
+      color:#7a8494;
+    }
+
+    .empty-state svg{
+      width:58px;
+      height:58px;
+      margin-bottom:10px;
+      color:#9bb3dc;
+    }
+
+    .empty-state strong{
+      display:block;
+      color:#4a5568;
+      font-size:16px;
+      margin-bottom:5px;
+    }
+
+
+    .lookup-status{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-height:22px;
+      margin-top:8px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .lookup-status.ok{color:#177245}
+    .lookup-status.warn{color:#9a6700}
+    .spinner{
+      width:14px;height:14px;border:2px solid #d8e1f2;
+      border-top-color:var(--blue);border-radius:50%;
+      animation:spin .7s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .inventory-input{
+      width:100%;max-width:78px;height:36px;border:1.7px solid #3555b1;
+      border-radius:6px;padding:0 10px;font-size:14px;
+    }
+    .inventory-input:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px rgba(49,95,178,.12);
+      outline:none;
+    }
+    tbody tr:nth-child(even){background:#edf3fb}
+    .ivfa-value{font-weight:800;color:#111827}
+    .money-like{font-variant-numeric:tabular-nums;color:#111827}
+    .inventory-negative{
+      background:#ffe5e5 !important;
+    }
+    .inventory-negative .final-value{
+      color:#b91c1c !important;
+      font-weight:900;
+    }
+    .inventory-negative .final-value::after{
+      content:" ⚠";
+      font-size:12px;
+    }
+    .inventory-note{padding:10px 18px 0;font-size:12px;color:var(--muted)}
+    .inventory-card table th,
+    .inventory-card table td{
+      font-size:12px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .inventory-card table th:nth-child(1){width:11%}
+    .inventory-card table th:nth-child(2){width:24%}
+    .inventory-card table th:nth-child(3),
+    .inventory-card table th:nth-child(4){width:18%}
+    .inventory-card table th:nth-child(5),
+    .inventory-card table th:nth-child(6){width:14.5%}
+    .ivfa-filter{
+      cursor:pointer;
+      user-select:none;
+      position:relative;
+    }
+    .ivfa-filter.active{
+      color:#1b5e20;
+    }
+    .ivfa-cell{
+      cursor:pointer;
+      font-weight:800;
+    }
+    .row-active-stock{
+      background:#d7f0d5 !important;
+    }
+
+    .combustible-buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      padding:4px 0 2px;
+      min-height:42px;
+    }
+    .combustible-empty{
+      width:100%;
+      padding:12px 14px;
+      border:1px dashed #cbd5e1;
+      border-radius:9px;
+      color:var(--muted);
+      font-size:13px;
+      background:#fafbfc;
+    }
+    .fuel-btn{
+      border:1.5px solid #214494;
+      background:#fff;
+      color:#173f8f;
+      border-radius:9px;
+      padding:9px 13px;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.16s ease;
+    }
+    .fuel-btn:hover{
+      background:#eef4ff;
+    }
+    .fuel-btn.active{
+      background:var(--blue);
+      color:#fff;
+      box-shadow:0 4px 10px rgba(49,95,178,.18);
+    }
+    .combustible-details{
+      margin-top:12px;
+      display:grid;
+      gap:10px;
+    }
+    .fuel-panel{
+      display:none;
+      border:1px solid #dfe5ee;
+      border-radius:10px;
+      padding:12px;
+      background:#fbfcfe;
+    }
+    .fuel-panel.show{
+      display:block;
+    }
+    .fuel-panel-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .fuel-panel-header-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .fuel-panel-title{
+      font-size:14px;
+      font-weight:800;
+      color:#173f8f;
+      margin:0;
+    }
+    .fuel-panel-close,
+    .fuel-panel-add,
+    .entry-remove-btn{
+      width:30px;
+      height:30px;
+      border-radius:8px;
+      background:#fff;
+      font-size:18px;
+      line-height:1;
+      font-weight:800;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition:.16s ease;
+      flex:0 0 auto;
+    }
+    .fuel-panel-close{
+      border:2px solid #dc2626;
+      color:#dc2626;
+    }
+    .fuel-panel-close:hover,
+    .entry-remove-btn:hover{
+      background:#fef2f2;
+    }
+    .fuel-panel-add{
+      border:2px solid #214494;
+      color:#214494;
+    }
+    .fuel-panel-add:hover{
+      background:#eef4ff;
+    }
+    .entry-remove-btn{
+      border:2px solid #dc2626;
+      color:#dc2626;
+      width:42px;
+      height:42px;
+      font-size:20px;
+    }
+    .movement-entry{
+      padding-top:2px;
+    }
+    .movement-entry + .movement-entry{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px dashed #c9d6ea;
+    }
+    .fuel-panel-grid{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:center;
+    }
+    .combustible-qty{
+      width:100%;
+      height:44px;
+      border:2px solid #214494;
+      border-radius:8px;
+      padding:0 12px;
+      font-size:15px;
+      background:#fff;
+    }
+        .fuel-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .comment-toggle-btn,
+    .movement-toggle-btn{
+      width:42px;
+      height:42px;
+      border:1.5px solid #214494;
+      border-radius:10px;
+      background:#fff;
+      color:#173f8f;
+      padding:0;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition:.16s ease;
+      flex:0 0 auto;
+    }
+    .comment-toggle-btn svg,
+    .movement-toggle-btn svg{
+      width:18px;
+      height:18px;
+      display:block;
+    }
+    .comment-toggle-btn:hover,
+    .movement-toggle-btn:hover{
+      background:#eef4ff;
+    }
+    .comment-toggle-btn.active,
+    .movement-toggle-btn.active{
+      background:#214494;
+      color:#fff;
+    }
+    .movement-type-row{
+      display:none;
+      margin-top:10px;
+    }
+    .movement-type-row.show{
+      display:block;
+    }
+    .oil-type-select{
+      width:100%;
+      height:42px;
+      border:1.5px solid #214494;
+      border-radius:10px;
+      padding:0 38px 0 12px;
+      font-size:12px;
+      font-weight:700;
+      color:#173f8f;
+      background:
+        linear-gradient(45deg,transparent 50%,#173f8f 50%) calc(100% - 16px) 17px/7px 7px no-repeat,
+        linear-gradient(135deg,#173f8f 50%,transparent 50%) calc(100% - 11px) 17px/7px 7px no-repeat,
+        #fff;
+      appearance:none;
+      -webkit-appearance:none;
+    }
+    .oil-type-select:focus{
+      outline:none;
+      border-color:var(--blue);
+      box-shadow:0 0 0 4px rgba(49,95,178,.12);
+    }
+    .oil-type-select.needs-selection{
+      border-color:#d97706;
+      background-color:#fff7ed;
+      box-shadow:0 0 0 3px rgba(217,119,6,.12);
+    }
+    .comment-row{
+      display:none;
+      margin-top:10px;
+    }
+    .comment-row.show{
+      display:block;
+    }
+    .combustible-comment-input{
+      width:100%;
+      height:42px;
+      border:2px solid #214494;
+      border-radius:8px;
+      padding:0 12px;
+      font-size:14px;
+      background:#fff;
+    }
+    .combustible-qty:focus,
+    .combustible-comment-input:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 4px rgba(49,95,178,.12);
+      outline:none;
+    }
+
+    .inventory-footer{padding:0 10px 12px}
+    .hidden{display:none!important}
+    .equipment-status{
+      min-height:22px;
+      margin-top:7px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .equipment-status.ok{color:#177245;font-weight:700}
+    .equipment-status.error{color:#a32020;font-weight:700}
+    .new-equipment-box{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:8px;
+      margin-top:8px;
+      align-items:end;
+    }
+    .equipment-type-picker{
+      min-width:0;
+    }
+    .equipment-type-reference-label{
+      display:block;
+      margin:0 0 5px 2px;
+      font-size:10px;
+      font-weight:800;
+      color:#173f8f;
+      letter-spacing:.25px;
+    }
+    .new-equipment-box select{
+      width:100%;
+      height:38px;
+      border:1.5px solid #214494;
+      border-radius:8px;
+      background:#fff;
+      color:#111827;
+      padding:0 34px 0 10px;
+      font-size:13px;
+      font-weight:700;
+      text-transform:uppercase;
+    }
+    #equipo{
+      text-transform:uppercase;
+    }
+    .mini-action-btn{
+      height:38px;
+      border:1.5px solid #214494;
+      border-radius:8px;
+      background:#fff;
+      color:#173f8f;
+      padding:0 12px;
+      font-size:11px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .mini-action-btn:hover{
+      background:#eef4ff;
+    }
+    @media (max-width:620px){
+      .new-equipment-box{
+        grid-template-columns:1fr;
+      }
+      .new-equipment-box .mini-action-btn{
+        width:100%;
+      }
+    }
+    .app-toast{
+      position:fixed;
+      left:50%;
+      bottom:24px;
+      transform:translateX(-50%) translateY(20px);
+      min-width:280px;
+      max-width:min(92vw,520px);
+      padding:13px 16px;
+      border-radius:11px;
+      background:#173f8f;
+      color:#fff;
+      font-size:13px;
+      font-weight:700;
+      text-align:center;
+      box-shadow:0 10px 30px rgba(17,24,39,.22);
+      opacity:0;
+      pointer-events:none;
+      transition:.2s ease;
+      z-index:9999;
+    }
+    .app-toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+    .app-toast.error{background:#a32020}
+    .oil-question-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(17,24,39,.28);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:9998;
+    }
+    .oil-question-overlay.show{
+      display:flex;
+    }
+    .oil-question-card{
+      width:min(92vw,420px);
+      background:#fff;
+      border:1px solid #dfe5ee;
+      border-radius:14px;
+      box-shadow:0 18px 50px rgba(17,24,39,.24);
+      padding:18px;
+    }
+    .oil-question-card h3{
+      margin:0 0 8px;
+      font-size:17px;
+      color:#173f8f;
+    }
+    .oil-question-card p{
+      margin:0 0 16px;
+      font-size:14px;
+      line-height:1.45;
+      color:#4b5563;
+    }
+    .oil-question-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .oil-question-actions button{
+      height:42px;
+      border-radius:9px;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .oil-question-yes{
+      border:0;
+      background:#214494;
+      color:#fff;
+    }
+    .oil-question-no{
+      border:1.5px solid #214494;
+      background:#fff;
+      color:#173f8f;
+    }
+
+    @media (max-width: 980px){
+      .workspace{
+        grid-template-columns:1fr;
+      }
+      .menu-cards{
+        grid-template-columns:1fr 1fr;
+      }
+      .dashboard-kpis{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+      }
+      .inventory-card{
+        min-height:460px;
+      }
+    }
+
+    @media (max-width: 560px){
+      .app-shell{padding:8px}
+      .menu-cards,
+      .dashboard-kpis{
+        grid-template-columns:1fr;
+      }
+      .dashboard-hero{
+        padding:18px;
+      }
+      .dashboard-hero h2{
+        font-size:21px;
+      }
+      .history-tabs{
+        margin:0 14px 16px;
+        grid-template-columns:1fr;
+      }
+      .records-filters{
+        grid-template-columns:1fr;
+        padding:0 14px 14px;
+      }
+      .records-summary{
+        padding:0 14px 10px;
+      }
+      .saved-inventories-filters{
+        grid-template-columns:1fr;
+        padding:0 14px 14px;
+      }
+      .saved-inventories-summary{
+        padding:0 14px 10px;
+      }
+      .topbar{
+        padding:12px;
+        border-radius:12px;
+      }
+      .brand-icon{width:42px;height:42px}
+      .brand h1{font-size:18px}
+      .brand p{display:none}
+      .date-chip{display:none}
+      .card{border-radius:12px}
+      .card-header{padding:17px 14px 10px}
+      .card-header h2,.inventory-title-row h2{font-size:19px}
+      .form-area{padding:5px 14px 14px}
+      .inventory-toolbar{padding:15px 14px 10px}
+      input,select{height:46px}
+      .input-icon{height:46px}
+    }
+  </style>
+</head>
+<body class="auth-locked">
+  <section id="loginScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-brand-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C9.2 6.1 6 9.2 6 13a6 6 0 1 0 12 0c0-3.8-3.2-6.9-6-11Z" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <div><h1>Registro de Combustible</h1><p>Inicio de sesión</p></div>
+      </div>
+      <div class="auth-title">ACCESO AL SISTEMA</div>
+      <form id="loginForm" class="auth-grid" autocomplete="off">
+        <div class="auth-field full">
+          <label for="loginCorreo">CORREO ELECTRÓNICO</label>
+          <input id="loginCorreo" type="email" autocomplete="username" required placeholder="correo@ejemplo.com">
+        </div>
+        <div class="auth-field full">
+          <label for="loginPassword">CONTRASEÑA</label>
+          <div class="password-wrap">
+            <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Contraseña">
+            <button id="loginPasswordToggle" type="button" class="password-toggle" aria-label="Mostrar contraseña">◉</button>
+          </div>
+        </div>
+        <button id="loginSubmitBtn" class="auth-submit" type="submit">INICIAR SESIÓN</button>
+      </form>
+      <div id="loginMessage" class="auth-message">Ingrese correo electrónico y contraseña.</div>
+    </div>
+  </section>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C9.2 6.1 6 9.2 6 13a6 6 0 1 0 12 0c0-3.8-3.2-6.9-6-11Z" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M9 14.5c.7 1.4 1.7 2.2 3.2 2.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Registro de Combustible</h1>
+          <p>Control de movimientos e inventario</p>
+        </div>
+      </div>
+      <div class="topbar-status">
+        <div id="currentUserChip" class="user-session-chip hidden"></div>
+        <button id="logoutBtn" type="button" class="logout-btn hidden">CERRAR SESIÓN</button>
+      </div>
+    </header>
+
+    <section id="dashboardMenu" class="dashboard-menu">
+      <div class="dashboard-hero">
+        <h2>MENÚ PRINCIPAL</h2>
+        <p>Seleccione la opción que desea utilizar en el registro de combustible.</p>
+      </div>
+
+      <div class="dashboard-kpis">
+        <div class="dashboard-kpi">
+          <span>Movimientos guardados</span>
+          <strong id="menuMovementCount">0</strong>
+        </div>
+        <div class="dashboard-kpi">
+          <span>Inventarios guardados</span>
+          <strong id="menuInventoryCount">0</strong>
+        </div>
+        <div class="dashboard-kpi">
+          <span>Equipos agregados</span>
+          <strong id="menuEquipmentCount">0</strong>
+        </div>
+      </div>
+
+      <div class="menu-cards">
+        <button type="button" class="menu-card" data-view="entry">
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="4" width="8" height="16" rx="1.5" stroke="currentColor" stroke-width="1.8"/>
+              <rect x="13" y="4" width="8" height="16" rx="1.5" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M6 8h2M6 12h2M16 8h2M16 12h2M16 16h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Ingreso de movimiento e inventario</h3>
+          <p>Registre movimientos o gestione el inventario desde una sola pantalla, usando vistas separadas.</p>
+        </button>
+
+        <button type="button" class="menu-card" data-view="history">
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+              <path d="M5 4h14v16H5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M16.5 15.5 19 18l2.5-2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <h3>Registro de movimientos e inventario</h3>
+          <p>Consulte en una sola pantalla los movimientos y los inventarios guardados, organizados en vistas separadas.</p>
+        </button>
+
+        <button type="button" class="menu-card" data-view="all">
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="4" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M7 8h10M7 11h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".9"/>
+            </svg>
+          </span>
+          <h3>Vista PC</h3>
+          <p>Muestre al mismo tiempo el formulario de movimiento y el inventario.</p>
+        </button>
+
+        <button type="button" class="menu-card" data-view="reports">
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+              <path d="M5 3.5h10l4 4V20.5H5v-17Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M15 3.5v4h4M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M8 8h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Reportes</h3>
+          <p>Consulte consumos por equipo y rango de fecha, con historial anual de cambios de aceite.</p>
+        </button>
+
+        <button id="userAdminMenuCard" type="button" class="menu-card hidden" data-view="users">
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+              <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M3.5 19c.5-3.4 2.4-5.2 5.5-5.2s5 1.8 5.5 5.2M17 8v6M14 11h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Gestión de usuarios</h3>
+          <p>Registrar o actualizar usuarios y asignar los roles USUARIO, SUPERVISOR o ADMIN.</p>
+        </button>
+      </div>
+    </section>
+
+    <div id="viewToolbar" class="view-toolbar">
+      <button id="backToMenuBtn" type="button" class="back-menu-btn">← VOLVER AL MENÚ</button>
+      <span id="currentViewLabel" class="current-view-label"></span>
+    </div>
+
+    <section id="mainWorkspace" class="workspace hidden-view">
+      <div id="entryTabs" class="history-tabs entry-tabs view-hidden" role="tablist" aria-label="Ingreso de movimiento e inventario">
+        <button id="entryMovementTab" type="button" class="history-tab active" role="tab" aria-selected="true">MOVIMIENTO</button>
+        <button id="entryInventoryTab" type="button" class="history-tab" role="tab" aria-selected="false">INVENTARIO</button>
+      </div>
+
+      <article id="movementView" class="card app-view-card">
+        <div class="card-header">
+          <h2>INGRESO DE MOVIMIENTO</h2>
+          <p>Complete los datos para registrar el movimiento.</p>
+        </div>
+
+        <div class="form-area">
+          <div class="field">
+            <label for="fecha">FECHA</label>
+            <div class="input-wrap date-wrap">
+              <input id="fecha" type="hidden" value="25/08/2026">
+              <input id="fechaPicker" class="native-date-picker" type="date" value="2026-08-25" aria-label="Seleccionar fecha">
+              <div class="input-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="planta">PLANTA</label>
+            <input id="planta" type="number" inputmode="numeric" min="0" placeholder="Ingrese el número de planta" autocomplete="off">
+            <div id="lookupStatus" class="lookup-status">Seleccione la fecha e ingrese la planta para consultar únicamente el último inventario.</div>
+          </div>
+
+          <div class="field">
+            <label for="equipo">EQUIPO</label>
+            <input id="equipo" type="text" inputmode="text" maxlength="20" autocomplete="off" placeholder="Ingrese el código del equipo">
+            <div id="equipmentStatus" class="equipment-status">Ingrese el código del equipo para comprobarlo.</div>
+            <div id="newEquipmentBox" class="new-equipment-box hidden">
+              <div class="equipment-type-picker">
+                <span class="equipment-type-reference-label">TIPO DE EQUIPO · SELECCIONE UNA REFERENCIA REGISTRADA</span>
+                <select id="newEquipmentType" aria-label="Tipo de equipo registrado">
+                  <option value="">SELECCIONE EL TIPO DE EQUIPO</option>
+                </select>
+              </div>
+              <button id="addEquipmentBtn" type="button" class="mini-action-btn">AGREGAR EQUIPO</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="combustible">TIPO DE COMBUSTIBLE | LUBRICANTE</label>
+            <div id="combustibleButtons" class="combustible-buttons">
+              <div class="combustible-empty">Seleccione una planta y active productos en verde</div>
+            </div>
+            <input id="combustible" type="hidden" value="">
+            <div id="combustibleDetails" class="combustible-details"></div>
+          </div>
+
+          <div id="movementField" class="field hidden">
+            <label for="movimiento">TIPO DE MOVIMIENTO</label>
+            <select id="movimiento">
+              <option value="CONSUMO" selected>CONSUMO</option>
+            </select>
+          </div>
+
+          <button id="saveMovementBtn" class="primary-btn" type="button">REGISTRAR MOVIMIENTO</button>
+        </div>
+      </article>
+
+      <article id="inventoryView" class="card inventory-card app-view-card">
+        <div class="inventory-toolbar">
+          <div class="inventory-title-row">
+            <h2>INVENTARIO</h2>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+              <span id="negativeInventoryBadge" class="hidden" style="font-size:12px;color:#b91c1c;background:#fff0f0;border:1px solid #fecaca;padding:6px 9px;border-radius:999px;font-weight:800">⚠ INVENTARIO NEGATIVO</span>
+              <span id="inventoryPlantBadge">Sin planta</span>
+            </div>
+          </div>
+        </div>
+<div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th id="ivfaHeader" class="ivfa-filter" title="Activar filas con cantidad">IVFA</th>
+                <th>NOMBRE</th>
+                <th>INICIAL</th>
+                <th>ENTRADA</th>
+                <th>SALIDA</th>
+                <th>FINAL</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryBody"></tbody>
+          </table>
+
+          <div id="inventoryEmpty" class="empty-state">
+            <div>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v13A2.5 2.5 0 0 1 17.5 21h-11A2.5 2.5 0 0 1 4 18.5v-13Z" stroke="currentColor" stroke-width="1.7"/>
+                <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+              <strong>Seleccione fecha e ingrese la planta</strong>
+              <span>La app consultará únicamente el último inventario de esa planta y colocará su saldo FINAL en IVFA.</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="inventoryFooter" class="inventory-footer hidden">
+          <button id="saveInventoryBtn" class="primary-btn" type="button">REGISTRAR INVENTARIO</button>
+        </div>
+      </article>
+
+      <article id="historyView" class="card history-view app-view-card view-hidden">
+        <div class="card-header">
+          <h2>REGISTRO DE MOVIMIENTOS E INVENTARIO</h2>
+          <p>Seleccione la vista que desea consultar. Los movimientos y los inventarios se mantienen separados.</p>
+        </div>
+
+        <div class="history-tabs" role="tablist" aria-label="Registro de movimientos e inventario">
+          <button id="historyMovementsTab" type="button" class="history-tab active" data-history-tab="records" role="tab" aria-selected="true">MOVIMIENTOS</button>
+          <button id="historyInventoriesTab" type="button" class="history-tab" data-history-tab="inventories" role="tab" aria-selected="false">INVENTARIOS</button>
+        </div>
+
+        <section id="recordsView" class="records-view history-panel active" role="tabpanel">
+        <div class="card-header">
+          <h2>REGISTROS</h2>
+          <p>Consulte los movimientos guardados utilizando solamente fecha y planta.</p>
+        </div>
+
+        <div class="records-filters">
+          <div class="records-filter-field">
+            <label for="recordsDate">FECHA</label>
+            <input id="recordsDate" type="date" value="2026-08-25">
+          </div>
+          <div class="records-filter-field">
+            <label for="recordsPlant">PLANTA</label>
+            <input id="recordsPlant" type="text" inputmode="numeric" autocomplete="off" placeholder="Ingrese la planta">
+          </div>
+        </div>
+
+        <div class="records-summary">
+          <span id="recordsFilterMessage">Ingrese la planta para mostrar los registros.</span>
+          <div class="records-actions">
+            <button id="deleteFilteredRecordsBtn" type="button" class="delete-filtered-btn" disabled>ELIMINAR TODOS LOS REGISTROS</button>
+            <span id="recordsCount" class="records-count">0 registros</span>
+          </div>
+        </div>
+
+        <div class="records-table-wrap">
+          <table class="records-table">
+            <thead>
+              <tr>
+                <th>FECHA</th>
+                <th>PLANTA</th>
+                <th>EQUIPO</th>
+                <th>ARTÍCULO</th>
+                <th>CANTIDAD</th>
+                <th>TIPO DE MOVIMIENTO</th>
+                <th>CAMBIO DE ACEITE</th>
+                <th>COMENTARIO</th>
+                <th>ELIMINAR</th>
+              </tr>
+            </thead>
+            <tbody id="recordsBody"></tbody>
+          </table>
+
+          <div id="recordsEmpty" class="records-empty">
+            <strong>Sin registros para mostrar</strong>
+            <span>Seleccione una fecha e ingrese la planta.</span>
+          </div>
+        </div>
+        </section>
+
+        <section id="savedInventoriesView" class="saved-inventories-view history-panel" role="tabpanel">
+        <div class="card-header">
+          <h2>INVENTARIOS GUARDADOS</h2>
+          <p>Consulte los inventarios guardados utilizando solamente fecha y planta.</p>
+        </div>
+
+        <div class="saved-inventories-filters">
+          <div class="saved-inventories-filter-field">
+            <label for="savedInventoryDate">FECHA</label>
+            <input id="savedInventoryDate" type="date" value="2026-08-25">
+          </div>
+          <div class="saved-inventories-filter-field">
+            <label for="savedInventoryPlant">PLANTA</label>
+            <input id="savedInventoryPlant" type="text" inputmode="numeric" autocomplete="off" placeholder="Ingrese la planta">
+          </div>
+        </div>
+
+        <div class="saved-inventories-summary">
+          <span id="savedInventoryFilterMessage">Ingrese la planta para mostrar los inventarios guardados.</span>
+          <div class="saved-inventories-actions">
+            <button id="deleteFilteredInventoriesBtn" type="button" class="delete-filtered-btn" disabled>ELIMINAR TODOS LOS INVENTARIOS</button>
+            <span id="savedInventoriesCount" class="saved-inventories-count">0 inventarios</span>
+          </div>
+        </div>
+
+        <div class="saved-inventories-table-wrap">
+          <table class="saved-inventories-table">
+            <thead>
+              <tr>
+                <th>FECHA</th>
+                <th>PLANTA</th>
+                <th>ARTÍCULO</th>
+                <th>INICIAL</th>
+                <th>ENTRADA</th>
+                <th>SALIDA</th>
+                <th>FINAL</th>
+                <th>ELIMINAR</th>
+              </tr>
+            </thead>
+            <tbody id="savedInventoriesBody"></tbody>
+          </table>
+
+          <div id="savedInventoriesEmpty" class="saved-inventories-empty">
+            <strong>Sin inventarios para mostrar</strong>
+            <span>Seleccione una fecha e ingrese la planta.</span>
+          </div>
+        </div>
+        </section>
+      </article>
+      <article id="reportsView" class="card app-view-card reports-view view-hidden">
+        <div class="card-header">
+          <h2>REPORTES</h2>
+          <p>Seleccione el equipo y el rango en el calendario. La base de datos solo se consulta al pulsar GENERAR REPORTE.</p>
+        </div>
+
+        <div class="report-filters">
+          <div class="report-filter-field">
+            <label for="reportEquipmentFilter">NÚMERO DE EQUIPO</label>
+            <input id="reportEquipmentFilter" class="report-filter-input" type="text" list="reportEquipmentOptions" autocomplete="off" placeholder="EJ. 484101">
+            <datalist id="reportEquipmentOptions"></datalist>
+          </div>
+          <div class="report-filter-field">
+            <label for="reportDateRange">RANGO DE FECHA</label>
+            <div class="report-date-range-inputs">
+              <div class="report-date-range-picker">
+                <span class="report-calendar-icon" aria-hidden="true">
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M7 3v3M17 3v3M4 9h16M5 5h14v16H5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <input id="reportDateRange" class="report-filter-input" type="text" readonly autocomplete="off" placeholder="SELECCIONE FECHA INICIAL Y FINAL" aria-label="Rango de fecha">
+              </div>
+              <input id="reportDateFrom" type="hidden">
+              <input id="reportDateTo" type="hidden">
+            </div>
+          </div>
+          <button id="generateReportBtn" class="generate-report-btn" type="button" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M8 15v-3M12 15V8M16 15v-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            GENERAR REPORTE
+          </button>
+        </div>
+
+        <div id="reportsStatus" class="reports-status" aria-live="polite"></div>
+
+        <section id="reportDetailPanel" class="report-result-panel">
+          <div class="report-detail-empty">
+            <div>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 3.5h10l4 4V20.5H5v-17Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M15 3.5v4h4M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+              <strong>SIN REPORTE GENERADO</strong>
+              <span>La aplicación no solicitará datos a Supabase hasta que pulse GENERAR REPORTE.</span>
+            </div>
+          </div>
+        </section>
+      </article>
+
+      <article id="userAdminView" class="card app-view-card user-admin-view view-hidden">
+        <div class="card-header">
+          <h2>REGISTRAR / ACTUALIZAR USUARIO</h2>
+          <p>Solo los administradores pueden gestionar usuarios del sistema.</p>
+        </div>
+        <div class="user-admin-shell">
+          <form id="userAdminForm" class="user-admin-form" autocomplete="off">
+            <div class="form-field">
+              <label for="adminUserName">NOMBRE COMPLETO</label>
+              <input id="adminUserName" type="text" required placeholder="Nombre completo">
+            </div>
+            <div class="form-field">
+              <label for="adminUserEmail">CORREO ELECTRÓNICO</label>
+              <input id="adminUserEmail" type="email" required placeholder="correo@ejemplo.com">
+            </div>
+            <div class="form-field">
+              <label for="adminUserPassword">CONTRASEÑA</label>
+              <input id="adminUserPassword" type="password" placeholder="Mínimo 6 caracteres · opcional al actualizar">
+            </div>
+            <div class="form-field">
+              <label for="adminUserRole">ROL DEL SISTEMA</label>
+              <select id="adminUserRole" required>
+                <option value="usuario">USUARIO</option>
+                <option value="supervisor">SUPERVISOR</option>
+                <option value="admin">ADMIN</option>
+              </select>
+            </div>
+            <button id="adminUserSubmit" class="user-admin-submit" type="submit">REGISTRAR / ACTUALIZAR</button>
+          </form>
+          <div class="users-table-wrap">
+            <table class="users-table">
+              <thead><tr><th>NOMBRE</th><th>CORREO</th><th>ROL</th><th>ESTADO</th></tr></thead>
+              <tbody id="adminUsersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+  <div id="appToast" class="app-toast" role="status" aria-live="polite"></div>
+
+
+  <div id="deleteConfirmOverlay" class="delete-confirm-overlay" aria-hidden="true">
+    <div class="delete-confirm-card" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle">
+      <h3 id="deleteConfirmTitle">Confirmar eliminación</h3>
+      <p id="deleteConfirmText"></p>
+      <div class="delete-confirm-actions">
+        <button id="deleteConfirmCancel" type="button" class="delete-confirm-cancel">CANCELAR</button>
+        <button id="deleteConfirmOk" type="button" class="delete-confirm-ok">ELIMINAR</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="oilQuestionOverlay" class="oil-question-overlay" aria-hidden="true">
+    <div class="oil-question-card" role="dialog" aria-modal="true" aria-labelledby="oilQuestionTitle">
+      <h3 id="oilQuestionTitle">¿Es un cambio de aceite?</h3>
+      <p id="oilQuestionText"></p>
+      <div class="oil-question-actions">
+        <button id="oilQuestionNo" type="button" class="oil-question-no">NO</button>
+        <button id="oilQuestionYes" type="button" class="oil-question-yes">SÍ</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script>
+        const PRODUCTOS = [
+      "GASOLINA","DIESEL","SAE-30","ISOVG46","15W40","GX 90","ATF",
+      "HIDR100","HD140","GRASA","TFH1000 (TD)","TC10W","8T9577","AW68"
+    ];
+
+    const OIL_MOVEMENT_OPTIONS = [
+      "CONSUMO",
+      "TRANSFERENCIA",
+      "CAMBIO DE ACEITE DE MANDOS Y DIFERENCIALES",
+      "CAMBIO DE ACEITE HIDRAULICO",
+      "CAMBIO DE ACEITE DE MOTOR",
+      "CAMBIO DE ACEITE TRANSMISION",
+      "CAMBIO DE ACEITE DE DIFERENCIALES",
+      "CAMBIO DE ACEITE DE TRANSMISION",
+      "ROPTURA MANGUERA",
+      "FUGA DE ACEITE"
+    ];
+
+    const MULTI_ENTRY_PRODUCTS = ["ATF", "HD140"];
+
+    const EQUIPOS_BASE = [{"codigo": "439008", "tipo": "RASTRA"}, {"codigo": "401005", "tipo": "AUTOMOVIL"}, {"codigo": "402038", "tipo": "MAQUINA DE SOLADAR"}, {"codigo": "402039", "tipo": "MAQUINA DE SOLADAR"}, {"codigo": "402042", "tipo": "MAQUINA DE SOLADAR"}, {"codigo": "402043", "tipo": "MAQUINA DE SOLADAR"}, {"codigo": "403019", "tipo": "SURCADOR"}, {"codigo": "403021", "tipo": ""}, {"codigo": "403023", "tipo": ""}, {"codigo": "403027", "tipo": ""}, {"codigo": "403028", "tipo": ""}, {"codigo": "403029", "tipo": ""}, {"codigo": "403030", "tipo": ""}, {"codigo": "403031", "tipo": ""}, {"codigo": "403032", "tipo": ""}, {"codigo": "403033", "tipo": ""}, {"codigo": "403034", "tipo": ""}, {"codigo": "403035", "tipo": ""}, {"codigo": "403036", "tipo": ""}, {"codigo": "403037", "tipo": ""}, {"codigo": "403038", "tipo": ""}, {"codigo": "403039", "tipo": ""}, {"codigo": "403040", "tipo": ""}, {"codigo": "403041", "tipo": ""}, {"codigo": "403043", "tipo": ""}, {"codigo": "403044", "tipo": ""}, {"codigo": "403045", "tipo": ""}, {"codigo": "403046", "tipo": ""}, {"codigo": "403048", "tipo": ""}, {"codigo": "403050", "tipo": "ABONADORA"}, {"codigo": "403051", "tipo": "ABONADORA"}, {"codigo": "403052", "tipo": "ABONADORA"}, {"codigo": "403053", "tipo": "ABONADORA"}, {"codigo": "403054", "tipo": "ABONADORA"}, {"codigo": "403055", "tipo": "ABONADORA"}, {"codigo": "403056", "tipo": "ABONADORA"}, {"codigo": "403057", "tipo": "ABONADORA"}, {"codigo": "403058", "tipo": "ABONADORA"}, {"codigo": "403059", "tipo": "ABONADORA"}, {"codigo": "404019", "tipo": "BOMBA DE AGUA"}, {"codigo": "404020", "tipo": "BOMBA DE AGUA"}, {"codigo": "404021", "tipo": "BOMBA DE AGUA"}, {"codigo": "404023", "tipo": "BOMBA DE AGUA"}, {"codigo": "404024", "tipo": "BOMBA DE AGUA"}, {"codigo": "407003", "tipo": "GENERADOR ELECTRICO"}, {"codigo": "407005", "tipo": "GENERADOR ELECTRICO"}, {"codigo": "410002", "tipo": "BUS"}, {"codigo": "410003", "tipo": "BUS"}, {"codigo": "410004", "tipo": "BUS"}, {"codigo": "410021", "tipo": "BUS"}, {"codigo": "411001", "tipo": "COMPRESOR"}, {"codigo": "411005", "tipo": "COMPRESOR"}, {"codigo": "411007", "tipo": "COMPRESOR"}, {"codigo": "411008", "tipo": "COMPRESOR"}, {"codigo": "411011", "tipo": "COMPRESOR"}, {"codigo": "411016", "tipo": "COMPRESOR"}, {"codigo": "411017", "tipo": "COMPRESOR"}, {"codigo": "415100", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415200", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415300", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415402", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415403", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415404", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415405", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415406", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415407", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415408", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415409", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "415600", "tipo": "PLANTA DE COMBUSTIBLE"}, {"codigo": "416002", "tipo": "PAYLOADER"}, {"codigo": "416003", "tipo": "PAYLOADER"}, {"codigo": "416004", "tipo": "PAYLOADER"}, {"codigo": "416006", "tipo": "JAIBA"}, {"codigo": "416009", "tipo": "PAYLOADER"}, {"codigo": "416010", "tipo": "JAIBA"}, {"codigo": "416011", "tipo": "PAYLOADER"}, {"codigo": "416012", "tipo": "PAYLOADER"}, {"codigo": "416013", "tipo": "PAYLOADER"}, {"codigo": "416014", "tipo": "PAYLOADER"}, {"codigo": "422005", "tipo": "COMBINADA"}, {"codigo": "422006", "tipo": "COMBINADA"}, {"codigo": "422007", "tipo": "COMBINADA"}, {"codigo": "422009", "tipo": "COMBINADA"}, {"codigo": "422011", "tipo": "COMBINADA"}, {"codigo": "422012", "tipo": "COMBINADA"}, {"codigo": "422013", "tipo": "COMBINADA"}, {"codigo": "422014", "tipo": "COMBINADA"}, {"codigo": "422015", "tipo": "COMBINADA"}, {"codigo": "422016", "tipo": "COMBINADA"}, {"codigo": "422017", "tipo": "COMBINADA"}, {"codigo": "422018", "tipo": "COMBINADA"}, {"codigo": "424007", "tipo": "CAMION"}, {"codigo": "427090", "tipo": "AUTOMOVIL"}, {"codigo": "427093", "tipo": "AUTOMOVIL"}, {"codigo": "427094", "tipo": "AUTOMOVIL"}, {"codigo": "427098", "tipo": "AUTOMOVIL"}, {"codigo": "427099", "tipo": "AUTOMOVIL"}, {"codigo": "427100", "tipo": "AUTOMOVIL"}, {"codigo": "427101", "tipo": "AUTOMOVIL"}, {"codigo": "427102", "tipo": "AUTOMOVIL"}, {"codigo": "429004", "tipo": "VAGONETA"}, {"codigo": "429007", "tipo": "VAGONETA"}, {"codigo": "431001", "tipo": "GRAP"}, {"codigo": "431002", "tipo": "GRAP"}, {"codigo": "431003", "tipo": "GRAP"}, {"codigo": "431004", "tipo": "GRAP"}, {"codigo": "431005", "tipo": "GRAP"}, {"codigo": "431006", "tipo": "GRAP"}, {"codigo": "431009", "tipo": "GRAP"}, {"codigo": "431011", "tipo": "GRAP"}, {"codigo": "431012", "tipo": "GRAP"}, {"codigo": "431013", "tipo": "GRAP"}, {"codigo": "432003", "tipo": "GRUA"}, {"codigo": "432004", "tipo": "GRUA"}, {"codigo": "432005", "tipo": "GRUA"}, {"codigo": "432006", "tipo": "GRUA"}, {"codigo": "437001", "tipo": "MOTONIVELADORA"}, {"codigo": "439004", "tipo": "RASTRA"}, {"codigo": "439006", "tipo": "RASTRA"}, {"codigo": "439011", "tipo": "RASTRA"}, {"codigo": "439012", "tipo": "RASTRA"}, {"codigo": "439013", "tipo": "RASTRA"}, {"codigo": "439014", "tipo": "RASTRA"}, {"codigo": "441001", "tipo": "RETRO EXCAVADORA"}, {"codigo": "441002", "tipo": "BOB CAT"}, {"codigo": "441003", "tipo": "PALA MECANIZADA"}, {"codigo": "441004", "tipo": "RETRO EXCAVADORA"}, {"codigo": "447001", "tipo": "BANDIT"}, {"codigo": "449032", "tipo": "MULA"}, {"codigo": "449039", "tipo": "MULA"}, {"codigo": "449040", "tipo": "MULA"}, {"codigo": "449041", "tipo": "MULA"}, {"codigo": "450002", "tipo": "CAMION"}, {"codigo": "450011", "tipo": "CAMION"}, {"codigo": "450016", "tipo": "CAMION"}, {"codigo": "450019", "tipo": "CAMION"}, {"codigo": "450020", "tipo": "CAMION"}, {"codigo": "450022", "tipo": "CAMION"}, {"codigo": "450023", "tipo": "CAMION"}, {"codigo": "450024", "tipo": "CAMION"}, {"codigo": "452005", "tipo": "TANQUE DE AGUA"}, {"codigo": "408003", "tipo": "TANQUE DE AGUA"}, {"codigo": "408005", "tipo": "TANQUE DE AGUA"}, {"codigo": "408007", "tipo": "TANQUE DE AGUA"}, {"codigo": "408008", "tipo": "TANQUE DE AGUA"}, {"codigo": "458001", "tipo": "MONTACARGA"}, {"codigo": "458002", "tipo": "MONTACARGA"}, {"codigo": "458003", "tipo": "MONTACARGA"}, {"codigo": "458005", "tipo": "MONTACARGA"}, {"codigo": "458006", "tipo": "MONTACARGA"}, {"codigo": "458009", "tipo": "MONTACARGA"}, {"codigo": "458012", "tipo": "MONTACARGA"}, {"codigo": "458013", "tipo": "MONTACARGA"}, {"codigo": "458014", "tipo": "MONTACARGA"}, {"codigo": "458015", "tipo": "MONTACARGA"}, {"codigo": "458016", "tipo": "MONTACARGA"}, {"codigo": "473002", "tipo": "CHASIS"}, {"codigo": "473008", "tipo": "CHASIS"}, {"codigo": "473009", "tipo": "CHASIS"}, {"codigo": "473013", "tipo": "CHASIS"}, {"codigo": "473014", "tipo": "CHASIS"}, {"codigo": "473021", "tipo": "CHASIS"}, {"codigo": "484041", "tipo": "CAMECO"}, {"codigo": "484047", "tipo": "CAMECO"}, {"codigo": "484051", "tipo": "CAMECO"}, {"codigo": "484056", "tipo": "CAMECO"}, {"codigo": "484057", "tipo": "CAMECO"}, {"codigo": "484076", "tipo": "TRACTOR"}, {"codigo": "484079", "tipo": "TRACTOR"}, {"codigo": "484080", "tipo": "TRACTOR"}, {"codigo": "484081", "tipo": "TRACTOR"}, {"codigo": "484082", "tipo": "TRACTOR"}, {"codigo": "484083", "tipo": "TRACTOR"}, {"codigo": "484084", "tipo": "TRACTOR"}, {"codigo": "484085", "tipo": "TRACTOR"}, {"codigo": "484086", "tipo": "TRACTOR"}, {"codigo": "484087", "tipo": "TRACTOR"}, {"codigo": "484088", "tipo": "TRACTOR"}, {"codigo": "484089", "tipo": "TRACTOR"}, {"codigo": "484090", "tipo": "TRACTOR"}, {"codigo": "484091", "tipo": "TRACTOR"}, {"codigo": "484092", "tipo": "TRACTOR"}, {"codigo": "484093", "tipo": "TRACTOR"}, {"codigo": "484094", "tipo": "TRACTOR"}, {"codigo": "484095", "tipo": "TRACTOR"}, {"codigo": "484096", "tipo": "TRACTOR"}, {"codigo": "484097", "tipo": "TRACTOR"}, {"codigo": "484098", "tipo": "TRACTOR"}, {"codigo": "484099", "tipo": "TRACTOR"}, {"codigo": "484100", "tipo": "TRACTOR"}, {"codigo": "484101", "tipo": "TRACTOR"}, {"codigo": "484102", "tipo": "TRACTOR"}, {"codigo": "484103", "tipo": "TRACTOR"}, {"codigo": "486008", "tipo": "BULDOZER"}, {"codigo": "487001", "tipo": "BULDOZER"}, {"codigo": "439015", "tipo": "RASTRA"}];
+
+    const IVFA_DEMO = {
+      "GASOLINA":0, "DIESEL":420, "SAE-30":0, "ISOVG46":0,
+      "15W40":14, "GX 90":0, "ATF":80, "HIDR100":0,
+      "HD140":5, "GRASA":221, "TFH1000 (TD)":49,
+      "TC10W":13, "8T9577":0, "AW68":0
+    };
+
+    const plantaInput = document.getElementById("planta");
+    const combustibleSelect = document.getElementById("combustible");
+    const combustibleButtons = document.getElementById("combustibleButtons");
+    const combustibleDetails = document.getElementById("combustibleDetails");
+    const inventoryBody = document.getElementById("inventoryBody");
+    const inventoryEmpty = document.getElementById("inventoryEmpty");
+    const inventoryFooter = document.getElementById("inventoryFooter");
+    const inventoryPlantBadge = document.getElementById("inventoryPlantBadge");
+    const negativeInventoryBadge = document.getElementById("negativeInventoryBadge");
+    const lookupStatus = document.getElementById("lookupStatus");
+    const saveInventoryBtn = document.getElementById("saveInventoryBtn");
+    const saveMovementBtn = document.getElementById("saveMovementBtn");
+    const fechaInput = document.getElementById("fecha");
+    const fechaPicker = document.getElementById("fechaPicker");
+    const currentDateChip = document.getElementById("currentDateChip");
+    const loginScreen = document.getElementById("loginScreen");
+    const loginForm = document.getElementById("loginForm");
+    const loginCorreo = document.getElementById("loginCorreo");
+    const loginPassword = document.getElementById("loginPassword");
+    const loginPasswordToggle = document.getElementById("loginPasswordToggle");
+    const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+    const loginMessage = document.getElementById("loginMessage");
+    const currentUserChip = document.getElementById("currentUserChip");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const equipoInput = document.getElementById("equipo");
+    const equipmentStatus = document.getElementById("equipmentStatus");
+    const newEquipmentBox = document.getElementById("newEquipmentBox");
+    const newEquipmentType = document.getElementById("newEquipmentType");
+    const addEquipmentBtn = document.getElementById("addEquipmentBtn");
+    const movimientoInput = document.getElementById("movimiento");
+    const appToast = document.getElementById("appToast");
+    const ivfaHeader = document.getElementById("ivfaHeader");
+    const oilQuestionOverlay = document.getElementById("oilQuestionOverlay");
+    const oilQuestionText = document.getElementById("oilQuestionText");
+    const oilQuestionYes = document.getElementById("oilQuestionYes");
+    const oilQuestionNo = document.getElementById("oilQuestionNo");
+    const dashboardMenu = document.getElementById("dashboardMenu");
+    const mainWorkspace = document.getElementById("mainWorkspace");
+    const movementView = document.getElementById("movementView");
+    const inventoryView = document.getElementById("inventoryView");
+    const entryTabs = document.getElementById("entryTabs");
+    const entryMovementTab = document.getElementById("entryMovementTab");
+    const entryInventoryTab = document.getElementById("entryInventoryTab");
+    const viewToolbar = document.getElementById("viewToolbar");
+    const backToMenuBtn = document.getElementById("backToMenuBtn");
+    const currentViewLabel = document.getElementById("currentViewLabel");
+    const menuMovementCount = document.getElementById("menuMovementCount");
+    const menuInventoryCount = document.getElementById("menuInventoryCount");
+    const menuEquipmentCount = document.getElementById("menuEquipmentCount");
+    const historyView = document.getElementById("historyView");
+    const reportsView = document.getElementById("reportsView");
+    const generateReportBtn = document.getElementById("generateReportBtn");
+    const reportsStatus = document.getElementById("reportsStatus");
+    const reportEquipmentFilter = document.getElementById("reportEquipmentFilter");
+    const reportEquipmentOptions = document.getElementById("reportEquipmentOptions");
+    const reportDateRange = document.getElementById("reportDateRange");
+    const reportDateFrom = document.getElementById("reportDateFrom");
+    const reportDateTo = document.getElementById("reportDateTo");
+    const reportDetailPanel = document.getElementById("reportDetailPanel");
+    const userAdminView = document.getElementById("userAdminView");
+    const userAdminMenuCard = document.getElementById("userAdminMenuCard");
+    const userAdminForm = document.getElementById("userAdminForm");
+    const adminUserName = document.getElementById("adminUserName");
+    const adminUserEmail = document.getElementById("adminUserEmail");
+    const adminUserPassword = document.getElementById("adminUserPassword");
+    const adminUserRole = document.getElementById("adminUserRole");
+    const adminUserSubmit = document.getElementById("adminUserSubmit");
+    const adminUsersBody = document.getElementById("adminUsersBody");
+    const historyMovementsTab = document.getElementById("historyMovementsTab");
+    const historyInventoriesTab = document.getElementById("historyInventoriesTab");
+    const recordsView = document.getElementById("recordsView");
+    const recordsDate = document.getElementById("recordsDate");
+    const recordsPlant = document.getElementById("recordsPlant");
+    const recordsBody = document.getElementById("recordsBody");
+    const recordsEmpty = document.getElementById("recordsEmpty");
+    const recordsCount = document.getElementById("recordsCount");
+    const recordsFilterMessage = document.getElementById("recordsFilterMessage");
+    const deleteFilteredRecordsBtn = document.getElementById("deleteFilteredRecordsBtn");
+    const savedInventoriesView = document.getElementById("savedInventoriesView");
+    const savedInventoryDate = document.getElementById("savedInventoryDate");
+    const savedInventoryPlant = document.getElementById("savedInventoryPlant");
+    const savedInventoriesBody = document.getElementById("savedInventoriesBody");
+    const savedInventoriesEmpty = document.getElementById("savedInventoriesEmpty");
+    const savedInventoriesCount = document.getElementById("savedInventoriesCount");
+    const savedInventoryFilterMessage = document.getElementById("savedInventoryFilterMessage");
+    const deleteFilteredInventoriesBtn = document.getElementById("deleteFilteredInventoriesBtn");
+    const deleteConfirmOverlay = document.getElementById("deleteConfirmOverlay");
+    const deleteConfirmText = document.getElementById("deleteConfirmText");
+    const deleteConfirmCancel = document.getElementById("deleteConfirmCancel");
+    const deleteConfirmOk = document.getElementById("deleteConfirmOk");
+
+    let currentPlant = "";
+    let debounceTimer;
+    let ivfaFilterActive = false;
+    let pendingOilQuestionPanel = null;
+
+    function openOilQuestion(entry){
+      if(!entry || !oilQuestionOverlay) return;
+      const name = entry.dataset.product;
+      const qty = Number(entry.querySelector(".combustible-qty")?.value || 0);
+
+      pendingOilQuestionPanel = entry;
+      oilQuestionText.textContent = `${name} tiene un consumo de ${qty}. ¿Corresponde a un cambio de aceite o es un consumo normal?`;
+      oilQuestionOverlay.classList.add("show");
+      oilQuestionOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeOilQuestion(){
+      if(!oilQuestionOverlay) return;
+      oilQuestionOverlay.classList.remove("show");
+      oilQuestionOverlay.setAttribute("aria-hidden", "true");
+      pendingOilQuestionPanel = null;
+    }
+
+    function checkOilChangeCondition(entry){
+      if(!entry) return;
+      const name = entry.dataset.product;
+      const qtyInput = entry.querySelector(".combustible-qty");
+      const qty = Number(qtyInput?.value || 0);
+
+      if(["GASOLINA","DIESEL","GRASA"].includes(name)) return;
+      if(qty <= 10) return;
+
+      const typeSelect = entry.querySelector(".oil-type-select");
+      if(!typeSelect || typeSelect.value !== "CONSUMO") return;
+
+      const lastAskedValue = Number(entry.dataset.lastOilQuestionQty || 0);
+      if(lastAskedValue === qty) return;
+
+      entry.dataset.lastOilQuestionQty = String(qty);
+      openOilQuestion(entry);
+    }
+
+    function setLookupStatus(message, type=""){
+      lookupStatus.className = "lookup-status" + (type ? " " + type : "");
+      lookupStatus.innerHTML = message;
+    }
+
+    const SUPABASE_URL = "https://vlxlulekdkyguygjxmuo.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZseGx1bGVrZGt5Z3V5Z2p4bXVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2ODQ4NDgsImV4cCI6MjEwMzI2MDg0OH0.zGCCQb-CYUZ7pQkDOuoFYHSnv-Cr5v777SJeqLHmZxY";
+    const supabaseStatus = document.getElementById("supabaseStatus");
+    let supabaseConnected = false;
+    let supabaseLastError = "";
+
+    function setSupabaseStatus(state, message){
+      if(!supabaseStatus) return;
+      supabaseStatus.className = "supabase-status " + state;
+      supabaseStatus.textContent = state === "connected" ? "SUPABASE CONECTADO" : state === "error" ? "SUPABASE ERROR" : "CONECTANDO";
+      supabaseStatus.title = message || supabaseStatus.textContent;
+    }
+
+    async function sbRequest(table, {method="GET", query="", body=null, prefer="return=representation"}={}){
+      const normalizedMethod = String(method || "GET").toUpperCase();
+      const headers = {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "Content-Type": "application/json"
+      };
+      if(prefer) headers["Prefer"] = prefer;
+
+      let response;
+      try{
+        response = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
+          method: normalizedMethod,
+          headers,
+          mode: "cors",
+          body: body === null ? undefined : JSON.stringify(body)
+        });
+      }catch(networkError){
+        throw new Error("No se pudo alcanzar el servidor de Supabase. " + (networkError?.message || networkError));
+      }
+
+      const raw = await response.text();
+      let data = null;
+      if(raw){
+        try{ data = JSON.parse(raw); }
+        catch{ data = raw; }
+      }
+
+      if(!response.ok){
+        const code = data?.code ? ` [${data.code}]` : "";
+        const details = data?.message || data?.hint || data?.details || String(data || "");
+        throw new Error(`HTTP ${response.status}${code}: ${details || response.statusText}`);
+      }
+      return data;
+    }
+
+    const AUTH_STORAGE_KEY = "combustible_user_session_v1";
+    let currentUser = null;
+    let currentSessionToken = "";
+
+    async function sbRpc(functionName, body={}){
+      return sbRequest("rpc/" + functionName, {
+        method:"POST",
+        body,
+        prefer:""
+      });
+    }
+
+    function setLoginMessage(message, isError=false){
+      if(!loginMessage) return;
+      loginMessage.textContent = message;
+      loginMessage.className = "auth-message" + (isError ? " error" : "");
+    }
+
+    function storeAuthSession(data){
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+        token:data.token,
+        id:data.id,
+        nombre:data.nombre,
+        correo:data.correo,
+        rol:data.rol,
+        expires_at:data.expires_at || null
+      }));
+    }
+
+    function clearAuthSession(){
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      currentUser = null;
+      currentSessionToken = "";
+    }
+
+    function getStoredAuthSession(){
+      try{return JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");}
+      catch{return null;}
+    }
+
+    function applyRoleVisibility(){
+      const isAdmin = currentUser?.rol === "admin";
+      userAdminMenuCard?.classList.toggle("hidden", !isAdmin);
+      currentUserChip?.classList.toggle("hidden", !currentUser);
+      logoutBtn?.classList.toggle("hidden", !currentUser);
+      if(currentUserChip && currentUser){
+        currentUserChip.textContent = `${currentUser.nombre} · ${String(currentUser.rol || "").toUpperCase()}`;
+      }
+    }
+
+    async function enterAuthenticatedApp(data){
+      currentSessionToken = String(data.token || "");
+      currentUser = {
+        id:data.id,
+        nombre:String(data.nombre || ""),
+        correo:String(data.correo || ""),
+        rol:String(data.rol || "usuario").toLowerCase()
+      };
+      storeAuthSession({...currentUser, token:currentSessionToken, expires_at:data.expires_at});
+      document.body.classList.remove("auth-locked");
+      applyRoleVisibility();
+      showDashboard();
+      await hydrateFromSupabase();
+    }
+
+    function showLogin(){
+      document.body.classList.add("auth-locked");
+      applyRoleVisibility();
+      setLoginMessage("Ingrese correo electrónico y contraseña.");
+      setTimeout(() => loginCorreo?.focus(), 0);
+    }
+
+    async function restoreAuthSession(){
+      const saved = getStoredAuthSession();
+      if(!saved?.token){
+        showLogin();
+        return;
+      }
+      setLoginMessage("Validando sesión...");
+      try{
+        const data = await sbRpc("validar_sesion", {p_token:saved.token});
+        if(!data?.token) throw new Error("La sesión expiró.");
+        await enterAuthenticatedApp(data);
+      }catch(error){
+        clearAuthSession();
+        showLogin();
+        setLoginMessage("La sesión anterior expiró. Inicie sesión nuevamente.", true);
+      }
+    }
+
+    async function loadAdminUsers(){
+      if(currentUser?.rol !== "admin" || !currentSessionToken) return;
+      adminUsersBody.innerHTML = `<tr><td colspan="4">Cargando usuarios...</td></tr>`;
+      try{
+        const rows = await sbRpc("listar_usuarios", {p_token:currentSessionToken});
+        adminUsersBody.innerHTML = (rows || []).map(user => `
+          <tr>
+            <td>${String(user.nombre || "")}</td>
+            <td>${String(user.correo || "")}</td>
+            <td><span class="role-pill">${String(user.rol || "").toUpperCase()}</span></td>
+            <td>${user.activo ? "ACTIVO" : "INACTIVO"}</td>
+          </tr>
+        `).join("") || `<tr><td colspan="4">No hay usuarios registrados.</td></tr>`;
+      }catch(error){
+        adminUsersBody.innerHTML = `<tr><td colspan="4">No se pudieron cargar los usuarios.</td></tr>`;
+        showToast("No se pudieron cargar los usuarios: " + error.message, true);
+      }
+    }
+
+    async function testSupabaseConnection(){
+      setSupabaseStatus("connecting", "Comprobando conexión con la nueva base de datos...");
+      try{
+        await sbRequest("combustible_productos", {query:"?select=id&limit=1", prefer:""});
+        supabaseConnected = true;
+        supabaseLastError = "";
+        setSupabaseStatus("connected", "Conexión correcta con la nueva base de datos");
+        return true;
+      }catch(error){
+        supabaseConnected = false;
+        supabaseLastError = error.message || String(error);
+        setSupabaseStatus("error", supabaseLastError);
+        throw error;
+      }
+    }
+
+    async function hydrateFromSupabase(){
+      try{
+        await testSupabaseConnection();
+
+        // IMPORTANTE:
+        // Los inventarios NO se descargan aquí. El inventario se consulta únicamente
+        // cuando el usuario está en INGRESO DE MOVIMIENTO y ya indicó PLANTA + FECHA.
+        const [movementRows, equipmentRows] = await Promise.all([
+          sbRequest("combustible_movimientos", {
+            query:"?select=id,fecha,planta,equipo,created_at,combustible_movimiento_detalle(id,producto,cantidad,tipo_movimiento,comentario,cambio_aceite,created_at)&order=created_at.asc"
+          }),
+          sbRequest("combustible_equipos", {
+            query:"?select=codigo,tipo,created_at&activo=eq.true&order=codigo.asc"
+          })
+        ]);
+
+        const movements = (movementRows || []).map(row => ({
+          id: row.id,
+          fecha: formatDateDisplay(row.fecha),
+          planta: String(row.planta || "").toUpperCase(),
+          equipo: sanitizeEquipmentCode(row.equipo),
+          tipo_movimiento: "CONSUMO",
+          created_at: row.created_at,
+          productos: (row.combustible_movimiento_detalle || []).map(item => ({
+            detalle_id: item.id,
+            producto: String(item.producto || "").toUpperCase(),
+            cantidad: Number(item.cantidad || 0),
+            comentario: String(item.comentario || "").toUpperCase(),
+            cambio_aceite: Boolean(item.cambio_aceite),
+            tipo_movimiento: String(item.tipo_movimiento || "CONSUMO").toUpperCase()
+          }))
+        }));
+
+        const equipments = (equipmentRows || []).map(row => ({
+          codigo: String(row.codigo || "").toUpperCase(),
+          tipo: String(row.tipo || "").toUpperCase(),
+          created_at: row.created_at
+        }));
+
+        saveLocalMovements(movements);
+        saveCustomEquipments(equipments);
+        refreshEquipmentTypeOptions();
+        updateMenuCounters();
+        renderRecordsView();
+        renderSavedInventoriesView();
+        supabaseConnected = true;
+        setSupabaseStatus("connected", "Conexión correcta con la nueva base de datos");
+        setLookupStatus("Supabase conectado. El inventario se consultará solo al indicar PLANTA + FECHA en INGRESO DE MOVIMIENTO.", "ok");
+        return true;
+      }catch(error){
+        console.error("Supabase:", error);
+        supabaseConnected = false;
+        supabaseLastError = error.message || String(error);
+        setSupabaseStatus("error", supabaseLastError);
+        setLookupStatus("No se pudo conectar a Supabase: " + supabaseLastError, "warn");
+        return false;
+      }
+    }
+
+    async function saveMovementToSupabase({fecha, planta, equipo, items}){
+      let movementId = null;
+      const normalizedEquipment = sanitizeEquipmentCode(equipo);
+      try{
+        const headerRows = await sbRequest("combustible_movimientos", {
+          method:"POST",
+          body:{
+            fecha: normalizeDateKey(fecha),
+            planta,
+            equipo: normalizedEquipment
+          }
+        });
+        const header = Array.isArray(headerRows) ? headerRows[0] : headerRows;
+        movementId = header?.id;
+        if(!movementId) throw new Error("Supabase no devolvió el ID del movimiento.");
+
+        const detailPayload = items.map(item => ({
+          movimiento_id: movementId,
+          producto: item.producto,
+          cantidad: Number(item.cantidad || 0),
+          tipo_movimiento: item.tipo_movimiento || "CONSUMO",
+          comentario: item.comentario || null,
+          cambio_aceite: Boolean(item.cambio_aceite)
+        }));
+
+        const detailRows = await sbRequest("combustible_movimiento_detalle", {
+          method:"POST",
+          body: detailPayload
+        });
+
+        return {
+          id: movementId,
+          fecha,
+          planta,
+          equipo: normalizedEquipment,
+          tipo_movimiento:"CONSUMO",
+          created_at: header.created_at || new Date().toISOString(),
+          productos: items.map((item, index) => ({
+            ...item,
+            detalle_id: Array.isArray(detailRows) ? detailRows[index]?.id : undefined
+          }))
+        };
+      }catch(error){
+        if(movementId){
+          try{ await sbRequest("combustible_movimientos", {method:"DELETE", query:`?id=eq.${encodeURIComponent(movementId)}`, prefer:"return=minimal"}); }
+          catch{}
+        }
+        throw error;
+      }
+    }
+
+    async function saveInventoryToSupabase({fecha, planta, items}){
+      let inventoryId = null;
+      try{
+        const headerRows = await sbRequest("combustible_inventarios", {
+          method:"POST",
+          body:{fecha:normalizeDateKey(fecha), planta}
+        });
+        const header = Array.isArray(headerRows) ? headerRows[0] : headerRows;
+        inventoryId = header?.id;
+        if(!inventoryId) throw new Error("Supabase no devolvió el ID del inventario.");
+
+        const details = await sbRequest("combustible_inventario_detalle", {
+          method:"POST",
+          body: items.map(item => ({
+            inventario_id: inventoryId,
+            producto: item.nombre,
+            ivfa: Number(item.ivfa || 0),
+            inicial: Number(item.inicial || 0),
+            entrada: Number(item.entrada || 0),
+            salida: Number(item.salida || 0),
+            final: Number(item.final || 0)
+          }))
+        });
+
+        return {
+          id: inventoryId,
+          planta,
+          fecha,
+          created_at: header.created_at || new Date().toISOString(),
+          items: items.map((item, index) => ({
+            ...item,
+            detalle_id: Array.isArray(details) ? details[index]?.id : undefined
+          }))
+        };
+      }catch(error){
+        if(inventoryId){
+          try{ await sbRequest("combustible_inventarios", {method:"DELETE", query:`?id=eq.${encodeURIComponent(inventoryId)}`, prefer:"return=minimal"}); }
+          catch{}
+        }
+        throw error;
+      }
+    }
+
+    function getLocalDb(){
+      try{return JSON.parse(localStorage.getItem("registro_combustible_nuevo_db") || "[]")}
+      catch{return []}
+    }
+
+    function saveLocalDb(data){
+      localStorage.setItem("registro_combustible_nuevo_db", JSON.stringify(data));
+    }
+
+    function getCustomEquipments(){
+      try{
+        return JSON.parse(localStorage.getItem("registro_combustible_nuevo_equipos") || "[]");
+      }catch{
+        return [];
+      }
+    }
+
+    function saveCustomEquipments(data){
+      localStorage.setItem("registro_combustible_nuevo_equipos", JSON.stringify(data));
+    }
+
+    function getEquipmentRecord(code){
+      const normal = sanitizeEquipmentCode(code);
+      if(!normal) return null;
+
+      const custom = getCustomEquipments().find(e => sanitizeEquipmentCode(e.codigo) === normal);
+      if(custom) return {
+        ...custom,
+        codigo: normal,
+        tipo: String(custom.tipo || "").trim().toUpperCase()
+      };
+
+      const base = EQUIPOS_BASE.find(e => sanitizeEquipmentCode(e.codigo) === normal);
+      return base ? {
+        ...base,
+        codigo: normal,
+        tipo: String(base.tipo || "").trim().toUpperCase()
+      } : null;
+    }
+
+    function getRegisteredEquipmentTypes(){
+      const combined = [...EQUIPOS_BASE, ...getCustomEquipments()];
+      return [...new Set(
+        combined
+          .map(item => String(item?.tipo || "").trim().toUpperCase())
+          .filter(Boolean)
+      )].sort((a,b) => a.localeCompare(b, "es"));
+    }
+
+    function refreshEquipmentTypeOptions(){
+      if(!newEquipmentType) return;
+      const current = String(newEquipmentType.value || "").trim().toUpperCase();
+      const types = getRegisteredEquipmentTypes();
+      newEquipmentType.innerHTML = `
+        <option value="">SELECCIONE EL TIPO DE EQUIPO</option>
+        ${types.map(tipo => `<option value="${escapeHtml(tipo)}">${escapeHtml(tipo)}</option>`).join("")}
+      `;
+      if(current && types.includes(current)) newEquipmentType.value = current;
+    }
+
+    let equipoAceptado = false;
+
+    function setEquipmentStatus(message, type=""){
+      equipmentStatus.className = "equipment-status" + (type ? " " + type : "");
+      equipmentStatus.textContent = message;
+    }
+
+    function validateEquipment(){
+      const code = sanitizeEquipmentCode(equipoInput.value);
+      if(equipoInput.value !== code) equipoInput.value = code;
+
+      if(!code){
+        equipoAceptado = false;
+        setEquipmentStatus("Ingrese el código del equipo para comprobarlo.");
+        newEquipmentBox.classList.add("hidden");
+        return false;
+      }
+
+      const found = getEquipmentRecord(code);
+      if(found){
+        equipoAceptado = true;
+        const tipo = found.tipo ? " · " + found.tipo : "";
+        setEquipmentStatus("Equipo aceptado" + tipo, "ok");
+        newEquipmentBox.classList.add("hidden");
+        return true;
+      }
+
+      equipoAceptado = false;
+      setEquipmentStatus("Equipo no registrado. Seleccione como referencia uno de los tipos ya registrados.", "error");
+      refreshEquipmentTypeOptions();
+      newEquipmentBox.classList.remove("hidden");
+      return false;
+    }
+
+    function sanitizeNumericText(value, allowDecimal=true){
+      let cleaned = String(value ?? "").replace(",", ".");
+      cleaned = cleaned.replace(allowDecimal ? /[^0-9.]/g : /[^0-9]/g, "");
+      if(allowDecimal){
+        const firstDot = cleaned.indexOf(".");
+        if(firstDot !== -1){
+          cleaned = cleaned.slice(0, firstDot + 1) + cleaned.slice(firstDot + 1).replace(/\./g, "");
+        }
+      }
+      return cleaned;
+    }
+
+    function enforceNumericInput(input, allowDecimal=true){
+      input.addEventListener("input", () => {
+        const cleaned = sanitizeNumericText(input.value, allowDecimal);
+        if(input.value !== cleaned) input.value = cleaned;
+      });
+      input.addEventListener("paste", () => {
+        setTimeout(() => {
+          input.value = sanitizeNumericText(input.value, allowDecimal);
+        }, 0);
+      });
+    }
+
+    function sanitizeEquipmentCode(value){
+      return String(value ?? "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "");
+    }
+
+    function enforceEquipmentInput(input){
+      input.addEventListener("input", () => {
+        const cleaned = sanitizeEquipmentCode(input.value);
+        if(input.value !== cleaned) input.value = cleaned;
+      });
+      input.addEventListener("paste", () => {
+        setTimeout(() => {
+          input.value = sanitizeEquipmentCode(input.value);
+        }, 0);
+      });
+    }
+
+    function getLocalMovements(){
+      try{
+        return JSON.parse(localStorage.getItem("registro_combustible_nuevo_movimientos") || "[]");
+      }catch{
+        return [];
+      }
+    }
+
+    function saveLocalMovements(data){
+      localStorage.setItem("registro_combustible_nuevo_movimientos", JSON.stringify(data));
+    }
+
+    function normalizeDateKey(value){
+      const text = String(value || "").trim();
+      if(!text) return "";
+
+      // DD/MM/AAAA
+      const dmY = text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if(dmY) return `${dmY[3]}-${dmY[2]}-${dmY[1]}`;
+
+      // AAAA-MM-DD
+      const Ymd = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(Ymd) return text;
+
+      return text;
+    }
+
+    function formatDateDisplay(isoDate){
+      const m = String(isoDate || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return m ? `${m[3]}/${m[2]}/${m[1]}` : String(isoDate || "");
+    }
+
+    function formatDateLongDisplay(isoDate){
+      const m = String(isoDate || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(!m) return String(isoDate || "");
+      const date = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 12, 0, 0, 0);
+      return date.toLocaleDateString("es-PA", { day:"numeric", month:"long", year:"numeric" });
+    }
+
+    function getLocalTodayISO(){
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function initializeCurrentDate(){
+      const todayISO = getLocalTodayISO();
+      const todayDisplay = formatDateDisplay(todayISO);
+
+      fechaPicker.value = todayISO;
+      fechaInput.value = todayDisplay;
+      if(currentDateChip) currentDateChip.textContent = todayDisplay;
+      if(recordsDate) recordsDate.value = todayISO;
+      if(savedInventoryDate) savedInventoryDate.value = todayISO;
+    }
+
+    function getDailyOutputsByProduct(planta, fecha){
+      const plantKey = String(planta || "").trim();
+      const dateKey = normalizeDateKey(fecha);
+      const totals = Object.fromEntries(PRODUCTOS.map(nombre => [nombre, 0]));
+
+      if(!plantKey || !dateKey) return totals;
+
+      getLocalMovements().forEach(registro => {
+        if(String(registro.planta || "").trim() !== plantKey) return;
+        if(normalizeDateKey(registro.fecha) !== dateKey) return;
+
+        (registro.productos || []).forEach(item => {
+          const producto = String(item.producto || "").trim();
+          const cantidad = Number(item.cantidad || 0);
+          if(producto in totals && Number.isFinite(cantidad)){
+            totals[producto] += cantidad;
+          }
+        });
+      });
+
+      return totals;
+    }
+
+    function applyDailyOutputsToInventory(){
+      if(!currentPlant || !inventoryBody.querySelector("tr")) return;
+
+      const totals = getDailyOutputsByProduct(currentPlant, fechaInput.value);
+
+      inventoryBody.querySelectorAll("tr").forEach(row => {
+        const producto = row.dataset.product;
+        const salida = Number(totals[producto] || 0);
+        const cell = row.querySelector(".exit-value");
+
+        if(cell){
+          cell.dataset.value = String(salida);
+          cell.textContent = formatDecimal(salida);
+        }
+
+        updateRowTotals(row);
+      });
+    }
+
+    let toastTimer;
+    function showToast(message, isError=false){
+      if(!appToast){
+        console.log(message);
+        return;
+      }
+      clearTimeout(toastTimer);
+      appToast.textContent = message;
+      appToast.className = "app-toast show" + (isError ? " error" : "");
+      toastTimer = setTimeout(() => {
+        appToast.className = "app-toast";
+      }, 2800);
+    }
+
+    function collectMovementItems(){
+      const activeNames = [...combustibleButtons.querySelectorAll(".fuel-btn.active")]
+        .map(btn => btn.dataset.product);
+      const items = [];
+
+      activeNames.forEach(name => {
+        const panel = [...combustibleDetails.querySelectorAll(".fuel-panel")]
+          .find(p => p.dataset.product === name);
+        if(!panel) return;
+
+        const isMulti = MULTI_ENTRY_PRODUCTS.includes(name);
+        const entries = [...panel.querySelectorAll(".movement-entry")];
+
+        entries.forEach(entry => {
+          const qty = Number(entry.querySelector(".combustible-qty")?.value || 0);
+          const comment = entry.querySelector(".combustible-comment-input")?.value?.trim() || "";
+          const typeSelect = entry.querySelector(".oil-type-select");
+          const panelMovementType = String(typeSelect?.value || "").trim();
+          const effectiveMovementType = panelMovementType && panelMovementType !== "CONSUMO"
+            ? panelMovementType
+            : (movimientoInput.value || "CONSUMO");
+          const isExtra = entry.dataset.entryRole === "extra";
+          const hasData = qty > 0 || comment || effectiveMovementType !== "CONSUMO";
+
+          if(isMulti && isExtra && !hasData) return;
+          if(isMulti && !isExtra && !hasData && entries.length > 1) return;
+
+          items.push({
+            producto: name,
+            cantidad: qty,
+            comentario: comment,
+            cambio_aceite: effectiveMovementType.startsWith("CAMBIO DE ACEITE"),
+            tipo_movimiento: effectiveMovementType
+          });
+        });
+      });
+
+      return items;
+    }
+
+    function clearMovementFormAfterSave(){
+      equipoInput.value = "";
+      equipoAceptado = false;
+      setEquipmentStatus("Ingrese el código del equipo para comprobarlo.");
+      newEquipmentBox.classList.add("hidden");
+      newEquipmentType.value = "";
+      combustibleButtons.querySelectorAll(".fuel-btn.active").forEach(btn => {
+        btn.classList.remove("active");
+      });
+      combustibleDetails.querySelectorAll(".fuel-panel").forEach(panel => {
+        resetFuelPanelEntries(panel);
+        panel.classList.remove("show");
+      });
+      combustibleSelect.value = "";
+      movimientoInput.value = "CONSUMO";
+    }
+
+    async function buscarUltimoInventarioEnBD(planta, fechaISO){
+      const plantKey = String(planta || "").trim();
+      const selectedDate = String(fechaISO || "").trim();
+
+      if(!plantKey || !selectedDate){
+        return {
+          source:"not-ready",
+          created_at:null,
+          fecha:null,
+          items:PRODUCTOS.map(nombre => ({nombre, final:0}))
+        };
+      }
+
+      // Solo se solicita UN registro: el inventario más reciente de esta planta
+      // cuya fecha sea igual o anterior a la fecha seleccionada.
+      // Del detalle únicamente necesitamos PRODUCTO + FINAL, porque FINAL pasa a IVFA.
+      const rows = await sbRequest("combustible_inventarios", {
+        query:`?select=id,fecha,planta,created_at,combustible_inventario_detalle(producto,final)&planta=eq.${encodeURIComponent(plantKey)}&fecha=lte.${encodeURIComponent(selectedDate)}&order=fecha.desc,created_at.desc&limit=1`,
+        prefer:""
+      });
+
+      if(rows && rows.length){
+        const row = rows[0];
+        const detailByProduct = Object.fromEntries(
+          (row.combustible_inventario_detalle || []).map(item => [String(item.producto || "").toUpperCase(), item])
+        );
+
+        return {
+          source:"supabase",
+          id:row.id,
+          fecha:row.fecha,
+          created_at:row.created_at,
+          items:PRODUCTOS.map(nombre => ({
+            nombre,
+            final:Number(detailByProduct[String(nombre).toUpperCase()]?.final || 0)
+          }))
+        };
+      }
+
+      return {
+        source:"supabase-empty",
+        created_at:null,
+        fecha:null,
+        items:PRODUCTOS.map(nombre => ({nombre, final:0}))
+      };
+    }
+
+    function formatNumber(value){
+      return Number(value || 0).toLocaleString("es-PA",{maximumFractionDigits:2});
+    }
+
+    function formatDecimal(value){
+      return Number(value || 0).toLocaleString("es-PA",{
+        minimumFractionDigits:2, maximumFractionDigits:2
+      });
+    }
+
+    function formatReportNumber(value){
+      return Number(value || 0).toLocaleString("es-PA",{
+        minimumFractionDigits:0, maximumFractionDigits:0
+      });
+    }
+
+    function renderInventory(items){
+      const byName = Object.fromEntries(items.map(i => [i.nombre,i]));
+
+      inventoryBody.innerHTML = PRODUCTOS.map(nombre => {
+        const previous = byName[nombre] || {};
+        const ivfa = Number(previous.final ?? previous.ivfa ?? 0);
+
+        return `
+          <tr data-product="${nombre}" data-ivfa="${ivfa}">
+            <td class="ivfa-value ivfa-cell">${formatNumber(ivfa)}</td>
+            <td style="text-align:left">${nombre}</td>
+            <td><input class="inventory-input initial-input" type="text" inputmode="decimal" autocomplete="off" value="0"></td>
+            <td><input class="inventory-input entry-input" type="text" inputmode="decimal" autocomplete="off" value="0"></td>
+            <td class="money-like exit-value" data-value="0">0.00</td>
+            <td class="money-like final-value">0.00</td>
+          </tr>`;
+      }).join("");
+
+      inventoryBody.querySelectorAll("input").forEach(el => {
+        el.addEventListener("input", e => {
+          const row = e.target.closest("tr");
+          updateRowTotals(row);
+        });
+      });
+
+      inventoryBody.querySelectorAll(".ivfa-cell").forEach(cell => {
+        cell.addEventListener("click", e => {
+          const row = e.target.closest("tr");
+          toggleSingleIvfaRow(row);
+        });
+      });
+
+      ivfaFilterActive = false;
+      ivfaHeader.classList.remove("active");
+      resetCombustibleOptions();
+      inventoryFooter.classList.remove("hidden");
+
+      // Relación automática:
+      // todos los movimientos registrados para esta planta y fecha
+      // se suman en la columna SALIDA por cada artículo.
+      applyDailyOutputsToInventory();
+    }
+
+    function captureCombustibleState(){
+      const state = {};
+      combustibleDetails.querySelectorAll(".fuel-panel").forEach(panel => {
+        const name = panel.dataset.product;
+        state[name] = {
+          entries: [...panel.querySelectorAll(".movement-entry")].map(entry => ({
+            qty: entry.querySelector(".combustible-qty")?.value || "",
+            commentVisible: entry.querySelector(".comment-row")?.classList.contains("show") || false,
+            comment: entry.querySelector(".combustible-comment-input")?.value || "",
+            movementType: entry.querySelector(".oil-type-select")?.value || "CONSUMO",
+            movementVisible: entry.querySelector(".movement-type-row")?.classList.contains("show") || false,
+            role: entry.dataset.entryRole || "main"
+          }))
+        };
+      });
+      return state;
+    }
+
+    function bindFuelButtons(){
+      combustibleButtons.querySelectorAll(".fuel-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const name = btn.dataset.product;
+          const panel = [...combustibleDetails.querySelectorAll(".fuel-panel")]
+            .find(p => p.dataset.product === name);
+
+          if(!panel) return;
+
+          const activating = !btn.classList.contains("active");
+
+          // Permite seleccionar varios productos al mismo tiempo.
+          // Cada botón controla únicamente su propio panel.
+          btn.classList.toggle("active", activating);
+          panel.classList.toggle("show", activating);
+
+          // Guarda en el campo oculto todos los productos seleccionados.
+          const selected = [...combustibleButtons.querySelectorAll(".fuel-btn.active")]
+            .map(b => b.dataset.product);
+          combustibleSelect.value = selected.join("|");
+
+          if(activating){
+            setTimeout(() => panel.querySelector(".combustible-qty")?.focus(), 0);
+          }
+        });
+      });
+    }
+
+    function getMovementOptionsHtml(movementType){
+      return `
+          <option value="" disabled>SELECCIONE EL TIPO</option>
+        ` + OIL_MOVEMENT_OPTIONS.map(option => {
+          const label = option === "CONSUMO" ? "CONSUMO" : option;
+          const selected = movementType === option ? "selected" : "";
+          return `<option value="${option}" ${selected}>${label}</option>`;
+        }).join("");
+    }
+
+    function getDefaultMovementEntryState(){
+      return {
+        qty: "",
+        commentVisible: false,
+        comment: "",
+        movementType: "CONSUMO",
+        movementVisible: false,
+        role: "main"
+      };
+    }
+
+    function buildMovementEntryHtml(name, entryState={}, index=0){
+      const data = { ...getDefaultMovementEntryState(), ...entryState };
+      const commentClass = data.commentVisible ? "comment-row show" : "comment-row";
+      const commentBtnClass = data.commentVisible ? "comment-toggle-btn active" : "comment-toggle-btn";
+      const movementVisible = data.movementVisible || data.movementType !== "CONSUMO";
+      const movementBtnClass = movementVisible || data.movementType !== "CONSUMO"
+        ? "movement-toggle-btn active"
+        : "movement-toggle-btn";
+      const movementRowClass = movementVisible ? "movement-type-row show" : "movement-type-row";
+      const isExtra = (data.role || (index > 0 ? "extra" : "main")) === "extra";
+      const removeExtraBtn = isExtra
+        ? `<button type="button" class="entry-remove-btn" title="Quitar cantidad" aria-label="Quitar cantidad">×</button>`
+        : "";
+
+      return `
+        <div class="movement-entry" data-product="${name}" data-entry-index="${index}" data-entry-role="${isExtra ? "extra" : "main"}" data-last-oil-question-qty="" data-requires-oil-type="false">
+          <div class="fuel-panel-grid">
+            <input class="combustible-qty" type="text" inputmode="decimal" autocomplete="off" value="${data.qty || ""}" placeholder="Cantidad">
+            <div class="fuel-actions">
+              <button type="button" class="${commentBtnClass}" title="Comentario" aria-label="Comentario">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v6A2.5 2.5 0 0 1 16.5 15H10l-4 4v-4H7.5A2.5 2.5 0 0 1 5 12.5v-6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button type="button" class="${movementBtnClass}" title="Tipo de movimiento" aria-label="Tipo de movimiento">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 3C10 6 7 9 7 13a5 5 0 0 0 10 0c0-4-3-7-5-10Z" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M8 18h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </button>
+              ${removeExtraBtn}
+            </div>
+          </div>
+          <div class="${movementRowClass}">
+            <select class="oil-type-select" aria-label="Tipo de movimiento para ${name}" title="Tipo de movimiento para ${name}">
+              ${getMovementOptionsHtml(data.movementType || "CONSUMO")}
+            </select>
+          </div>
+          <div class="${commentClass}">
+            <input class="combustible-comment-input" type="text" value="${data.comment || ""}" placeholder="Escriba un comentario para ${name}">
+          </div>
+        </div>
+      `;
+    }
+
+    function reindexMovementEntries(panel){
+      [...panel.querySelectorAll(".movement-entry")].forEach((entry, index) => {
+        entry.dataset.entryIndex = String(index);
+        entry.dataset.entryRole = index === 0 ? "main" : "extra";
+      });
+    }
+
+    function resetMovementEntry(entry){
+      if(!entry) return;
+      entry.dataset.lastOilQuestionQty = "";
+      entry.dataset.requiresOilType = "false";
+      const qty = entry.querySelector(".combustible-qty");
+      const comment = entry.querySelector(".combustible-comment-input");
+      const commentRow = entry.querySelector(".comment-row");
+      const commentBtn = entry.querySelector(".comment-toggle-btn");
+      const movementBtn = entry.querySelector(".movement-toggle-btn");
+      const movementRow = entry.querySelector(".movement-type-row");
+      const typeSelect = entry.querySelector(".oil-type-select");
+      if(qty) qty.value = "";
+      if(comment) comment.value = "";
+      if(commentRow) commentRow.classList.remove("show");
+      if(commentBtn) commentBtn.classList.remove("active");
+      if(movementRow) movementRow.classList.remove("show");
+      if(movementBtn) movementBtn.classList.remove("active");
+      if(typeSelect){
+        typeSelect.value = "CONSUMO";
+        typeSelect.classList.remove("needs-selection");
+      }
+    }
+
+    function resetFuelPanelEntries(panel){
+      const entries = [...panel.querySelectorAll(".movement-entry")];
+      entries.forEach((entry, index) => {
+        if(index === 0){
+          resetMovementEntry(entry);
+        }else{
+          entry.remove();
+        }
+      });
+      reindexMovementEntries(panel);
+    }
+
+    function addMovementEntry(panel){
+      const product = panel.dataset.product;
+      const container = panel.querySelector(".movement-entries");
+      if(!container) return;
+      const index = container.querySelectorAll(".movement-entry").length;
+      container.insertAdjacentHTML("beforeend", buildMovementEntryHtml(product, { role: "extra" }, index));
+      const newEntry = container.querySelector(`.movement-entry[data-entry-index="${index}"]`);
+      if(newEntry){
+        bindMovementEntry(newEntry, panel);
+        setTimeout(() => newEntry.querySelector(".combustible-qty")?.focus(), 0);
+      }
+    }
+
+    function clearAndDeselectFuelPanel(panel){
+      if(!panel) return;
+      const name = panel.dataset.product;
+      const btn = [...combustibleButtons.querySelectorAll(".fuel-btn")]
+        .find(item => item.dataset.product === name);
+      resetFuelPanelEntries(panel);
+      panel.classList.remove("show");
+      if(btn) btn.classList.remove("active");
+
+      const selected = [...combustibleButtons.querySelectorAll(".fuel-btn.active")]
+        .map(b => b.dataset.product);
+      combustibleSelect.value = selected.join("|");
+    }
+
+    function bindMovementEntry(entry, panel){
+      const toggle = entry.querySelector(".comment-toggle-btn");
+      const row = entry.querySelector(".comment-row");
+      const movementBtn = entry.querySelector(".movement-toggle-btn");
+      const movementRow = entry.querySelector(".movement-type-row");
+      const qtyInput = entry.querySelector(".combustible-qty");
+      const typeSelect = entry.querySelector(".oil-type-select");
+      const removeBtn = entry.querySelector(".entry-remove-btn");
+
+      if(removeBtn){
+        removeBtn.addEventListener("click", () => {
+          entry.remove();
+          reindexMovementEntries(panel);
+        });
+      }
+
+      if(toggle && row){
+        toggle.addEventListener("click", () => {
+          const show = !row.classList.contains("show");
+          row.classList.toggle("show", show);
+          toggle.classList.toggle("active", show);
+          if(show){
+            setTimeout(() => entry.querySelector(".combustible-comment-input")?.focus(), 0);
+          }
+        });
+      }
+
+      if(movementBtn && movementRow){
+        movementBtn.addEventListener("click", () => {
+          const show = !movementRow.classList.contains("show");
+          movementRow.classList.toggle("show", show);
+          movementBtn.classList.toggle("active", show || ((typeSelect?.value || "CONSUMO") !== "CONSUMO"));
+          if(show){
+            setTimeout(() => typeSelect?.focus(), 0);
+          }
+        });
+      }
+
+      if(typeSelect){
+        typeSelect.addEventListener("change", () => {
+          typeSelect.classList.remove("needs-selection");
+          entry.dataset.requiresOilType = "false";
+          if(typeSelect.value !== "CONSUMO"){
+            entry.dataset.lastOilQuestionQty = qtyInput?.value || "";
+          }
+          if(movementBtn){
+            movementBtn.classList.toggle("active", movementRow?.classList.contains("show") || typeSelect.value !== "CONSUMO");
+          }
+        });
+      }
+
+      if(qtyInput){
+        qtyInput.addEventListener("blur", () => checkOilChangeCondition(entry));
+        qtyInput.addEventListener("change", () => checkOilChangeCondition(entry));
+      }
+    }
+
+    function bindCommentButtons(){
+      combustibleDetails.querySelectorAll(".fuel-panel").forEach(panel => {
+        const closeBtn = panel.querySelector(".fuel-panel-close");
+        const addBtn = panel.querySelector(".fuel-panel-add");
+
+        if(closeBtn){
+          closeBtn.addEventListener("click", () => clearAndDeselectFuelPanel(panel));
+        }
+        if(addBtn){
+          addBtn.addEventListener("click", () => addMovementEntry(panel));
+        }
+
+        panel.querySelectorAll(".movement-entry").forEach(entry => {
+          bindMovementEntry(entry, panel);
+        });
+      });
+    }
+
+    function renderFuelButtons(selectedNames){
+      const previous = captureCombustibleState();
+
+      if(!selectedNames.length){
+        resetCombustibleOptions();
+        return;
+      }
+
+      combustibleButtons.innerHTML = selectedNames.map(name =>
+        `<button type="button" class="fuel-btn" data-product="${name}">${name}</button>`
+      ).join("");
+
+      combustibleDetails.innerHTML = selectedNames.map(name => {
+        const saved = previous[name] || {};
+        const entries = Array.isArray(saved.entries) && saved.entries.length
+          ? saved.entries
+          : [getDefaultMovementEntryState()];
+        const isMulti = MULTI_ENTRY_PRODUCTS.includes(name);
+        const panelEntriesHtml = entries
+          .map((entryState, index) => buildMovementEntryHtml(name, entryState, index))
+          .join("");
+
+        return `
+          <div class="fuel-panel" data-product="${name}">
+            <div class="fuel-panel-header">
+              <div class="fuel-panel-title">${name}</div>
+              <div class="fuel-panel-header-actions">
+                ${isMulti ? `<button type="button" class="fuel-panel-add" title="Agregar cantidad para ${name}" aria-label="Agregar cantidad para ${name}">+</button>` : ``}
+                <button type="button" class="fuel-panel-close" title="Quitar ${name}" aria-label="Quitar ${name}">×</button>
+              </div>
+            </div>
+            <div class="movement-entries">
+              ${panelEntriesHtml}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      combustibleSelect.value = "";
+      bindFuelButtons();
+      bindCommentButtons();
+    }
+
+    function updateCombustibleOptions(){
+      const activeRows = [...inventoryBody.querySelectorAll("tr.row-active-stock")];
+      const selectedNames = activeRows.map(row => row.dataset.product);
+      renderFuelButtons(selectedNames);
+    }
+
+    function resetCombustibleOptions(){
+      combustibleSelect.value = "";
+      combustibleButtons.innerHTML = '<div class="combustible-empty">Seleccione una planta y active productos en verde</div>';
+      combustibleDetails.innerHTML = "";
+    }
+
+    function updateRowTotals(row){
+      const inicial = Number(row.querySelector(".initial-input").value || 0);
+      const entrada = Number(row.querySelector(".entry-input").value || 0);
+      const salida = Number(row.querySelector(".exit-value").dataset.value || 0);
+      const finalValue = inicial + entrada - salida;
+
+      row.querySelector(".final-value").textContent = formatDecimal(finalValue);
+      row.classList.toggle("inventory-negative", finalValue < 0);
+
+      updateNegativeInventoryWarning();
+    }
+
+    function updateNegativeInventoryWarning(){
+      const negativeRows = [...inventoryBody.querySelectorAll("tr.inventory-negative")];
+
+      if(negativeRows.length){
+        negativeInventoryBadge.classList.remove("hidden");
+        negativeInventoryBadge.textContent = "⚠ INVENTARIO NEGATIVO (" + negativeRows.length + ")";
+      }else{
+        negativeInventoryBadge.classList.add("hidden");
+      }
+    }
+
+    function activateRowFromIvfa(row){
+      const ivfa = Number(row.dataset.ivfa || 0);
+      if(ivfa <= 0) return;
+      row.classList.add("row-active-stock");
+      row.querySelector(".initial-input").value = ivfa;
+      updateRowTotals(row);
+      updateCombustibleOptions();
+    }
+
+    function deactivateRow(row){
+      row.classList.remove("row-active-stock");
+      row.querySelector(".initial-input").value = 0;
+      updateRowTotals(row);
+      updateCombustibleOptions();
+    }
+
+    function applyIvfaFilter(){
+      const rows = [...inventoryBody.querySelectorAll("tr")];
+      let activeCount = 0;
+
+      rows.forEach(row => {
+        const ivfa = Number(row.dataset.ivfa || 0);
+        if(ivfa > 0){
+          row.classList.add("row-active-stock");
+          row.querySelector(".initial-input").value = ivfa;
+          updateRowTotals(row);
+          activeCount++;
+        }else{
+          row.classList.remove("row-active-stock");
+          row.querySelector(".initial-input").value = 0;
+          updateRowTotals(row);
+        }
+      });
+
+      updateCombustibleOptions();
+      ivfaFilterActive = true;
+      ivfaHeader.classList.add("active");
+      setLookupStatus("Filtro IVFA activado. Se marcaron en verde únicamente los productos con cantidad.", "ok");
+      return activeCount;
+    }
+
+    function clearIvfaFilter(){
+      const rows = [...inventoryBody.querySelectorAll("tr")];
+      rows.forEach(row => {
+        row.classList.remove("row-active-stock");
+        row.querySelector(".initial-input").value = 0;
+        updateRowTotals(row);
+      });
+      resetCombustibleOptions();
+      ivfaFilterActive = false;
+      ivfaHeader.classList.remove("active");
+      setLookupStatus("Filtro IVFA desactivado.", "warn");
+    }
+
+    function toggleSingleIvfaRow(row){
+      const ivfa = Number(row.dataset.ivfa || 0);
+      if(ivfa <= 0) return;
+
+      const isActive = row.classList.contains("row-active-stock");
+      if(isActive){
+        deactivateRow(row);
+      }else{
+        activateRowFromIvfa(row);
+      }
+    }
+
+    let inventoryLookupRequestId = 0;
+    let lastInventoryLookupKey = "";
+
+    function isMovementEntryContextActive(){
+      return !mainWorkspace.classList.contains("hidden-view")
+        && !movementView.classList.contains("view-hidden");
+    }
+
+    function clearInventoryLookup(message="Seleccione la fecha e ingrese la planta para consultar el último inventario."){
+      currentPlant = "";
+      lastInventoryLookupKey = "";
+      inventoryBody.innerHTML = "";
+      inventoryEmpty.classList.remove("hidden");
+      inventoryFooter.classList.add("hidden");
+      inventoryPlantBadge.textContent = "Sin planta";
+      negativeInventoryBadge.classList.add("hidden");
+      resetCombustibleOptions();
+      setLookupStatus(message);
+    }
+
+    async function cargarInventario(planta, fechaISO = fechaPicker.value, {force=false} = {}){
+      const plantKey = String(planta || "").trim();
+      const selectedDate = String(fechaISO || "").trim();
+
+      // NO consultar la base si no estamos en INGRESO DE MOVIMIENTO.
+      if(!isMovementEntryContextActive()) return;
+
+      // PLANTA + FECHA son obligatorios para hacer una solicitud.
+      if(!plantKey || !selectedDate){
+        clearInventoryLookup("Seleccione la fecha e ingrese la planta. No se consultará Supabase hasta tener ambos datos.");
+        return;
+      }
+
+      currentPlant = plantKey;
+      const lookupKey = `${plantKey}|${selectedDate}`;
+      if(!force && lookupKey === lastInventoryLookupKey && inventoryBody.querySelector("tr")){
+        applyDailyOutputsToInventory();
+        return;
+      }
+
+      const requestId = ++inventoryLookupRequestId;
+      inventoryPlantBadge.textContent = "Planta " + plantKey;
+      inventoryBody.innerHTML = "";
+      inventoryEmpty.classList.add("hidden");
+      inventoryFooter.classList.add("hidden");
+      setLookupStatus('<span class="spinner"></span> Consultando únicamente el último inventario de la planta '+plantKey+'...');
+
+      try{
+        const result = await buscarUltimoInventarioEnBD(plantKey, selectedDate);
+        if(requestId !== inventoryLookupRequestId) return;
+
+        lastInventoryLookupKey = lookupKey;
+        renderInventory(result.items || []);
+
+        if(result.source === "supabase"){
+          const previousDate = formatDateDisplay(result.fecha || "");
+          setLookupStatus(
+            "IVFA cargado con el saldo FINAL del último inventario de la planta " + plantKey
+            + (previousDate ? " (" + previousDate + ")" : "") + ". Se consultó un solo registro.",
+            "ok"
+          );
+        }else{
+          setLookupStatus(
+            "No existe un inventario anterior para la planta " + plantKey + " hasta la fecha seleccionada. IVFA inicia en 0.",
+            "warn"
+          );
+        }
+      }catch(err){
+        if(requestId !== inventoryLookupRequestId) return;
+        console.error(err);
+        supabaseConnected = false;
+        supabaseLastError = err.message || String(err);
+        setSupabaseStatus("error", supabaseLastError);
+        setLookupStatus("Error consultando Supabase: " + supabaseLastError,"warn");
+      }
+    }
+
+    function requestInventoryIfReady({force=false} = {}){
+      if(!isMovementEntryContextActive()) return;
+      const plantKey = String(plantaInput.value || "").trim();
+      const selectedDate = String(fechaPicker.value || "").trim();
+
+      if(!plantKey || !selectedDate){
+        clearInventoryLookup("Seleccione la fecha e ingrese la planta. No se consultará Supabase hasta tener ambos datos.");
+        return;
+      }
+
+      cargarInventario(plantKey, selectedDate, {force});
+    }
+
+    fechaPicker.addEventListener("change", () => {
+      if(!fechaPicker.value){
+        fechaInput.value = "";
+        clearInventoryLookup("Seleccione una fecha e ingrese la planta para consultar el inventario.");
+        return;
+      }
+      fechaInput.value = formatDateDisplay(fechaPicker.value);
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => requestInventoryIfReady({force:true}), 250);
+    });
+
+    fechaPicker.addEventListener("click", () => {
+      if(typeof fechaPicker.showPicker === "function"){
+        try{ fechaPicker.showPicker(); }catch(_err){}
+      }
+    });
+
+    plantaInput.addEventListener("input",()=>{
+      clearTimeout(debounceTimer);
+      if(!String(plantaInput.value || "").trim()){
+        clearInventoryLookup();
+        return;
+      }
+      debounceTimer = setTimeout(()=>requestInventoryIfReady({force:true}),450);
+    });
+
+    plantaInput.addEventListener("keydown",e=>{
+      if(e.key === "Enter"){
+        clearTimeout(debounceTimer);
+        requestInventoryIfReady({force:true});
+      }
+    });
+
+    oilQuestionYes.addEventListener("click", () => {
+      const entry = pendingOilQuestionPanel;
+      if(entry){
+        const typeSelect = entry.querySelector(".oil-type-select");
+        const movementRow = entry.querySelector(".movement-type-row");
+        const movementBtn = entry.querySelector(".movement-toggle-btn");
+        if(typeSelect){
+          typeSelect.value = "";
+          typeSelect.classList.add("needs-selection");
+          entry.dataset.requiresOilType = "true";
+        }
+        if(movementRow) movementRow.classList.add("show");
+        if(movementBtn) movementBtn.classList.add("active");
+        setTimeout(() => typeSelect?.focus(), 0);
+      }
+      closeOilQuestion();
+      showToast("Seleccione en la lista el tipo exacto de cambio de aceite.");
+    });
+
+    oilQuestionNo.addEventListener("click", () => {
+      if(pendingOilQuestionPanel){
+        const typeSelect = pendingOilQuestionPanel.querySelector(".oil-type-select");
+        const movementRow = pendingOilQuestionPanel.querySelector(".movement-type-row");
+        const movementBtn = pendingOilQuestionPanel.querySelector(".movement-toggle-btn");
+        if(typeSelect){
+          typeSelect.value = "CONSUMO";
+          typeSelect.classList.remove("needs-selection");
+        }
+        pendingOilQuestionPanel.dataset.requiresOilType = "false";
+        if(movementRow && !movementRow.classList.contains("show") && movementBtn){
+          movementBtn.classList.remove("active");
+        }
+      }
+      closeOilQuestion();
+    });
+
+    oilQuestionOverlay.addEventListener("click", (e) => {
+      if(e.target === oilQuestionOverlay) closeOilQuestion();
+    });
+
+    function escapeHtml(value){
+      return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    let pendingDeleteAction = null;
+
+    function openDeleteConfirm(message, action){
+      pendingDeleteAction = action;
+      deleteConfirmText.textContent = message;
+      deleteConfirmOverlay.classList.add("show");
+      deleteConfirmOverlay.setAttribute("aria-hidden","false");
+    }
+
+    function closeDeleteConfirm(){
+      pendingDeleteAction = null;
+      deleteConfirmOverlay.classList.remove("show");
+      deleteConfirmOverlay.setAttribute("aria-hidden","true");
+    }
+
+    async function deleteSingleRecord(movementId, productIndex){
+      const movements = getLocalMovements();
+      const movementIndex = movements.findIndex(m => String(m.id) === String(movementId));
+      if(movementIndex === -1) return;
+
+      const movement = movements[movementIndex];
+      const products = Array.isArray(movement.productos) ? movement.productos : [];
+      if(productIndex < 0 || productIndex >= products.length) return;
+
+      try{
+        const target = products[productIndex];
+        if(products.length === 1){
+          await sbRequest("combustible_movimientos", {method:"DELETE", query:`?id=eq.${encodeURIComponent(movementId)}`, prefer:"return=minimal"});
+          movements.splice(movementIndex, 1);
+        }else{
+          if(target?.detalle_id){
+            await sbRequest("combustible_movimiento_detalle", {method:"DELETE", query:`?id=eq.${encodeURIComponent(target.detalle_id)}`, prefer:"return=minimal"});
+          }
+          products.splice(productIndex, 1);
+          movement.productos = products;
+        }
+        saveLocalMovements(movements);
+        applyDailyOutputsToInventory();
+        updateMenuCounters();
+        renderRecordsView();
+        showToast("Registro eliminado de Supabase.");
+      }catch(error){
+        console.error(error);
+        showToast("No se pudo eliminar en Supabase: " + error.message, true);
+      }
+    }
+
+    async function deleteAllFilteredRecords(){
+      const dateKey = normalizeDateKey(recordsDate.value);
+      const plantKey = String(recordsPlant.value || "").trim();
+      if(!dateKey || !plantKey) return;
+
+      try{
+        await sbRequest("combustible_movimientos", {
+          method:"DELETE",
+          query:`?fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`,
+          prefer:"return=minimal"
+        });
+        const movements = getLocalMovements();
+        const remaining = movements.filter(registro => !(
+          normalizeDateKey(registro.fecha) === dateKey &&
+          String(registro.planta || "").trim() === plantKey
+        ));
+        const deleted = movements.length - remaining.length;
+        saveLocalMovements(remaining);
+        applyDailyOutputsToInventory();
+        updateMenuCounters();
+        renderRecordsView();
+        showToast(deleted > 0 ? "Registros eliminados de Supabase." : "No había registros para eliminar.");
+      }catch(error){
+        console.error(error);
+        showToast("No se pudieron eliminar los registros: " + error.message, true);
+      }
+    }
+
+    async function deleteSingleInventoryItem(inventoryId, itemIndex){
+      const inventories = getLocalDb();
+      const inventoryIndex = inventories.findIndex(inv => String(inv.id) === String(inventoryId));
+      if(inventoryIndex === -1) return;
+
+      const inventory = inventories[inventoryIndex];
+      const items = Array.isArray(inventory.items) ? inventory.items : [];
+      if(itemIndex < 0 || itemIndex >= items.length) return;
+
+      try{
+        const target = items[itemIndex];
+        if(items.length === 1){
+          await sbRequest("combustible_inventarios", {method:"DELETE", query:`?id=eq.${encodeURIComponent(inventoryId)}`, prefer:"return=minimal"});
+          inventories.splice(inventoryIndex, 1);
+        }else{
+          if(target?.detalle_id){
+            await sbRequest("combustible_inventario_detalle", {method:"DELETE", query:`?id=eq.${encodeURIComponent(target.detalle_id)}`, prefer:"return=minimal"});
+          }
+          items.splice(itemIndex, 1);
+          inventory.items = items;
+        }
+        saveLocalDb(inventories);
+        updateMenuCounters();
+        renderSavedInventoriesView();
+        if(currentPlant && String(currentPlant).trim() === String(savedInventoryPlant.value || "").trim()
+           && normalizeDateKey(fechaInput.value) === normalizeDateKey(savedInventoryDate.value)){
+          cargarInventario(currentPlant, fechaPicker.value, {force:true});
+        }
+        showToast("Inventario eliminado de Supabase.");
+      }catch(error){
+        console.error(error);
+        showToast("No se pudo eliminar el inventario: " + error.message, true);
+      }
+    }
+
+    async function deleteAllFilteredInventories(){
+      const dateKey = normalizeDateKey(savedInventoryDate.value);
+      const plantKey = String(savedInventoryPlant.value || "").trim();
+      if(!dateKey || !plantKey) return;
+
+      try{
+        await sbRequest("combustible_inventarios", {
+          method:"DELETE",
+          query:`?fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`,
+          prefer:"return=minimal"
+        });
+        const inventories = getLocalDb();
+        const remaining = inventories.filter(inv => !(
+          normalizeDateKey(inv.fecha) === dateKey &&
+          String(inv.planta || "").trim() === plantKey
+        ));
+        const deleted = inventories.length - remaining.length;
+        saveLocalDb(remaining);
+        updateMenuCounters();
+        renderSavedInventoriesView();
+        if(currentPlant && String(currentPlant).trim() === plantKey
+           && normalizeDateKey(fechaInput.value) === dateKey){
+          cargarInventario(currentPlant, fechaPicker.value, {force:true});
+        }
+        showToast(deleted > 0 ? "Inventarios eliminados de Supabase." : "No había inventarios para eliminar.");
+      }catch(error){
+        console.error(error);
+        showToast("No se pudieron eliminar los inventarios: " + error.message, true);
+      }
+    }
+
+    function renderSavedInventoriesView(){
+      const dateKey = normalizeDateKey(savedInventoryDate.value);
+      const plantKey = String(savedInventoryPlant.value || "").trim();
+
+      if(!dateKey || !plantKey){
+        savedInventoriesBody.innerHTML = "";
+        savedInventoriesEmpty.classList.remove("hidden");
+        savedInventoriesEmpty.innerHTML = `
+          <strong>Complete fecha y planta</strong>
+          <span>Estos son los únicos filtros de esta vista.</span>
+        `;
+        savedInventoriesCount.textContent = "0 inventarios";
+        deleteFilteredInventoriesBtn.disabled = true;
+        savedInventoryFilterMessage.textContent = !plantKey
+          ? "Ingrese la planta para mostrar los inventarios guardados."
+          : "Seleccione una fecha para mostrar los inventarios guardados.";
+        return;
+      }
+
+      const inventories = getLocalDb()
+        .filter(inv =>
+          normalizeDateKey(inv.fecha) === dateKey &&
+          String(inv.planta || "").trim() === plantKey
+        )
+        .sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+      const rows = [];
+      inventories.forEach(inv => {
+        (inv.items || []).forEach((item, itemIndex) => {
+          rows.push({
+            inventoryId: inv.id,
+            itemIndex,
+            fecha: inv.fecha || formatDateDisplay(dateKey),
+            planta: inv.planta || "",
+            nombre: item.nombre || "",
+            inicial: Number(item.inicial || 0),
+            entrada: Number(item.entrada || 0),
+            salida: Number(item.salida || 0),
+            final: Number(item.final || 0)
+          });
+        });
+      });
+
+      savedInventoriesCount.textContent = rows.length + (rows.length === 1 ? " inventario" : " inventarios");
+      deleteFilteredInventoriesBtn.disabled = rows.length === 0;
+      savedInventoryFilterMessage.textContent = "Planta " + plantKey + " · " + formatDateDisplay(dateKey);
+
+      if(!rows.length){
+        savedInventoriesBody.innerHTML = "";
+        savedInventoriesEmpty.classList.remove("hidden");
+        savedInventoriesEmpty.innerHTML = `
+          <strong>No hay inventarios guardados</strong>
+          <span>No se encontraron inventarios para la fecha y planta seleccionadas.</span>
+        `;
+        return;
+      }
+
+      savedInventoriesEmpty.classList.add("hidden");
+      savedInventoriesBody.innerHTML = rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.fecha)}</td>
+          <td>${escapeHtml(row.planta)}</td>
+          <td class="saved-inventory-product">${escapeHtml(row.nombre)}</td>
+          <td>${formatDecimal(row.inicial)}</td>
+          <td>${formatDecimal(row.entrada)}</td>
+          <td>${formatDecimal(row.salida)}</td>
+          <td class="saved-inventory-final">${formatDecimal(row.final)}</td>
+          <td>
+            <button
+              type="button"
+              class="delete-record-btn delete-inventory-btn"
+              data-inventory-id="${escapeHtml(row.inventoryId)}"
+              data-item-index="${row.itemIndex}"
+              title="Eliminar inventario guardado"
+              aria-label="Eliminar inventario guardado"
+            >×</button>
+          </td>
+        </tr>
+      `).join("");
+
+      savedInventoriesBody.querySelectorAll(".delete-inventory-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const inventoryId = btn.dataset.inventoryId;
+          const itemIndex = Number(btn.dataset.itemIndex);
+          const row = btn.closest("tr");
+          const itemName = row?.querySelector(".saved-inventory-product")?.textContent || "este inventario guardado";
+
+          openDeleteConfirm(
+            "¿Desea eliminar " + itemName + " de este inventario guardado?",
+            () => deleteSingleInventoryItem(inventoryId, itemIndex)
+          );
+        });
+      });
+    }
+
+    function renderRecordsView(){
+      const dateKey = normalizeDateKey(recordsDate.value);
+      const plantKey = String(recordsPlant.value || "").trim();
+
+      if(!dateKey || !plantKey){
+        recordsBody.innerHTML = "";
+        recordsEmpty.classList.remove("hidden");
+        recordsEmpty.innerHTML = `
+          <strong>Complete fecha y planta</strong>
+          <span>Estos son los únicos filtros de esta vista.</span>
+        `;
+        recordsCount.textContent = "0 registros";
+        deleteFilteredRecordsBtn.disabled = true;
+        recordsFilterMessage.textContent = !plantKey
+          ? "Ingrese la planta para mostrar los registros."
+          : "Seleccione una fecha para mostrar los registros.";
+        return;
+      }
+
+      const movements = getLocalMovements()
+        .filter(registro =>
+          normalizeDateKey(registro.fecha) === dateKey &&
+          String(registro.planta || "").trim() === plantKey
+        )
+        .sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+      const rows = [];
+      movements.forEach(registro => {
+        (registro.productos || []).forEach((item, productIndex) => {
+          rows.push({
+            movementId: registro.id,
+            productIndex,
+            fecha: registro.fecha || formatDateDisplay(dateKey),
+            planta: registro.planta || "",
+            equipo: sanitizeEquipmentCode(registro.equipo || ""),
+            producto: item.producto || "",
+            cantidad: Number(item.cantidad || 0),
+            tipo: item.tipo_movimiento || registro.tipo_movimiento || "",
+            cambioAceite: Boolean(item.cambio_aceite),
+            comentario: item.comentario || ""
+          });
+        });
+      });
+
+      recordsCount.textContent = rows.length + (rows.length === 1 ? " registro" : " registros");
+      deleteFilteredRecordsBtn.disabled = rows.length === 0;
+      recordsFilterMessage.textContent = "Planta " + plantKey + " · " + formatDateDisplay(dateKey);
+
+      if(!rows.length){
+        recordsBody.innerHTML = "";
+        recordsEmpty.classList.remove("hidden");
+        recordsEmpty.innerHTML = `
+          <strong>No hay registros</strong>
+          <span>No se encontraron movimientos para la fecha y planta seleccionadas.</span>
+        `;
+        return;
+      }
+
+      recordsEmpty.classList.add("hidden");
+      recordsBody.innerHTML = rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.fecha)}</td>
+          <td>${escapeHtml(row.planta)}</td>
+          <td>${escapeHtml(row.equipo)}</td>
+          <td class="record-product">${escapeHtml(row.producto)}</td>
+          <td class="record-qty">${formatDecimal(row.cantidad)}</td>
+          <td>${escapeHtml(row.tipo)}</td>
+          <td>${row.cambioAceite ? '<span class="record-oil-yes">✓ SÍ</span>' : 'NO'}</td>
+          <td>${row.comentario ? escapeHtml(row.comentario) : "—"}</td>
+          <td>
+            <button
+              type="button"
+              class="delete-record-btn"
+              data-movement-id="${escapeHtml(row.movementId)}"
+              data-product-index="${row.productIndex}"
+              title="Eliminar registro"
+              aria-label="Eliminar registro"
+            >×</button>
+          </td>
+        </tr>
+      `).join("");
+
+      recordsBody.querySelectorAll(".delete-record-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const movementId = btn.dataset.movementId;
+          const productIndex = Number(btn.dataset.productIndex);
+          const row = btn.closest("tr");
+          const productName = row?.querySelector(".record-product")?.textContent || "este registro";
+
+          openDeleteConfirm(
+            "¿Desea eliminar " + productName + " de este registro?",
+            () => deleteSingleRecord(movementId, productIndex)
+          );
+        });
+      });
+    }
+
+    function setReportsStatus(message, type=""){
+      reportsStatus.textContent = message;
+      reportsStatus.className = "reports-status" + (type ? " " + type : "");
+    }
+
+    function populateReportEquipmentOptions(){
+      if(!reportEquipmentOptions) return;
+      const merged = [...EQUIPOS_BASE, ...getCustomEquipments()];
+      const seen = new Set();
+      const codes = merged
+        .map(item => sanitizeEquipmentCode(item.codigo))
+        .filter(code => code && !seen.has(code) && seen.add(code))
+        .sort((a,b)=>a.localeCompare(b,"es",{numeric:true}));
+      reportEquipmentOptions.innerHTML = codes.map(code => `<option value="${escapeHtml(code)}"></option>`).join("");
+    }
+
+    function updateReportGenerateState(){
+      if(!generateReportBtn) return;
+      const equipo = sanitizeEquipmentCode(reportEquipmentFilter?.value || "");
+      const from = reportDateFrom?.value || "";
+      const to = reportDateTo?.value || "";
+      const complete = Boolean(equipo && from && to);
+      generateReportBtn.disabled = !complete;
+      if(!complete){
+        setReportsStatus("Complete NÚMERO DE EQUIPO y RANGO DE FECHA para habilitar el reporte.");
+      }else if(from > to){
+        generateReportBtn.disabled = true;
+        setReportsStatus("La FECHA INICIAL no puede ser posterior a la FECHA FINAL.", "error");
+      }else{
+        setReportsStatus("");
+      }
+    }
+
+    function getOneYearBefore(dateString){
+      const parts = String(dateString || "").split("-").map(Number);
+      if(parts.length !== 3 || parts.some(Number.isNaN)) return "";
+      const [year, month, day] = parts;
+      const dt = new Date(Date.UTC(year, month - 1, day));
+      dt.setUTCFullYear(dt.getUTCFullYear() - 1);
+      return dt.toISOString().slice(0,10);
+    }
+
+    async function fetchEquipmentMovementsRange(equipo, from, to){
+      const allRows = [];
+      const pageSize = 1000;
+      let offset = 0;
+      const eq = encodeURIComponent(equipo);
+      while(true){
+        const batch = await sbRequest("combustible_movimientos", {
+          query:`?select=id,fecha,planta,equipo,created_at,combustible_movimiento_detalle(id,producto,cantidad,tipo_movimiento,comentario,cambio_aceite,created_at)&equipo=eq.${eq}&fecha=gte.${from}&fecha=lte.${to}&order=fecha.asc,created_at.asc&limit=${pageSize}&offset=${offset}`,
+          prefer:""
+        });
+        const rows = Array.isArray(batch) ? batch : [];
+        allRows.push(...rows);
+        if(rows.length < pageSize) break;
+        offset += pageSize;
+      }
+      return allRows;
+    }
+
+    async function fetchReportEquipmentType(equipo){
+      try{
+        const rows = await sbRequest("combustible_equipos", {
+          query:`?select=codigo,tipo&codigo=eq.${encodeURIComponent(equipo)}&limit=1`,
+          prefer:""
+        });
+        const row = Array.isArray(rows) ? rows[0] : null;
+        if(row) return String(row.tipo || "").trim().toUpperCase() || "SIN TIPO REGISTRADO";
+      }catch(error){
+        console.warn("Tipo de equipo no disponible en Supabase:", error);
+      }
+      const local = findEquipmentRecord(equipo);
+      return String(local?.tipo || "SIN TIPO REGISTRADO").trim().toUpperCase();
+    }
+
+    function summarizeReportConsumption(rows){
+      const totals = new Map();
+      let detailCount = 0;
+      (rows || []).forEach(movement => {
+        (movement.combustible_movimiento_detalle || []).forEach(item => {
+          const tipo = String(item.tipo_movimiento || "CONSUMO").trim().toUpperCase();
+          if(tipo === "TRANSFERENCIA") return;
+          const producto = String(item.producto || "SIN PRODUCTO").trim().toUpperCase();
+          const cantidad = Number(item.cantidad || 0);
+          if(!Number.isFinite(cantidad) || cantidad <= 0) return;
+          totals.set(producto, (totals.get(producto) || 0) + cantidad);
+          detailCount += 1;
+        });
+      });
+      const productOrder = new Map(PRODUCTOS.map((name,index)=>[name,index]));
+      const consumos = [...totals.entries()].map(([producto,cantidad]) => ({producto,cantidad}))
+        .sort((a,b) => {
+          const ai = productOrder.has(a.producto) ? productOrder.get(a.producto) : 999;
+          const bi = productOrder.has(b.producto) ? productOrder.get(b.producto) : 999;
+          return ai !== bi ? ai - bi : a.producto.localeCompare(b.producto,"es");
+        });
+      return {consumos, detailCount, total:consumos.reduce((sum,item)=>sum+item.cantidad,0)};
+    }
+
+    function extractOilChanges(rows){
+      const changes = [];
+      (rows || []).forEach(movement => {
+        (movement.combustible_movimiento_detalle || []).forEach(item => {
+          const tipo = String(item.tipo_movimiento || "CONSUMO").trim().toUpperCase();
+          const isOil = Boolean(item.cambio_aceite) || tipo.startsWith("CAMBIO DE ACEITE");
+          if(!isOil) return;
+          changes.push({
+            fechaKey:normalizeDateKey(movement.fecha),
+            fecha:formatDateDisplay(movement.fecha),
+            planta:String(movement.planta || "").trim().toUpperCase(),
+            producto:String(item.producto || "").trim().toUpperCase(),
+            cantidad:Number(item.cantidad || 0),
+            tipo,
+            comentario:String(item.comentario || "").trim().toUpperCase()
+          });
+        });
+      });
+      return changes.sort((a,b)=>String(b.fechaKey).localeCompare(String(a.fechaKey)));
+    }
+
+    function productConsumptionIcon(producto, size=16){
+      const product = String(producto || "").trim().toUpperCase();
+      if(product === "GASOLINA"){
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 21V5.5A2.5 2.5 0 0 1 7.5 3h6A2.5 2.5 0 0 1 16 5.5V21M4 21h13M7.5 7h6v5h-6zM16 8h1.5l2 2.5V17a1.5 1.5 0 0 1-3 0v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      }
+      if(product === "DIESEL"){
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 21V5.5A2.5 2.5 0 0 1 7.5 3h6A2.5 2.5 0 0 1 16 5.5V21M4 21h13M7.5 7h6v5h-6zM16 8h1.4l2.1 2.6V17a1.5 1.5 0 0 1-3 0v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.2 14.8 12 10.6l2.8 4.2a2.45 2.45 0 0 1-5.6 0Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+      }
+      return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3C9.1 7.4 6.7 10.4 6.7 14.1a5.3 5.3 0 0 0 10.6 0C17.3 10.4 14.9 7.4 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M10 16.5c.6.4 1.3.6 2 .6s1.4-.2 2-.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+    }
+
+    function oilChangeIcon(size=18){
+      return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18a8 8 0 1 1 16 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 10v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="m12 14 3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 8.5 5.5 7M17 8.5 18.5 7M12 6V4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+    }
+
+    function renderFuelSummary(consumos){
+      const findQty = product => Number(consumos.find(item => item.producto === product)?.cantidad || 0);
+      const gasolina = findQty("GASOLINA");
+      const diesel = findQty("DIESEL");
+      const cards = [];
+
+      if(gasolina > 0){
+        cards.push(`<div class="fuel-summary-card gasoline">
+          <span class="fuel-summary-icon">${productConsumptionIcon("GASOLINA",20)}</span>
+          <div><span>CONSUMO GASOLINA</span><strong>${formatReportNumber(gasolina)}</strong></div>
+        </div>`);
+      }
+
+      if(diesel > 0){
+        cards.push(`<div class="fuel-summary-card diesel">
+          <span class="fuel-summary-icon">${productConsumptionIcon("DIESEL",20)}</span>
+          <div><span>CONSUMO DIESEL</span><strong>${formatReportNumber(diesel)}</strong></div>
+        </div>`);
+      }
+
+      return cards.length ? `<div class="fuel-summary-grid">${cards.join("")}</div>` : "";
+    }
+
+    function renderConsumptionChart(consumos, footerText="CANTIDAD ACUMULADA"){
+      if(!consumos.length){
+        return `<div class="report-no-data">No hay consumos registrados para este equipo dentro del rango seleccionado.</div>`;
+      }
+      const max = Math.max(...consumos.map(item => item.cantidad), 1);
+      const rows = consumos.map(item => {
+        const pct = Math.max(0.8, Math.min(100, (item.cantidad / max) * 100));
+        const iconClass = item.producto === "GASOLINA" ? "gasoline" : item.producto === "DIESEL" ? "diesel" : "lubricant";
+        return `<div class="chart-row">
+          <div class="chart-product-label" title="${escapeHtml(item.producto)}">
+            <span class="chart-product-icon ${iconClass}">${productConsumptionIcon(item.producto,15)}</span>
+            <div class="chart-label">${escapeHtml(item.producto)}</div>
+          </div>
+          <div class="chart-track" aria-label="${escapeHtml(item.producto)} ${formatReportNumber(item.cantidad)}">
+            <div class="chart-bar" style="width:${pct.toFixed(2)}%"></div>
+          </div>
+          <div class="chart-value">${formatReportNumber(item.cantidad)}</div>
+        </div>`;
+      }).join("");
+      return `<div class="consumption-chart">${rows}<div class="chart-footer">${escapeHtml(footerText)}</div></div>`;
+    }
+
+    function splitReportConsumption(consumos){
+      const combustibles = (consumos || []).filter(item => item.producto === "GASOLINA" || item.producto === "DIESEL");
+      const lubricantes = (consumos || []).filter(item => item.producto !== "GASOLINA" && item.producto !== "DIESEL");
+      return {combustibles,lubricantes};
+    }
+
+    function isoDateParts(value){
+      const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return match ? {year:Number(match[1]),month:Number(match[2]),day:Number(match[3])} : null;
+    }
+
+    function isoFromLocalDate(date){
+      const y=date.getFullYear();
+      const m=String(date.getMonth()+1).padStart(2,"0");
+      const d=String(date.getDate()).padStart(2,"0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function localDateFromIso(value){
+      const p=isoDateParts(value);
+      return p ? new Date(p.year,p.month-1,p.day,12,0,0,0) : null;
+    }
+
+    function monthDisplayName(year,month){
+      const date=new Date(year,month-1,1,12,0,0,0);
+      return date.toLocaleDateString("es-PA",{month:"long",year:"numeric"}).toUpperCase();
+    }
+
+    function dieselQuantityForMovement(movement){
+      let total=0;
+      (movement?.combustible_movimiento_detalle || []).forEach(item => {
+        const producto=String(item.producto || "").trim().toUpperCase();
+        const tipo=String(item.tipo_movimiento || "CONSUMO").trim().toUpperCase();
+        if(producto !== "DIESEL" || tipo === "TRANSFERENCIA") return;
+        const cantidad=Number(item.cantidad || 0);
+        if(Number.isFinite(cantidad) && cantidad > 0) total += cantidad;
+      });
+      return total;
+    }
+
+    function buildWeeklyDieselComparison(rows,from,to){
+      const start=localDateFromIso(from);
+      const finish=localDateFromIso(to);
+      if(!start || !finish) return [];
+      const periods=[];
+      let cursor=new Date(start);
+      let n=1;
+      while(cursor <= finish){
+        const weekStart=new Date(cursor);
+        const day=weekStart.getDay(); // 0 domingo, 1 lunes
+        const daysUntilSunday=(7-day)%7;
+        let weekEnd=new Date(weekStart);
+        weekEnd.setDate(weekEnd.getDate()+daysUntilSunday);
+        if(weekEnd > finish) weekEnd=new Date(finish);
+        periods.push({
+          key:`W${n}`,
+          label:`SEMANA ${n} · ${String(weekStart.getDate()).padStart(2,"0")}-${String(weekEnd.getDate()).padStart(2,"0")}`,
+          from:isoFromLocalDate(weekStart),
+          to:isoFromLocalDate(weekEnd),
+          cantidad:0
+        });
+        cursor=new Date(weekEnd);
+        cursor.setDate(cursor.getDate()+1);
+        n += 1;
+      }
+      (rows || []).forEach(movement => {
+        const fecha=normalizeDateKey(movement.fecha);
+        const qty=dieselQuantityForMovement(movement);
+        if(!qty || !fecha) return;
+        const period=periods.find(p => fecha >= p.from && fecha <= p.to);
+        if(period) period.cantidad += qty;
+      });
+      return periods;
+    }
+
+    function buildMonthlyDieselComparison(rows,from,to){
+      const pFrom=isoDateParts(from);
+      const pTo=isoDateParts(to);
+      if(!pFrom || !pTo) return [];
+      const periods=[];
+      let year=pFrom.year, month=pFrom.month;
+      let n=0;
+      while(year < pTo.year || (year === pTo.year && month <= pTo.month)){
+        const key=`${year}-${String(month).padStart(2,"0")}`;
+        periods.push({key,label:monthDisplayName(year,month),cantidad:0});
+        month += 1;
+        if(month > 12){month=1;year += 1;}
+        if(++n > 60) break;
+      }
+      const byKey=new Map(periods.map(p=>[p.key,p]));
+      (rows || []).forEach(movement => {
+        const fecha=normalizeDateKey(movement.fecha);
+        const qty=dieselQuantityForMovement(movement);
+        if(!qty || !fecha) return;
+        const p=byKey.get(fecha.slice(0,7));
+        if(p) p.cantidad += qty;
+      });
+      return periods;
+    }
+
+    function isFullCalendarMonth(from,to){
+      const a=isoDateParts(from), b=isoDateParts(to);
+      if(!a || !b || a.year !== b.year || a.month !== b.month || a.day !== 1) return false;
+      return b.day === new Date(b.year,b.month,0).getDate();
+    }
+
+    function buildDieselComparison(rows,from,to){
+      const a=isoDateParts(from), b=isoDateParts(to);
+      if(!a || !b) return {mode:"none",periods:[],fullMonth:false};
+      const sameMonth=a.year===b.year && a.month===b.month;
+      if(sameMonth){
+        return {mode:"week",periods:buildWeeklyDieselComparison(rows,from,to),fullMonth:isFullCalendarMonth(from,to)};
+      }
+      return {mode:"month",periods:buildMonthlyDieselComparison(rows,from,to),fullMonth:false};
+    }
+
+    function renderDieselComparison(comparison){
+      const periods=(comparison?.periods || []);
+      if(!periods.length){
+        return `<div class="report-no-data">No hay periodos disponibles para comparar el consumo de DIESEL.</div>`;
+      }
+      const max=Math.max(...periods.map(p=>Number(p.cantidad || 0)),0);
+      const highest=periods.reduce((best,p)=>Number(p.cantidad||0)>Number(best?.cantidad||-1)?p:best,null);
+      const rows=periods.map(period => {
+        const qty=Number(period.cantidad || 0);
+        const pct=max > 0 ? Math.max(qty > 0 ? 1 : 0, Math.min(100,(qty/max)*100)) : 0;
+        const isHighest=max > 0 && period === highest;
+        return `<div class="diesel-period-row${isHighest ? " highest" : ""}">
+          <div class="diesel-period-label">${escapeHtml(period.label)}${isHighest ? " · MAYOR" : ""}</div>
+          <div class="diesel-period-track"><div class="diesel-period-bar" style="width:${pct.toFixed(2)}%"></div></div>
+          <div class="diesel-period-value">${formatReportNumber(qty)}</div>
+        </div>`;
+      }).join("");
+      if(max <= 0){
+        return `<div class="report-no-data">No se registró consumo de DIESEL en el rango seleccionado.</div>`;
+      }
+      return `<div class="diesel-comparison-chart">${rows}</div>`;
+    }
+
+    function renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount,rangeRows}){
+      const split=splitReportConsumption(summary.consumos);
+      const fuelSummaryHtml=renderFuelSummary(split.combustibles);
+      const fuelSectionHtml = fuelSummaryHtml ? `<div class="report-section">
+          <div class="report-section-title">
+            ${productConsumptionIcon("GASOLINA",18)}
+            COMBUSTIBLES
+          </div>
+          ${fuelSummaryHtml}
+        </div>` : "";
+      const lubricantChartHtml=renderConsumptionChart(split.lubricantes,"CANTIDAD ACUMULADA DE LUBRICANTES");
+      const dieselComparison=buildDieselComparison(rangeRows,from,to);
+      const dieselComparisonHtml=renderDieselComparison(dieselComparison);
+      const oilHtml = oilChanges.length
+        ? oilChanges.map(change => `<div class="oil-history-item">
+            <div class="oil-history-top">
+              <span class="oil-history-date">${escapeHtml(formatDateLongDisplay(change.fechaKey || normalizeDateKey(change.fecha)))}</span>
+              <span class="oil-history-qty">${formatReportNumber(change.cantidad)}</span>
+            </div>
+            <div class="oil-history-type">${escapeHtml(change.tipo)}</div>
+            <div class="oil-history-meta">${escapeHtml(change.producto || "SIN PRODUCTO")} · PLANTA ${escapeHtml(change.planta || "—")}</div>
+            ${change.comentario ? `<div class="oil-history-comment">${escapeHtml(change.comentario)}</div>` : ""}
+          </div>`).join("")
+        : `<div class="report-no-data">No hay cambios de aceite registrados entre ${escapeHtml(formatDateLongDisplay(oilFrom))} y ${escapeHtml(formatDateLongDisplay(to))}.</div>`;
+
+      reportDetailPanel.innerHTML = `<div class="report-detail">
+        <div class="report-detail-title">
+          <div>
+            <h3>REPORTE DE CONSUMO EQUIPO ${escapeHtml(equipo)}</h3>
+            <p>${escapeHtml(tipo)} · ${escapeHtml(formatDateDisplay(from))} AL ${escapeHtml(formatDateDisplay(to))}</p>
+          </div>
+          <button id="downloadReportBtn" class="download-report-btn" type="button">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            DESCARGAR REPORTE
+          </button>
+        </div>
+
+        ${fuelSectionHtml}
+
+        <div class="report-section">
+          <div class="report-section-title">
+            ${productConsumptionIcon("15W40",18)}
+            LUBRICANTES
+          </div>
+          ${lubricantChartHtml}
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">
+            ${productConsumptionIcon("DIESEL",18)}
+            COMPARATIVA DE CONSUMO DIESEL
+          </div>
+          ${dieselComparisonHtml}
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">
+            ${oilChangeIcon(18)}
+            ÚLTIMOS CAMBIOS DE ACEITE · 1 AÑO · ${oilChanges.length} CAMBIOS
+          </div>
+          <div class="oil-history">${oilHtml}</div>
+        </div>
+      </div>`;
+
+      const downloadReportBtn = document.getElementById("downloadReportBtn");
+      downloadReportBtn?.addEventListener("click", () => downloadGeneratedReportPDF(equipo));
+    }
+
+    async function downloadGeneratedReportPDF(equipo){
+      const report = reportDetailPanel?.querySelector(".report-detail");
+      const button = document.getElementById("downloadReportBtn");
+      if(!report){
+        showToast("Primero genere el reporte.", true);
+        return;
+      }
+      if(typeof html2canvas !== "function" || !window.jspdf?.jsPDF){
+        showToast("No se pudo cargar la librería para crear el PDF.", true);
+        return;
+      }
+
+      const previousText = button?.textContent || "DESCARGAR REPORTE";
+      if(button){ button.disabled = true; button.textContent = "GENERANDO PDF..."; }
+
+      let exportHost = null;
+      try{
+        exportHost = document.createElement("div");
+        exportHost.className = "pdf-report-export";
+        const clone = report.cloneNode(true);
+        clone.querySelector("#downloadReportBtn")?.remove();
+        exportHost.appendChild(clone);
+        document.body.appendChild(exportHost);
+
+        if(document.fonts?.ready) await document.fonts.ready;
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+        const canvas = await html2canvas(exportHost, {
+          backgroundColor:"#ffffff",
+          scale:1.35,
+          useCORS:true,
+          logging:false,
+          windowWidth:900
+        });
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({orientation:"portrait",unit:"mm",format:"a4",compress:true});
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const margin = 6;
+        const maxW = pageW - margin * 2;
+        const maxH = pageH - margin * 2;
+        const ratio = Math.min(maxW / canvas.width, maxH / canvas.height);
+        const imgW = canvas.width * ratio;
+        const imgH = canvas.height * ratio;
+        const x = (pageW - imgW) / 2;
+        const y = (pageH - imgH) / 2;
+        const img = canvas.toDataURL("image/jpeg",0.94);
+        pdf.addImage(img,"JPEG",x,y,imgW,imgH,undefined,"FAST");
+
+        const safeEquipment = String(equipo || "EQUIPO").replace(/[^A-Z0-9_-]/gi,"_").toUpperCase();
+        pdf.save(`REPORTE_DE_CONSUMO_EQUIPO_${safeEquipment}.pdf`);
+        showToast("Reporte PDF descargado en A4 vertical y una sola página.");
+      }catch(error){
+        console.error("PDF reporte:",error);
+        showToast("No se pudo generar el PDF del reporte.", true);
+      }finally{
+        exportHost?.remove();
+        if(button){
+          button.disabled = false;
+          button.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> DESCARGAR REPORTE`;
+        }
+      }
+    }
+
+    async function generateReportsFromSupabase(){
+      const equipo = sanitizeEquipmentCode(reportEquipmentFilter?.value || "");
+      const from = reportDateFrom?.value || "";
+      const to = reportDateTo?.value || "";
+
+      if(!equipo || !from || !to){
+        setReportsStatus("Complete NÚMERO DE EQUIPO y RANGO DE FECHA antes de generar el reporte.", "error");
+        return;
+      }
+      if(from > to){
+        setReportsStatus("La FECHA INICIAL no puede ser posterior a la FECHA FINAL.", "error");
+        return;
+      }
+
+      reportEquipmentFilter.value = equipo;
+      generateReportBtn.disabled = true;
+      setReportsStatus("");
+      reportDetailPanel.innerHTML = `<div class="report-detail-empty"><div><strong>GENERANDO REPORTE...</strong><span>Consultando consumos e historial anual de cambios de aceite.</span></div></div>`;
+
+      try{
+        const oilFrom = getOneYearBefore(to);
+        const [rangeRows, oilRows, tipo] = await Promise.all([
+          fetchEquipmentMovementsRange(equipo, from, to),
+          fetchEquipmentMovementsRange(equipo, oilFrom, to),
+          fetchReportEquipmentType(equipo)
+        ]);
+        const summary = summarizeReportConsumption(rangeRows);
+        const oilChanges = extractOilChanges(oilRows);
+        renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount:rangeRows.length,rangeRows});
+        setReportsStatus("");
+      }catch(error){
+        console.error("Reporte Supabase:", error);
+        reportDetailPanel.innerHTML = `<div class="report-detail-empty"><div><strong>NO SE PUDO GENERAR EL REPORTE</strong><span>${escapeHtml(error.message || String(error))}</span></div></div>`;
+        setReportsStatus("Error al generar el reporte: " + (error.message || error), "error");
+      }finally{
+        updateReportGenerateState();
+      }
+    }
+
+    reportEquipmentFilter?.addEventListener("input", () => {
+      reportEquipmentFilter.value = sanitizeEquipmentCode(reportEquipmentFilter.value);
+      updateReportGenerateState();
+    });
+
+    function reportDateToIso(date){
+      if(!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2,"0");
+      const day = String(date.getDate()).padStart(2,"0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function initializeReportRangeCalendar(){
+      if(!reportDateRange) return;
+      if(typeof window.flatpickr !== "function"){
+        reportDateRange.removeAttribute("readonly");
+        reportDateRange.placeholder = "DD/MM/AAAA AL DD/MM/AAAA";
+        setReportsStatus("No se pudo cargar el calendario visual. Verifique la conexión a internet.", "error");
+        return;
+      }
+      const localeBase = window.flatpickr.l10ns?.es || {};
+      window.flatpickr(reportDateRange,{
+        mode:"range",
+        dateFormat:"d/m/Y",
+        disableMobile:true,
+        monthSelectorType:"static",
+        locale:{...localeBase,firstDayOfWeek:1,rangeSeparator:" AL "},
+        onChange(selectedDates){
+          reportDateFrom.value = selectedDates[0] ? reportDateToIso(selectedDates[0]) : "";
+          reportDateTo.value = selectedDates[1] ? reportDateToIso(selectedDates[1]) : "";
+          updateReportGenerateState();
+        },
+        onClose(selectedDates){
+          if(selectedDates.length === 1){
+            reportDateTo.value = "";
+            updateReportGenerateState();
+          }
+        }
+      });
+    }
+
+    generateReportBtn?.addEventListener("click", generateReportsFromSupabase);
+    initializeReportRangeCalendar();
+    populateReportEquipmentOptions();
+    updateReportGenerateState();
+
+    function updateMenuCounters(){
+      menuMovementCount.textContent = getLocalMovements().length;
+      menuInventoryCount.textContent = getLocalDb().length;
+      menuEquipmentCount.textContent = getCustomEquipments().length;
+    }
+
+    let currentAppView = "dashboard";
+    let currentEntryTab = "movement";
+
+    function setEntryTab(tab){
+      currentEntryTab = tab;
+      const showMovement = tab !== "inventory";
+
+      movementView.classList.toggle("view-hidden", !showMovement);
+      inventoryView.classList.toggle("view-hidden", showMovement);
+      entryMovementTab.classList.toggle("active", showMovement);
+      entryInventoryTab.classList.toggle("active", !showMovement);
+      entryMovementTab.setAttribute("aria-selected", showMovement ? "true" : "false");
+      entryInventoryTab.setAttribute("aria-selected", showMovement ? "false" : "true");
+
+      if(showMovement){
+        setTimeout(() => requestInventoryIfReady(), 0);
+      }
+    }
+
+    function setHistoryTab(tab){
+      const showRecords = tab !== "inventories";
+
+      recordsView.classList.toggle("active", showRecords);
+      savedInventoriesView.classList.toggle("active", !showRecords);
+      historyMovementsTab.classList.toggle("active", showRecords);
+      historyInventoriesTab.classList.toggle("active", !showRecords);
+      historyMovementsTab.setAttribute("aria-selected", showRecords ? "true" : "false");
+      historyInventoriesTab.setAttribute("aria-selected", showRecords ? "false" : "true");
+
+      if(showRecords){
+        if(fechaPicker?.value) recordsDate.value = fechaPicker.value;
+        if(plantaInput?.value && !recordsPlant.value) recordsPlant.value = plantaInput.value;
+        renderRecordsView();
+      }else{
+        if(fechaPicker?.value) savedInventoryDate.value = fechaPicker.value;
+        if(plantaInput?.value && !savedInventoryPlant.value) savedInventoryPlant.value = plantaInput.value;
+        renderSavedInventoriesView();
+      }
+    }
+
+    function showDashboard(){
+      currentAppView = "dashboard";
+      dashboardMenu.classList.remove("hidden-view");
+      mainWorkspace.classList.add("hidden-view");
+      viewToolbar.classList.remove("show");
+      entryTabs.classList.add("view-hidden");
+      movementView.classList.remove("view-hidden");
+      inventoryView.classList.remove("view-hidden");
+      historyView.classList.add("view-hidden");
+      reportsView.classList.add("view-hidden");
+      userAdminView.classList.add("view-hidden");
+      mainWorkspace.classList.remove("single-view");
+      currentViewLabel.textContent = "";
+      updateMenuCounters();
+    }
+
+    function openAppView(view){
+      currentAppView = view;
+      dashboardMenu.classList.add("hidden-view");
+      mainWorkspace.classList.remove("hidden-view");
+      viewToolbar.classList.add("show");
+
+      entryTabs.classList.add("view-hidden");
+      movementView.classList.remove("view-hidden");
+      inventoryView.classList.remove("view-hidden");
+      historyView.classList.add("view-hidden");
+      reportsView.classList.add("view-hidden");
+      userAdminView.classList.add("view-hidden");
+      mainWorkspace.classList.remove("single-view");
+
+      if(view === "entry"){
+        entryTabs.classList.remove("view-hidden");
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent = "INGRESO DE MOVIMIENTO E INVENTARIO";
+        setEntryTab("movement");
+      }else if(view === "movement"){
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent = "REGISTRAR MOVIMIENTO";
+        setEntryTab("movement");
+      }else if(view === "inventory"){
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent = "INVENTARIO";
+        setEntryTab("inventory");
+      }else if(view === "history"){
+        movementView.classList.add("view-hidden");
+        inventoryView.classList.add("view-hidden");
+        historyView.classList.remove("view-hidden");
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent = "REGISTRO DE MOVIMIENTOS E INVENTARIO";
+        setHistoryTab("records");
+      }else if(view === "reports"){
+        movementView.classList.add("view-hidden");
+        inventoryView.classList.add("view-hidden");
+        historyView.classList.add("view-hidden");
+        userAdminView.classList.add("view-hidden");
+        reportsView.classList.remove("view-hidden");
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent = "REPORTES";
+        // No se consulta Supabase al abrir la vista. Solo al pulsar GENERAR REPORTE.
+        updateReportGenerateState();
+      }else if(view === "users"){
+        if(currentUser?.rol !== "admin"){
+          showToast("Solo un administrador puede gestionar usuarios.", true);
+          showDashboard();
+          return;
+        }
+        movementView.classList.add("view-hidden");
+        inventoryView.classList.add("view-hidden");
+        historyView.classList.add("view-hidden");
+        reportsView.classList.add("view-hidden");
+        userAdminView.classList.remove("view-hidden");
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent = "GESTIÓN DE USUARIOS";
+        loadAdminUsers();
+      }else{
+        historyView.classList.add("view-hidden");
+        reportsView.classList.add("view-hidden");
+        currentViewLabel.textContent = "VISTA PC";
+      }
+
+      if(!movementView.classList.contains("view-hidden")){
+        setTimeout(() => requestInventoryIfReady(), 0);
+      }
+    }
+
+    entryMovementTab.addEventListener("click", () => setEntryTab("movement"));
+    entryInventoryTab.addEventListener("click", () => setEntryTab("inventory"));
+    historyMovementsTab.addEventListener("click", () => setHistoryTab("records"));
+    historyInventoriesTab.addEventListener("click", () => setHistoryTab("inventories"));
+
+    dashboardMenu.querySelectorAll(".menu-card[data-view]").forEach(card => {
+      card.addEventListener("click", () => openAppView(card.dataset.view));
+    });
+
+    backToMenuBtn.addEventListener("click", showDashboard);
+
+    deleteFilteredRecordsBtn.addEventListener("click", () => {
+      const dateKey = normalizeDateKey(recordsDate.value);
+      const plantKey = String(recordsPlant.value || "").trim();
+      const visibleCount = recordsBody.querySelectorAll("tr").length;
+
+      if(!dateKey || !plantKey || visibleCount === 0) return;
+
+      openDeleteConfirm(
+        "Se eliminarán todos los registros de la planta " + plantKey +
+        " para la fecha " + formatDateDisplay(dateKey) + ". Esta acción no se puede deshacer.",
+        deleteAllFilteredRecords
+      );
+    });
+
+    deleteConfirmCancel.addEventListener("click", closeDeleteConfirm);
+
+    deleteConfirmOk.addEventListener("click", () => {
+      const action = pendingDeleteAction;
+      closeDeleteConfirm();
+      if(typeof action === "function") action();
+    });
+
+    deleteConfirmOverlay.addEventListener("click", (e) => {
+      if(e.target === deleteConfirmOverlay) closeDeleteConfirm();
+    });
+
+    recordsDate.addEventListener("change", renderRecordsView);
+    recordsPlant.addEventListener("input", () => {
+      const cleaned = String(recordsPlant.value || "").replace(/[^0-9]/g, "");
+      if(recordsPlant.value !== cleaned) recordsPlant.value = cleaned;
+      renderRecordsView();
+    });
+
+    deleteFilteredInventoriesBtn.addEventListener("click", () => {
+      const dateKey = normalizeDateKey(savedInventoryDate.value);
+      const plantKey = String(savedInventoryPlant.value || "").trim();
+      const visibleCount = savedInventoriesBody.querySelectorAll("tr").length;
+
+      if(!dateKey || !plantKey || visibleCount === 0) return;
+
+      openDeleteConfirm(
+        "Se eliminarán todos los inventarios guardados de la planta " + plantKey +
+        " para la fecha " + formatDateDisplay(dateKey) + ". Esta acción no se puede deshacer.",
+        deleteAllFilteredInventories
+      );
+    });
+
+    savedInventoryDate.addEventListener("change", renderSavedInventoriesView);
+    savedInventoryPlant.addEventListener("input", () => {
+      const cleaned = String(savedInventoryPlant.value || "").replace(/[^0-9]/g, "");
+      if(savedInventoryPlant.value !== cleaned) savedInventoryPlant.value = cleaned;
+      renderSavedInventoriesView();
+    });
+
+    loginPasswordToggle.addEventListener("click", () => {
+      const showing = loginPassword.type === "text";
+      loginPassword.type = showing ? "password" : "text";
+      loginPasswordToggle.setAttribute("aria-label", showing ? "Mostrar contraseña" : "Ocultar contraseña");
+    });
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const correo = loginCorreo.value.trim().toLowerCase();
+      const password = loginPassword.value;
+      if(!correo || !password){
+        setLoginMessage("Complete correo electrónico y contraseña.", true);
+        return;
+      }
+      loginSubmitBtn.disabled = true;
+      loginSubmitBtn.textContent = "INGRESANDO...";
+      setLoginMessage("Validando credenciales...");
+      try{
+        const data = await sbRpc("login_usuario", {
+          p_correo:correo,
+          p_password:password
+        });
+        if(!data?.token) throw new Error("Supabase no devolvió una sesión válida.");
+        loginPassword.value = "";
+        await enterAuthenticatedApp(data);
+      }catch(error){
+        console.error(error);
+        setLoginMessage(error.message || "No se pudo iniciar sesión.", true);
+      }finally{
+        loginSubmitBtn.disabled = false;
+        loginSubmitBtn.textContent = "INICIAR SESIÓN";
+      }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      const token = currentSessionToken;
+      clearAuthSession();
+      showLogin();
+      if(token){
+        try{ await sbRpc("cerrar_sesion", {p_token:token}); }catch{}
+      }
+    });
+
+    userAdminForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if(currentUser?.rol !== "admin"){
+        showToast("Solo un administrador puede gestionar usuarios.", true);
+        return;
+      }
+      const nombre = adminUserName.value.trim();
+      const correo = adminUserEmail.value.trim().toLowerCase();
+      const password = adminUserPassword.value;
+      const rol = adminUserRole.value;
+      if(!nombre || !correo || !rol){
+        showToast("Complete nombre, correo y rol.", true);
+        return;
+      }
+      adminUserSubmit.disabled = true;
+      adminUserSubmit.textContent = "GUARDANDO...";
+      try{
+        await sbRpc("guardar_usuario", {
+          p_token:currentSessionToken,
+          p_nombre:nombre,
+          p_correo:correo,
+          p_password:password,
+          p_rol:rol
+        });
+        adminUserPassword.value = "";
+        showToast("Usuario registrado / actualizado correctamente.");
+        await loadAdminUsers();
+      }catch(error){
+        console.error(error);
+        showToast("No se pudo guardar el usuario: " + error.message, true);
+      }finally{
+        adminUserSubmit.disabled = false;
+        adminUserSubmit.textContent = "REGISTRAR / ACTUALIZAR";
+      }
+    });
+
+    adminUsersBody.addEventListener("click", (event) => {
+      const row = event.target.closest("tr");
+      if(!row || !row.cells || row.cells.length < 3) return;
+      const nombre = row.cells[0]?.textContent?.trim();
+      const correo = row.cells[1]?.textContent?.trim();
+      const rol = row.cells[2]?.textContent?.trim()?.toLowerCase();
+      if(!correo || correo.includes("Cargando")) return;
+      adminUserName.value = nombre || "";
+      adminUserEmail.value = correo || "";
+      if(["usuario","supervisor","admin"].includes(rol)) adminUserRole.value = rol;
+      adminUserPassword.value = "";
+      adminUserName.focus();
+    });
+
+    initializeCurrentDate();
+    refreshEquipmentTypeOptions();
+    updateMenuCounters();
+
+    // EQUIPO: es el único campo que permite letras y números.
+    enforceEquipmentInput(equipoInput);
+    equipoInput.addEventListener("input", () => {
+      validateEquipment();
+    });
+    equipoInput.addEventListener("blur", validateEquipment);
+
+    addEquipmentBtn.addEventListener("click", async () => {
+      const code = sanitizeEquipmentCode(equipoInput.value);
+      const tipo = String(newEquipmentType.value || "").trim().toUpperCase();
+      equipoInput.value = code;
+
+      if(!code || !/^[A-Z0-9]+$/.test(code)){
+        showToast("Ingrese un código de equipo válido usando letras y números.", true);
+        return;
+      }
+
+      if(!tipo || !getRegisteredEquipmentTypes().includes(tipo)){
+        showToast("Seleccione un tipo de equipo de la lista de referencias registradas.", true);
+        newEquipmentType.focus();
+        return;
+      }
+
+      if(getEquipmentRecord(code)){
+        validateEquipment();
+        showToast("Ese equipo ya está registrado.");
+        return;
+      }
+
+      try{
+        await sbRequest("combustible_equipos", {
+          method:"POST",
+          body:{codigo:code, tipo:tipo || null, activo:true}
+        });
+        const custom = getCustomEquipments();
+        custom.push({codigo:code, tipo, created_at:new Date().toISOString()});
+        saveCustomEquipments(custom);
+        newEquipmentType.value = "";
+        refreshEquipmentTypeOptions();
+        validateEquipment();
+        showToast("Equipo agregado a Supabase.");
+        updateMenuCounters();
+      }catch(error){
+        console.error(error);
+        showToast("No se pudo agregar el equipo: " + error.message, true);
+      }
+    });
+
+    // Cantidades: bloquear letras, e, signos y otros caracteres.
+    document.addEventListener("input", (e) => {
+      if(e.target.matches(".combustible-qty, .inventory-input")){
+        const cleaned = sanitizeNumericText(e.target.value, true);
+        if(e.target.value !== cleaned) e.target.value = cleaned;
+      }
+    });
+
+    ivfaHeader.addEventListener("click",()=>{
+      if(!currentPlant || !inventoryBody.querySelector("tr")) return;
+
+      if(ivfaFilterActive){
+        clearIvfaFilter();
+      }else{
+        applyIvfaFilter();
+      }
+    });
+
+    saveMovementBtn.addEventListener("click", async ()=>{
+      const planta = plantaInput.value.trim();
+      const equipo = sanitizeEquipmentCode(equipoInput.value);
+      equipoInput.value = equipo;
+      const items = collectMovementItems();
+
+      if(!planta){
+        showToast("Ingrese el número de planta.", true);
+        plantaInput.focus();
+        return;
+      }
+      if(!equipo){
+        showToast("Ingrese el equipo.", true);
+        equipoInput.focus();
+        return;
+      }
+      if(!validateEquipment()){
+        showToast("El equipo no está registrado. Agréguelo antes de guardar.", true);
+        equipoInput.focus();
+        return;
+      }
+      if(!items.length){
+        showToast("Seleccione al menos un combustible o lubricante.", true);
+        return;
+      }
+
+      const pendingOilTypePanel = [...combustibleDetails.querySelectorAll(".fuel-panel.show .movement-entry")]
+        .find(entry => entry.dataset.requiresOilType === "true" || entry.querySelector(".oil-type-select.needs-selection"));
+      if(pendingOilTypePanel){
+        showToast("Seleccione el tipo exacto de cambio de aceite antes de guardar.", true);
+        pendingOilTypePanel.querySelector(".oil-type-select")?.focus();
+        return;
+      }
+
+      const itemsInvalidos = items.filter(item => !Number.isFinite(item.cantidad) || item.cantidad <= 0);
+      if(itemsInvalidos.length){
+        showToast("Ingrese una cantidad mayor que 0 en todos los productos seleccionados.", true);
+        return;
+      }
+
+      saveMovementBtn.disabled = true;
+      saveMovementBtn.textContent = "GUARDANDO...";
+      try{
+        const registro = await saveMovementToSupabase({
+          fecha:fechaInput.value,
+          planta,
+          equipo,
+          items
+        });
+        const registros = getLocalMovements();
+        registros.push(registro);
+        saveLocalMovements(registros);
+        applyDailyOutputsToInventory();
+        showToast("Movimiento guardado en Supabase.");
+        updateMenuCounters();
+        renderRecordsView();
+        clearMovementFormAfterSave();
+      }catch(error){
+        console.error(error);
+        showToast("No se pudo guardar en Supabase: " + error.message, true);
+      }finally{
+        saveMovementBtn.disabled = false;
+        saveMovementBtn.textContent = "REGISTRAR MOVIMIENTO";
+      }
+    });
+
+    saveInventoryBtn.addEventListener("click", async ()=>{
+      applyDailyOutputsToInventory();
+
+      if(!currentPlant){
+        showToast("Primero ingrese una planta.", true);
+        plantaInput.focus();
+        return;
+      }
+
+      const rows = [...inventoryBody.querySelectorAll("tr")];
+      if(!rows.length){
+        showToast("No hay inventario cargado para registrar.", true);
+        return;
+      }
+
+      const negativeRows = rows.filter(row => row.classList.contains("inventory-negative"));
+      if(negativeRows.length){
+        showToast("Advertencia: hay " + negativeRows.length + " artículo(s) con inventario negativo.", true);
+      }
+
+      const items = rows.map(row=>{
+        const ivfa = Number(row.dataset.ivfa || 0);
+        const inicial = Number(row.querySelector(".initial-input").value || 0);
+        const entrada = Number(row.querySelector(".entry-input").value || 0);
+        const salida = Number(row.querySelector(".exit-value").dataset.value || 0);
+        return {
+          nombre:row.dataset.product,
+          ivfa,
+          inicial,
+          entrada,
+          salida,
+          final:inicial + entrada - salida
+        };
+      });
+
+      saveInventoryBtn.disabled = true;
+      saveInventoryBtn.textContent = "GUARDANDO...";
+      try{
+        const inventory = await saveInventoryToSupabase({
+          fecha:fechaInput.value,
+          planta:currentPlant,
+          items
+        });
+        const db = getLocalDb();
+        db.push(inventory);
+        saveLocalDb(db);
+        saveInventoryBtn.textContent = "INVENTARIO GUARDADO";
+        setLookupStatus("Inventario guardado en Supabase para la planta "+currentPlant+".","ok");
+        showToast("Inventario guardado en Supabase.");
+        updateMenuCounters();
+        renderSavedInventoriesView();
+        await cargarInventario(currentPlant, fechaPicker.value, {force:true});
+        setTimeout(()=>{
+          saveInventoryBtn.textContent = "REGISTRAR INVENTARIO";
+        },1400);
+      }catch(error){
+        console.error(error);
+        showToast("No se pudo guardar el inventario en Supabase: " + error.message, true);
+        saveInventoryBtn.textContent = "REGISTRAR INVENTARIO";
+      }finally{
+        saveInventoryBtn.disabled = false;
+      }
+    });
+
+    restoreAuthSession();
+  </script>
+
+
+  <script>
+    document.addEventListener("wheel", function(e){
+      const target = e.target;
+      if(target && target.matches('input[type="number"]')){
+        e.preventDefault();
+      }
+    }, { passive:false });
+  </script>
+
+</body>
+</html>
