@@ -638,16 +638,18 @@
     }
 
     .delete-filtered-btn{
+      width:36px;
       height:34px;
       border:1px solid #dc2626;
       border-radius:9px;
       background:#fff;
       color:#b91c1c;
-      padding:0 12px;
-      font-size:11px;
-      font-weight:800;
+      padding:0;
       cursor:pointer;
+      display:grid;
+      place-items:center;
     }
+    .delete-filtered-btn svg{width:16px;height:16px}
 
     .delete-filtered-btn:hover{
       background:#fff1f2;
@@ -677,6 +679,56 @@
     .delete-record-btn:hover{
       background:#fee2e2;
     }
+
+    .record-actions-cell{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+
+    .record-icon-btn{
+      width:30px;
+      height:30px;
+      border-radius:8px;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      background:#fff;
+      transition:.15s ease;
+    }
+    .record-icon-btn svg{width:15px;height:15px}
+    .record-icon-btn.edit{border:1px solid #bfdbfe;color:#1d4ed8;background:#eff6ff}
+    .record-icon-btn.edit:hover{background:#dbeafe}
+    .record-icon-btn.delete{border:1px solid #fecaca;color:#b91c1c;background:#fff}
+    .record-icon-btn.delete:hover{background:#fee2e2}
+
+    .record-edit-overlay{
+      position:fixed;inset:0;background:rgba(17,24,39,.34);display:none;align-items:center;justify-content:center;
+      padding:18px;z-index:9998;
+    }
+    .record-edit-overlay.show{display:flex}
+    .record-edit-card{
+      width:min(94vw,760px);max-height:92vh;overflow:auto;background:#fff;border:1px solid #dfe5ee;border-radius:16px;
+      box-shadow:0 22px 60px rgba(17,24,39,.26);padding:18px;
+    }
+    .record-edit-card h3{margin:0 0 4px;font-size:18px;color:#0f172a}
+    .record-edit-card .record-edit-note{margin:0 0 16px;color:#64748b;font-size:12px}
+    .record-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .record-edit-field{display:flex;flex-direction:column;gap:6px}
+    .record-edit-field.full{grid-column:1/-1}
+    .record-edit-field label{font-size:11px;font-weight:900;color:#475569}
+    .record-edit-field input,.record-edit-field select,.record-edit-field textarea{
+      width:100%;border:1px solid #d7e1ef;border-radius:10px;background:#fff;color:#0f172a;padding:10px 11px;font:inherit;
+    }
+    .record-edit-field textarea{min-height:78px;resize:vertical;text-transform:uppercase}
+    .record-edit-field input[type=text]{text-transform:uppercase}
+    .record-edit-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+    .record-edit-cancel,.record-edit-save{height:38px;border-radius:10px;padding:0 14px;font-weight:900;cursor:pointer}
+    .record-edit-cancel{border:1px solid #d7e1ef;background:#fff;color:#334155}
+    .record-edit-save{border:1px solid #173f8f;background:#173f8f;color:#fff}
+    .record-edit-save:disabled{opacity:.55;cursor:not-allowed}
+    @media(max-width:680px){.record-edit-grid{grid-template-columns:1fr}.record-edit-field.full{grid-column:auto}}
 
     .delete-confirm-overlay{
       position:fixed;
@@ -1651,7 +1703,55 @@
       input,select{height:46px}
       .input-icon{height:46px}
     }
-  </style>
+  
+    .equipment-admin-tabs{display:flex;gap:8px;padding:0 20px 14px;border-bottom:1px solid #e5eaf2}
+    .equipment-admin-tab{height:42px;border:1px solid #dbe4f0;border-radius:11px;background:#fff;color:#52647f;padding:0 15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:950;cursor:pointer}
+    .equipment-admin-tab.active{background:#eef4ff;border-color:#bed2ff;color:#173f8f;box-shadow:0 3px 10px rgba(49,95,178,.08)}
+    .equipment-admin-shell{padding:20px;display:grid;gap:18px}
+    .equipment-admin-form{max-width:980px}
+    .equipment-admin-help{display:block;margin-top:7px;font-size:11px;line-height:1.4;color:#64748b;font-weight:800}
+    .equipment-type-autocomplete-field{position:relative}
+    .equipment-type-suggestions{position:absolute;left:0;right:0;top:calc(100% - 25px);z-index:40;max-height:260px;overflow:auto;border:1px solid #cfd9e8;border-radius:12px;background:#fff;box-shadow:0 14px 32px rgba(23,63,143,.16);padding:6px}
+    .equipment-type-suggestion{width:100%;min-height:38px;border:0;border-radius:8px;background:#fff;color:#172033;text-align:left;padding:8px 11px;font-size:12px;font-weight:850;cursor:pointer;display:flex;align-items:center;gap:9px}
+    .equipment-type-suggestion:hover,.equipment-type-suggestion:focus{background:#eef4ff;color:#173f8f;outline:none}
+    .equipment-type-suggestion svg{color:#315fb2;flex:0 0 auto}
+    .equipment-type-no-match{padding:10px 11px;font-size:11px;color:#64748b;font-weight:800}
+    .equipment-admin-list-panel{padding:18px 20px 22px}
+    .equipment-list-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .equipment-list-search-wrap{position:relative;flex:1;max-width:680px}
+    .equipment-list-search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#64748b;pointer-events:none}
+    .equipment-list-search-wrap input{width:100%;padding-left:42px;text-transform:uppercase}
+    .equipment-list-count{white-space:nowrap;border:1px solid #dbe4f0;background:#f8fafc;border-radius:999px;padding:8px 12px;color:#173f8f;font-size:11px;font-weight:950}
+    .equipment-list-table-wrap{border:1px solid #dbe4f0;border-radius:14px;overflow:auto;background:#fff;max-height:560px}
+    .equipment-admin-table{width:100%;border-collapse:collapse;min-width:560px}
+    .equipment-admin-table th{position:sticky;top:0;z-index:1;background:#f4f7fb;color:#52647f;text-align:left;padding:11px 14px;font-size:10px;letter-spacing:.3px;font-weight:950;border-bottom:1px solid #dbe4f0}
+    .equipment-admin-table td{padding:11px 14px;border-bottom:1px solid #edf1f6;font-size:12px;font-weight:800;color:#172033;text-transform:uppercase}
+    .equipment-admin-table tr:last-child td{border-bottom:0}
+    .equipment-admin-table tbody tr:hover{background:#f8fbff}
+    .equipment-form-actions{display:flex;gap:10px;align-items:center}
+    .equipment-form-actions .user-admin-submit{flex:1}
+    .equipment-admin-cancel{height:46px;border:1px solid #d6dfec;border-radius:11px;background:#fff;color:#52647f;padding:0 18px;font-size:11px;font-weight:950;cursor:pointer}
+    .equipment-admin-cancel:hover{background:#f6f8fb}
+    .equipment-row-actions{display:flex;gap:7px;justify-content:flex-end;white-space:nowrap}
+    .equipment-action-btn{width:34px;height:34px;border-radius:9px;padding:0;cursor:pointer;border:1px solid #d7e1ef;background:#fff;display:grid;place-items:center}
+    .equipment-action-btn.edit{color:#173f8f;background:#eef4ff;border-color:#c9d9f6}
+    .equipment-action-btn.delete{color:#b42318;background:#fff5f4;border-color:#ffd2cd}
+    .equipment-action-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 12px rgba(17,24,39,.08)}
+    .equipment-action-btn:disabled{opacity:.38;cursor:not-allowed}
+    .equipment-action-btn svg{width:16px;height:16px}
+    .equipment-list-loading{padding:24px!important;text-align:center;color:#6b7280!important}
+    .equipment-code-cell{color:#173f8f!important;font-weight:950!important}
+    .equipment-list-empty{text-align:center!important;color:#64748b!important;padding:28px 14px!important}
+    @media (max-width:720px){
+      .equipment-admin-tabs{padding:0 14px 12px;display:grid;grid-template-columns:1fr 1fr}
+      .equipment-admin-tab{padding:0 8px;font-size:10px}
+      .equipment-admin-shell,.equipment-admin-list-panel{padding:14px}
+      .equipment-list-toolbar{align-items:stretch;flex-direction:column}
+      .equipment-list-search-wrap{max-width:none}
+      .equipment-list-count{align-self:flex-start}
+      .equipment-type-suggestions{top:calc(100% - 25px)}
+    }
+</style>
 </head>
 <body class="auth-locked">
   <section id="loginScreen" class="auth-screen">
@@ -1773,6 +1873,18 @@
           <p>Consulte consumos por equipo y rango de fecha, con historial anual de cambios de aceite.</p>
         </button>
 
+        <button id="equipmentAdminMenuCard" type="button" class="menu-card hidden" data-view="equipment-admin">
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="7" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M15 10h3l3 3v4h-6M7 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM17 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9 4v6M6 7h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Agregar nuevo equipo</h3>
+          <p>Registre nuevos equipos y utilice como referencia los tipos ya existentes. Solo ADMIN.</p>
+        </button>
+
         <button id="userAdminMenuCard" type="button" class="menu-card hidden" data-view="users">
           <span class="menu-card-icon" aria-hidden="true">
             <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
@@ -1828,15 +1940,6 @@
             <label for="equipo">EQUIPO</label>
             <input id="equipo" type="text" inputmode="text" maxlength="20" autocomplete="off" placeholder="Ingrese el código del equipo">
             <div id="equipmentStatus" class="equipment-status">Ingrese el código del equipo para comprobarlo.</div>
-            <div id="newEquipmentBox" class="new-equipment-box hidden">
-              <div class="equipment-type-picker">
-                <span class="equipment-type-reference-label">TIPO DE EQUIPO · SELECCIONE UNA REFERENCIA REGISTRADA</span>
-                <select id="newEquipmentType" aria-label="Tipo de equipo registrado">
-                  <option value="">SELECCIONE EL TIPO DE EQUIPO</option>
-                </select>
-              </div>
-              <button id="addEquipmentBtn" type="button" class="mini-action-btn">AGREGAR EQUIPO</button>
-            </div>
           </div>
 
           <div class="field">
@@ -1932,7 +2035,7 @@
         <div class="records-summary">
           <span id="recordsFilterMessage">Ingrese la planta para mostrar los registros.</span>
           <div class="records-actions">
-            <button id="deleteFilteredRecordsBtn" type="button" class="delete-filtered-btn" disabled>ELIMINAR TODOS LOS REGISTROS</button>
+            <button id="deleteFilteredRecordsBtn" type="button" class="delete-filtered-btn" disabled title="Eliminar todos los registros" aria-label="Eliminar todos los registros"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             <span id="recordsCount" class="records-count">0 registros</span>
           </div>
         </div>
@@ -1949,7 +2052,7 @@
                 <th>TIPO DE MOVIMIENTO</th>
                 <th>CAMBIO DE ACEITE</th>
                 <th>COMENTARIO</th>
-                <th>ELIMINAR</th>
+                <th>ACCIONES</th>
               </tr>
             </thead>
             <tbody id="recordsBody"></tbody>
@@ -1982,7 +2085,7 @@
         <div class="saved-inventories-summary">
           <span id="savedInventoryFilterMessage">Ingrese la planta para mostrar los inventarios guardados.</span>
           <div class="saved-inventories-actions">
-            <button id="deleteFilteredInventoriesBtn" type="button" class="delete-filtered-btn" disabled>ELIMINAR TODOS LOS INVENTARIOS</button>
+            <button id="deleteFilteredInventoriesBtn" type="button" class="delete-filtered-btn" disabled title="Eliminar todos los inventarios" aria-label="Eliminar todos los inventarios"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             <span id="savedInventoriesCount" class="saved-inventories-count">0 inventarios</span>
           </div>
         </div>
@@ -1998,7 +2101,7 @@
                 <th>ENTRADA</th>
                 <th>SALIDA</th>
                 <th>FINAL</th>
-                <th>ELIMINAR</th>
+                <th>ACCIONES</th>
               </tr>
             </thead>
             <tbody id="savedInventoriesBody"></tbody>
@@ -2061,6 +2164,60 @@
         </section>
       </article>
 
+      <article id="equipmentAdminView" class="card app-view-card equipment-admin-view view-hidden">
+        <div class="card-header">
+          <h2>AGREGAR NUEVO EQUIPO</h2>
+          <p>Solo los administradores pueden agregar equipos a la lista permitida.</p>
+        </div>
+
+        <div class="equipment-admin-tabs" role="tablist" aria-label="Gestión de equipos">
+          <button id="equipmentAdminNewTab" type="button" class="equipment-admin-tab active" role="tab" aria-selected="true">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            NUEVO EQUIPO
+          </button>
+          <button id="equipmentAdminListTab" type="button" class="equipment-admin-tab" role="tab" aria-selected="false">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            LISTA DE EQUIPOS
+          </button>
+        </div>
+
+        <div id="equipmentAdminNewPanel" class="equipment-admin-shell">
+          <form id="equipmentAdminForm" class="user-admin-form equipment-admin-form" autocomplete="off">
+            <div class="form-field">
+              <label for="adminEquipmentCode">NÚMERO DE EQUIPO</label>
+              <input id="adminEquipmentCode" type="text" maxlength="60" autocomplete="off" placeholder="EJ. 422019, ABC123, EQÑ01">
+              <small class="equipment-admin-help">ACEPTA CUALQUIER COMBINACIÓN DE LETRAS Y NÚMEROS. SE GUARDARÁ EN MAYÚSCULAS.</small>
+            </div>
+            <div class="form-field equipment-type-autocomplete-field">
+              <label for="adminEquipmentType">TIPO DE EQUIPO</label>
+              <input id="adminEquipmentType" type="text" maxlength="80" autocomplete="off" placeholder="SELECCIONE UNA REFERENCIA O ESCRIBA UN TIPO NUEVO" aria-autocomplete="list" aria-expanded="false" aria-controls="equipmentTypeSuggestions">
+              <div id="equipmentTypeSuggestions" class="equipment-type-suggestions hidden" role="listbox"></div>
+              <small class="equipment-admin-help">ESCRIBA PARA VER TIPOS YA REGISTRADOS. TAMBIÉN PUEDE CREAR UN TIPO NUEVO.</small>
+            </div>
+            <div class="equipment-form-actions">
+              <button id="adminEquipmentSubmit" class="user-admin-submit" type="submit">AGREGAR EQUIPO</button>
+              <button id="adminEquipmentCancelEdit" class="equipment-admin-cancel hidden" type="button">CANCELAR EDICIÓN</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="equipmentAdminListPanel" class="equipment-admin-list-panel hidden">
+          <div class="equipment-list-toolbar">
+            <div class="equipment-list-search-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16.5 16.5 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input id="equipmentAdminListSearch" type="text" autocomplete="off" placeholder="BUSCAR POR NÚMERO O TIPO DE EQUIPO">
+            </div>
+            <div id="equipmentAdminListCount" class="equipment-list-count">0 EQUIPOS</div>
+          </div>
+          <div class="equipment-list-table-wrap">
+            <table class="equipment-admin-table">
+              <thead><tr><th>NÚMERO DE EQUIPO</th><th>TIPO DE EQUIPO</th><th style="text-align:right">ACCIONES</th></tr></thead>
+              <tbody id="equipmentAdminListBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
       <article id="userAdminView" class="card app-view-card user-admin-view view-hidden">
         <div class="card-header">
           <h2>REGISTRAR / ACTUALIZAR USUARIO</h2>
@@ -2068,6 +2225,7 @@
         </div>
         <div class="user-admin-shell">
           <form id="userAdminForm" class="user-admin-form" autocomplete="off">
+            <input id="adminEditingUserId" type="hidden" value="">
             <div class="form-field">
               <label for="adminUserName">NOMBRE COMPLETO</label>
               <input id="adminUserName" type="text" required placeholder="Nombre completo">
@@ -2088,11 +2246,14 @@
                 <option value="admin">ADMIN</option>
               </select>
             </div>
-            <button id="adminUserSubmit" class="user-admin-submit" type="submit">REGISTRAR / ACTUALIZAR</button>
+            <div class="equipment-form-actions full">
+              <button id="adminUserSubmit" class="user-admin-submit" type="submit">REGISTRAR USUARIO</button>
+              <button id="adminUserCancelEdit" class="equipment-admin-cancel hidden" type="button">CANCELAR EDICIÓN</button>
+            </div>
           </form>
           <div class="users-table-wrap">
             <table class="users-table">
-              <thead><tr><th>NOMBRE</th><th>CORREO</th><th>ROL</th><th>ESTADO</th></tr></thead>
+              <thead><tr><th>NOMBRE</th><th>CORREO</th><th>ROL</th><th>ESTADO</th><th>ACCIONES</th></tr></thead>
               <tbody id="adminUsersBody"></tbody>
             </table>
           </div>
@@ -2103,13 +2264,39 @@
   <div id="appToast" class="app-toast" role="status" aria-live="polite"></div>
 
 
+
+  <div id="recordEditOverlay" class="record-edit-overlay" aria-hidden="true">
+    <form id="recordEditForm" class="record-edit-card" role="dialog" aria-modal="true" aria-labelledby="recordEditTitle">
+      <h3 id="recordEditTitle">EDITAR REGISTRO</h3>
+      <p class="record-edit-note">Los cambios se guardarán directamente en Supabase.</p>
+      <div class="record-edit-grid">
+        <div class="record-edit-field"><label for="recordEditDate">FECHA</label><input id="recordEditDate" type="date" required></div>
+        <div class="record-edit-field"><label for="recordEditPlant">PLANTA</label><input id="recordEditPlant" type="text" required></div>
+        <div class="record-edit-field"><label for="recordEditEquipment">EQUIPO</label><input id="recordEditEquipment" type="text" required></div>
+        <div class="record-edit-field"><label for="recordEditProduct">ARTÍCULO</label><select id="recordEditProduct" required>
+          <option>GASOLINA</option><option>DIESEL</option><option>SAE-30</option><option>ISOVG46</option><option>15W40</option><option>GX 90</option><option>ATF</option><option>HIDR100</option><option>HD140</option><option>GRASA</option><option>TFH1000 (TD)</option><option>TC10W</option><option>8T9577</option><option>AW68</option>
+        </select></div>
+        <div class="record-edit-field"><label for="recordEditQty">CANTIDAD</label><input id="recordEditQty" type="number" min="0.01" step="0.01" required></div>
+        <div class="record-edit-field"><label for="recordEditType">TIPO DE MOVIMIENTO</label><select id="recordEditType" required>
+          <option>CONSUMO</option><option>TRANSFERENCIA</option><option>CAMBIO DE ACEITE DE MANDOS Y DIFERENCIALES</option><option>CAMBIO DE ACEITE HIDRAULICO</option><option>CAMBIO DE ACEITE DE MOTOR</option><option>CAMBIO DE ACEITE TRANSMISION</option><option>CAMBIO DE ACEITE DE DIFERENCIALES</option><option>ROPTURA MANGUERA</option><option>FUGA DE ACEITE</option>
+        </select></div>
+        <div class="record-edit-field"><label for="recordEditOil">CAMBIO DE ACEITE</label><select id="recordEditOil"><option value="false">NO</option><option value="true">SÍ</option></select></div>
+        <div class="record-edit-field full"><label for="recordEditComment">COMENTARIO</label><textarea id="recordEditComment" placeholder="Comentario opcional"></textarea></div>
+      </div>
+      <div class="record-edit-actions">
+        <button id="recordEditCancel" type="button" class="record-edit-cancel">CANCELAR</button>
+        <button id="recordEditSave" type="submit" class="record-edit-save">GUARDAR CAMBIOS</button>
+      </div>
+    </form>
+  </div>
+
   <div id="deleteConfirmOverlay" class="delete-confirm-overlay" aria-hidden="true">
     <div class="delete-confirm-card" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle">
       <h3 id="deleteConfirmTitle">Confirmar eliminación</h3>
       <p id="deleteConfirmText"></p>
       <div class="delete-confirm-actions">
         <button id="deleteConfirmCancel" type="button" class="delete-confirm-cancel">CANCELAR</button>
-        <button id="deleteConfirmOk" type="button" class="delete-confirm-ok">ELIMINAR</button>
+        <button id="deleteConfirmOk" type="button" class="delete-confirm-ok" title="Eliminar" aria-label="Eliminar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
   </div>
@@ -2186,9 +2373,21 @@
     const logoutBtn = document.getElementById("logoutBtn");
     const equipoInput = document.getElementById("equipo");
     const equipmentStatus = document.getElementById("equipmentStatus");
-    const newEquipmentBox = document.getElementById("newEquipmentBox");
-    const newEquipmentType = document.getElementById("newEquipmentType");
-    const addEquipmentBtn = document.getElementById("addEquipmentBtn");
+    const equipmentAdminView = document.getElementById("equipmentAdminView");
+    const equipmentAdminMenuCard = document.getElementById("equipmentAdminMenuCard");
+    const equipmentAdminForm = document.getElementById("equipmentAdminForm");
+    const adminEquipmentCode = document.getElementById("adminEquipmentCode");
+    const adminEquipmentType = document.getElementById("adminEquipmentType");
+    const adminEquipmentSubmit = document.getElementById("adminEquipmentSubmit");
+    const adminEquipmentCancelEdit = document.getElementById("adminEquipmentCancelEdit");
+    const equipmentAdminNewTab = document.getElementById("equipmentAdminNewTab");
+    const equipmentAdminListTab = document.getElementById("equipmentAdminListTab");
+    const equipmentAdminNewPanel = document.getElementById("equipmentAdminNewPanel");
+    const equipmentAdminListPanel = document.getElementById("equipmentAdminListPanel");
+    const equipmentTypeSuggestions = document.getElementById("equipmentTypeSuggestions");
+    const equipmentAdminListSearch = document.getElementById("equipmentAdminListSearch");
+    const equipmentAdminListCount = document.getElementById("equipmentAdminListCount");
+    const equipmentAdminListBody = document.getElementById("equipmentAdminListBody");
     const movimientoInput = document.getElementById("movimiento");
     const appToast = document.getElementById("appToast");
     const ivfaHeader = document.getElementById("ivfaHeader");
@@ -2226,7 +2425,9 @@
     const adminUserEmail = document.getElementById("adminUserEmail");
     const adminUserPassword = document.getElementById("adminUserPassword");
     const adminUserRole = document.getElementById("adminUserRole");
+    const adminEditingUserId = document.getElementById("adminEditingUserId");
     const adminUserSubmit = document.getElementById("adminUserSubmit");
+    const adminUserCancelEdit = document.getElementById("adminUserCancelEdit");
     const adminUsersBody = document.getElementById("adminUsersBody");
     const historyMovementsTab = document.getElementById("historyMovementsTab");
     const historyInventoriesTab = document.getElementById("historyInventoriesTab");
@@ -2246,6 +2447,18 @@
     const savedInventoriesCount = document.getElementById("savedInventoriesCount");
     const savedInventoryFilterMessage = document.getElementById("savedInventoryFilterMessage");
     const deleteFilteredInventoriesBtn = document.getElementById("deleteFilteredInventoriesBtn");
+    const recordEditOverlay = document.getElementById("recordEditOverlay");
+    const recordEditForm = document.getElementById("recordEditForm");
+    const recordEditDate = document.getElementById("recordEditDate");
+    const recordEditPlant = document.getElementById("recordEditPlant");
+    const recordEditEquipment = document.getElementById("recordEditEquipment");
+    const recordEditProduct = document.getElementById("recordEditProduct");
+    const recordEditQty = document.getElementById("recordEditQty");
+    const recordEditType = document.getElementById("recordEditType");
+    const recordEditOil = document.getElementById("recordEditOil");
+    const recordEditComment = document.getElementById("recordEditComment");
+    const recordEditCancel = document.getElementById("recordEditCancel");
+    const recordEditSave = document.getElementById("recordEditSave");
     const deleteConfirmOverlay = document.getElementById("deleteConfirmOverlay");
     const deleteConfirmText = document.getElementById("deleteConfirmText");
     const deleteConfirmCancel = document.getElementById("deleteConfirmCancel");
@@ -2390,6 +2603,7 @@
     function applyRoleVisibility(){
       const isAdmin = currentUser?.rol === "admin";
       userAdminMenuCard?.classList.toggle("hidden", !isAdmin);
+      equipmentAdminMenuCard?.classList.toggle("hidden", !isAdmin);
       currentUserChip?.classList.toggle("hidden", !currentUser);
       logoutBtn?.classList.toggle("hidden", !currentUser);
       if(currentUserChip && currentUser){
@@ -2437,21 +2651,53 @@
       }
     }
 
+    let adminUsersCache = [];
+
+    function resetUserAdminForm(){
+      if(adminEditingUserId) adminEditingUserId.value = "";
+      if(adminUserName) adminUserName.value = "";
+      if(adminUserEmail) adminUserEmail.value = "";
+      if(adminUserPassword) adminUserPassword.value = "";
+      if(adminUserRole) adminUserRole.value = "usuario";
+      if(adminUserSubmit) adminUserSubmit.textContent = "REGISTRAR USUARIO";
+      adminUserCancelEdit?.classList.add("hidden");
+    }
+
+    function startUserEdit(userId){
+      const user = adminUsersCache.find(item => String(item.id) === String(userId));
+      if(!user) return;
+      adminEditingUserId.value = user.id;
+      adminUserName.value = String(user.nombre || "");
+      adminUserEmail.value = String(user.correo || "");
+      adminUserPassword.value = "";
+      const role = String(user.rol || "usuario").toLowerCase();
+      adminUserRole.value = ["usuario","supervisor","admin"].includes(role) ? role : "usuario";
+      adminUserSubmit.textContent = "GUARDAR CAMBIOS";
+      adminUserCancelEdit?.classList.remove("hidden");
+      adminUserName.focus();
+    }
+
     async function loadAdminUsers(){
       if(currentUser?.rol !== "admin" || !currentSessionToken) return;
-      adminUsersBody.innerHTML = `<tr><td colspan="4">Cargando usuarios...</td></tr>`;
+      adminUsersBody.innerHTML = `<tr><td colspan="5">Cargando usuarios...</td></tr>`;
       try{
         const rows = await sbRpc("listar_usuarios", {p_token:currentSessionToken});
-        adminUsersBody.innerHTML = (rows || []).map(user => `
+        adminUsersCache = Array.isArray(rows) ? rows : [];
+        adminUsersBody.innerHTML = adminUsersCache.map(user => `
           <tr>
-            <td>${String(user.nombre || "")}</td>
-            <td>${String(user.correo || "")}</td>
-            <td><span class="role-pill">${String(user.rol || "").toUpperCase()}</span></td>
+            <td>${escapeHtml(String(user.nombre || "").toLocaleUpperCase("es"))}</td>
+            <td>${escapeHtml(String(user.correo || "").toLowerCase())}</td>
+            <td><span class="role-pill">${escapeHtml(String(user.rol || "").toUpperCase())}</span></td>
             <td>${user.activo ? "ACTIVO" : "INACTIVO"}</td>
+            <td><div class="equipment-row-actions">
+              <button type="button" class="equipment-action-btn edit" data-user-action="edit" data-user-id="${escapeHtml(String(user.id || ""))}" title="Editar usuario" aria-label="Editar usuario">${actionIconSvg("edit")}</button>
+              <button type="button" class="equipment-action-btn delete" data-user-action="delete" data-user-id="${escapeHtml(String(user.id || ""))}" aria-label="Eliminar usuario" ${String(user.id) === String(currentUser?.id) ? 'disabled title="No puede eliminar la cuenta con la que inició sesión"' : 'title="Eliminar usuario"'}>${actionIconSvg("delete")}</button>
+            </div></td>
           </tr>
-        `).join("") || `<tr><td colspan="4">No hay usuarios registrados.</td></tr>`;
+        `).join("") || `<tr><td colspan="5">No hay usuarios registrados.</td></tr>`;
       }catch(error){
-        adminUsersBody.innerHTML = `<tr><td colspan="4">No se pudieron cargar los usuarios.</td></tr>`;
+        adminUsersCache = [];
+        adminUsersBody.innerHTML = `<tr><td colspan="5">No se pudieron cargar los usuarios.</td></tr>`;
         showToast("No se pudieron cargar los usuarios: " + error.message, true);
       }
     }
@@ -2475,51 +2721,12 @@
     async function hydrateFromSupabase(){
       try{
         await testSupabaseConnection();
-
-        // IMPORTANTE:
-        // Los inventarios NO se descargan aquí. El inventario se consulta únicamente
-        // cuando el usuario está en INGRESO DE MOVIMIENTO y ya indicó PLANTA + FECHA.
-        const [movementRows, equipmentRows] = await Promise.all([
-          sbRequest("combustible_movimientos", {
-            query:"?select=id,fecha,planta,equipo,created_at,combustible_movimiento_detalle(id,producto,cantidad,tipo_movimiento,comentario,cambio_aceite,created_at)&order=created_at.asc"
-          }),
-          sbRequest("combustible_equipos", {
-            query:"?select=codigo,tipo,created_at&activo=eq.true&order=codigo.asc"
-          })
-        ]);
-
-        const movements = (movementRows || []).map(row => ({
-          id: row.id,
-          fecha: formatDateDisplay(row.fecha),
-          planta: String(row.planta || "").toUpperCase(),
-          equipo: sanitizeEquipmentCode(row.equipo),
-          tipo_movimiento: "CONSUMO",
-          created_at: row.created_at,
-          productos: (row.combustible_movimiento_detalle || []).map(item => ({
-            detalle_id: item.id,
-            producto: String(item.producto || "").toUpperCase(),
-            cantidad: Number(item.cantidad || 0),
-            comentario: String(item.comentario || "").toUpperCase(),
-            cambio_aceite: Boolean(item.cambio_aceite),
-            tipo_movimiento: String(item.tipo_movimiento || "CONSUMO").toUpperCase()
-          }))
-        }));
-
-        const equipments = (equipmentRows || []).map(row => ({
-          codigo: String(row.codigo || "").toUpperCase(),
-          tipo: String(row.tipo || "").toUpperCase(),
-          created_at: row.created_at
-        }));
-
-        saveLocalMovements(movements);
-        saveCustomEquipments(equipments);
-        refreshEquipmentTypeOptions();
-        updateMenuCounters();
-        renderRecordsView();
-        renderSavedInventoriesView();
+        // No se descargan listas completas al iniciar.
+        // EQUIPOS: la lista se consulta solo al entrar en LISTA DE EQUIPOS.
+        // MOVIMIENTOS / INVENTARIOS: se consultan directamente por PLANTA + FECHA.
         supabaseConnected = true;
         setSupabaseStatus("connected", "Conexión correcta con la nueva base de datos");
-        setLookupStatus("Supabase conectado. El inventario se consultará solo al indicar PLANTA + FECHA en INGRESO DE MOVIMIENTO.", "ok");
+        setLookupStatus("Supabase conectado. Los datos se consultarán únicamente cuando corresponda según cada filtro.", "ok");
         return true;
       }catch(error){
         console.error("Supabase:", error);
@@ -2665,24 +2872,234 @@
       } : null;
     }
 
-    function getRegisteredEquipmentTypes(){
-      const combined = [...EQUIPOS_BASE, ...getCustomEquipments()];
-      return [...new Set(
-        combined
-          .map(item => String(item?.tipo || "").trim().toUpperCase())
-          .filter(Boolean)
-      )].sort((a,b) => a.localeCompare(b, "es"));
+    let equipmentTypeCatalog = [...new Set(
+      EQUIPOS_BASE.map(item => String(item?.tipo || "").trim().toLocaleUpperCase("es")).filter(Boolean)
+    )].sort((a,b) => a.localeCompare(b, "es"));
+    let equipmentAdminListCache = [];
+    let equipmentAdminListLoaded = false;
+    let editingEquipmentOriginalCode = "";
+
+    async function loadEquipmentTypeCatalogFromSupabase(){
+      try{
+        const rows = await sbRequest("combustible_equipos", {
+          query:"?select=tipo&activo=eq.true&order=tipo.asc"
+        });
+        equipmentTypeCatalog = [...new Set((rows || [])
+          .map(item => String(item?.tipo || "").trim().toLocaleUpperCase("es"))
+          .filter(Boolean))]
+          .sort((a,b) => a.localeCompare(b, "es"));
+        if(document.activeElement === adminEquipmentType){
+          renderEquipmentTypeSuggestions(adminEquipmentType.value);
+        }
+      }catch(error){
+        console.error("Tipos de equipo:", error);
+      }
     }
 
     function refreshEquipmentTypeOptions(){
-      if(!newEquipmentType) return;
-      const current = String(newEquipmentType.value || "").trim().toUpperCase();
-      const types = getRegisteredEquipmentTypes();
-      newEquipmentType.innerHTML = `
-        <option value="">SELECCIONE EL TIPO DE EQUIPO</option>
-        ${types.map(tipo => `<option value="${escapeHtml(tipo)}">${escapeHtml(tipo)}</option>`).join("")}
-      `;
-      if(current && types.includes(current)) newEquipmentType.value = current;
+      if(document.activeElement === adminEquipmentType){
+        renderEquipmentTypeSuggestions(adminEquipmentType.value);
+      }
+    }
+
+    function renderEquipmentTypeSuggestions(value=""){
+      if(!equipmentTypeSuggestions) return;
+      const query = String(value || "").trim().toLocaleUpperCase("es");
+      const matches = equipmentTypeCatalog
+        .filter(tipo => !query || tipo.includes(query))
+        .slice(0, 18);
+
+      if(!matches.length){
+        equipmentTypeSuggestions.innerHTML = query
+          ? `<div class="equipment-type-no-match">NO HAY COINCIDENCIAS. PUEDE GUARDAR “${escapeHtml(query)}” COMO UN TIPO NUEVO.</div>`
+          : `<div class="equipment-type-no-match">AÚN NO HAY TIPOS REGISTRADOS.</div>`;
+      }else{
+        equipmentTypeSuggestions.innerHTML = matches.map(tipo => `
+          <button type="button" class="equipment-type-suggestion" data-equipment-type="${escapeHtml(tipo)}" role="option">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5V4h3.5L20 16.5 16.5 20 4 7.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7" cy="7" r="1" fill="currentColor"/></svg>
+            ${escapeHtml(tipo)}
+          </button>`).join("");
+      }
+      equipmentTypeSuggestions.classList.remove("hidden");
+      adminEquipmentType?.setAttribute("aria-expanded", "true");
+    }
+
+    function hideEquipmentTypeSuggestions(){
+      equipmentTypeSuggestions?.classList.add("hidden");
+      adminEquipmentType?.setAttribute("aria-expanded", "false");
+    }
+
+    async function loadEquipmentAdminListFromSupabase(force=false){
+      if(!equipmentAdminListBody || !equipmentAdminListCount) return;
+      if(equipmentAdminListLoaded && !force){
+        renderEquipmentAdminList(equipmentAdminListSearch?.value || "");
+        return;
+      }
+      equipmentAdminListCount.textContent = "CARGANDO...";
+      equipmentAdminListBody.innerHTML = `<tr><td colspan="3" class="equipment-list-loading">CARGANDO EQUIPOS DESDE SUPABASE...</td></tr>`;
+      try{
+        const rows = await sbRequest("combustible_equipos", {
+          query:"?select=id,codigo,tipo,created_at&activo=eq.true&order=codigo.asc"
+        });
+        equipmentAdminListCache = (rows || []).map(item => ({
+          id:item.id,
+          codigo:sanitizeEquipmentCode(item.codigo),
+          tipo:String(item.tipo || "").trim().toLocaleUpperCase("es") || "SIN TIPO",
+          created_at:item.created_at
+        }));
+        equipmentAdminListLoaded = true;
+        renderEquipmentAdminList(equipmentAdminListSearch?.value || "");
+      }catch(error){
+        equipmentAdminListCache = [];
+        equipmentAdminListCount.textContent = "0 EQUIPOS";
+        equipmentAdminListBody.innerHTML = `<tr><td colspan="3" class="equipment-list-empty">NO SE PUDO CARGAR LA LISTA DE EQUIPOS.</td></tr>`;
+        showToast("No se pudo cargar la lista de equipos: " + error.message, true);
+      }
+    }
+
+    function renderEquipmentAdminList(filter=""){
+      if(!equipmentAdminListBody || !equipmentAdminListCount) return;
+      if(!equipmentAdminListLoaded){
+        equipmentAdminListCount.textContent = "0 EQUIPOS";
+        equipmentAdminListBody.innerHTML = `<tr><td colspan="3" class="equipment-list-empty">ENTRE A ESTA PESTAÑA PARA CARGAR LA LISTA.</td></tr>`;
+        return;
+      }
+      const query = String(filter || "").trim().toLocaleUpperCase("es");
+      const rows = equipmentAdminListCache.filter(item =>
+        !query || item.codigo.includes(query) || item.tipo.includes(query)
+      );
+      equipmentAdminListCount.textContent = `${rows.length} ${rows.length === 1 ? "EQUIPO" : "EQUIPOS"}`;
+      equipmentAdminListBody.innerHTML = rows.length
+        ? rows.map(item => `<tr>
+            <td class="equipment-code-cell">${escapeHtml(item.codigo)}</td>
+            <td>${escapeHtml(item.tipo)}</td>
+            <td><div class="equipment-row-actions">
+              <button type="button" class="equipment-action-btn edit" data-equipment-action="edit" data-equipment-code="${escapeHtml(item.codigo)}" title="Editar equipo" aria-label="Editar equipo">${actionIconSvg("edit")}</button>
+              <button type="button" class="equipment-action-btn delete" data-equipment-action="delete" data-equipment-code="${escapeHtml(item.codigo)}" title="Eliminar equipo" aria-label="Eliminar equipo">${actionIconSvg("delete")}</button>
+            </div></td>
+          </tr>`).join("")
+        : `<tr><td colspan="3" class="equipment-list-empty">NO SE ENCONTRARON EQUIPOS.</td></tr>`;
+    }
+
+    function rebuildEquipmentTypeCatalogFromEquipmentCache(){
+      if(!equipmentAdminListLoaded) return;
+      equipmentTypeCatalog = [...new Set(equipmentAdminListCache
+        .map(item => String(item?.tipo || "").trim().toLocaleUpperCase("es"))
+        .filter(tipo => tipo && tipo !== "SIN TIPO"))]
+        .sort((a,b) => a.localeCompare(b, "es"));
+    }
+
+    function upsertEquipmentAdminCache(item, previousCode=""){
+      if(!equipmentAdminListLoaded || !item) return;
+      const normalized = {
+        id:item.id || null,
+        codigo:sanitizeEquipmentCode(item.codigo),
+        tipo:String(item.tipo || "").trim().toLocaleUpperCase("es") || "SIN TIPO",
+        created_at:item.created_at || null
+      };
+      const oldCode = sanitizeEquipmentCode(previousCode);
+      let index = equipmentAdminListCache.findIndex(row =>
+        (oldCode && row.codigo === oldCode) ||
+        (normalized.id && String(row.id) === String(normalized.id)) ||
+        row.codigo === normalized.codigo
+      );
+      if(index >= 0) equipmentAdminListCache[index] = {...equipmentAdminListCache[index], ...normalized};
+      else equipmentAdminListCache.push(normalized);
+      equipmentAdminListCache.sort((a,b) => a.codigo.localeCompare(b.codigo, "es", {numeric:true}));
+      rebuildEquipmentTypeCatalogFromEquipmentCache();
+      renderEquipmentAdminList(equipmentAdminListSearch?.value || "");
+    }
+
+    function removeEquipmentAdminCache(code){
+      if(!equipmentAdminListLoaded) return;
+      const normal = sanitizeEquipmentCode(code);
+      equipmentAdminListCache = equipmentAdminListCache.filter(item => item.codigo !== normal);
+      rebuildEquipmentTypeCatalogFromEquipmentCache();
+      renderEquipmentAdminList(equipmentAdminListSearch?.value || "");
+    }
+
+    function resetEquipmentAdminForm(){
+      editingEquipmentOriginalCode = "";
+      if(adminEquipmentCode) adminEquipmentCode.value = "";
+      if(adminEquipmentType) adminEquipmentType.value = "";
+      if(adminEquipmentSubmit) adminEquipmentSubmit.textContent = "AGREGAR EQUIPO";
+      adminEquipmentCancelEdit?.classList.add("hidden");
+      hideEquipmentTypeSuggestions();
+    }
+
+    function startEquipmentEdit(code){
+      const normal = sanitizeEquipmentCode(code);
+      const item = equipmentAdminListCache.find(row => row.codigo === normal);
+      if(!item) return;
+      editingEquipmentOriginalCode = item.codigo;
+      adminEquipmentCode.value = item.codigo;
+      adminEquipmentType.value = item.tipo === "SIN TIPO" ? "" : item.tipo;
+      adminEquipmentSubmit.textContent = "GUARDAR CAMBIOS";
+      adminEquipmentCancelEdit?.classList.remove("hidden");
+      setEquipmentAdminTab("new");
+      setTimeout(() => adminEquipmentCode?.focus(), 0);
+    }
+
+    async function setEquipmentAdminTab(tab){
+      const showList = tab === "list";
+      equipmentAdminNewTab?.classList.toggle("active", !showList);
+      equipmentAdminListTab?.classList.toggle("active", showList);
+      equipmentAdminNewTab?.setAttribute("aria-selected", String(!showList));
+      equipmentAdminListTab?.setAttribute("aria-selected", String(showList));
+      equipmentAdminNewPanel?.classList.toggle("hidden", showList);
+      equipmentAdminListPanel?.classList.toggle("hidden", !showList);
+      hideEquipmentTypeSuggestions();
+      if(showList){
+        // Solo la primera entrada por sesión de página consulta Supabase.
+        // Después se usa la caché en memoria hasta cerrar o recargar la app.
+        if(equipmentAdminListLoaded) renderEquipmentAdminList(equipmentAdminListSearch?.value || "");
+        else await loadEquipmentAdminListFromSupabase();
+        setTimeout(() => equipmentAdminListSearch?.focus(), 0);
+      }else{
+        loadEquipmentTypeCatalogFromSupabase();
+        setTimeout(() => adminEquipmentCode?.focus(), 0);
+      }
+    }
+
+    async function lookupEquipmentInSupabase(code){
+      const normal = sanitizeEquipmentCode(code);
+      if(!normal) return null;
+      const rows = await sbRequest("combustible_equipos", {
+        query:`?select=id,codigo,tipo,activo&codigo=eq.${encodeURIComponent(normal)}&activo=eq.true&limit=1`
+      });
+      const row = Array.isArray(rows) ? rows[0] : null;
+      return row ? {
+        id:row.id,
+        codigo:sanitizeEquipmentCode(row.codigo),
+        tipo:String(row.tipo || "").trim().toLocaleUpperCase("es")
+      } : null;
+    }
+
+    async function validateEquipmentFromSupabase(){
+      const code = sanitizeEquipmentCode(equipoInput.value);
+      if(equipoInput.value !== code) equipoInput.value = code;
+      if(!code){
+        equipoAceptado = false;
+        setEquipmentStatus("Ingrese el código del equipo para comprobarlo.");
+        return false;
+      }
+      setEquipmentStatus("Comprobando equipo...");
+      try{
+        const found = await lookupEquipmentInSupabase(code);
+        if(found){
+          equipoAceptado = true;
+          const tipo = found.tipo ? " · " + found.tipo : "";
+          setEquipmentStatus("Equipo aceptado" + tipo, "ok");
+          return true;
+        }
+        equipoAceptado = false;
+        setEquipmentStatus("Equipo no registrado. Solicite a un administrador que lo agregue desde AGREGAR NUEVO EQUIPO.", "error");
+        return false;
+      }catch(error){
+        equipoAceptado = false;
+        setEquipmentStatus("No se pudo comprobar el equipo en Supabase.", "error");
+        return false;
+      }
     }
 
     let equipoAceptado = false;
@@ -2690,33 +3107,6 @@
     function setEquipmentStatus(message, type=""){
       equipmentStatus.className = "equipment-status" + (type ? " " + type : "");
       equipmentStatus.textContent = message;
-    }
-
-    function validateEquipment(){
-      const code = sanitizeEquipmentCode(equipoInput.value);
-      if(equipoInput.value !== code) equipoInput.value = code;
-
-      if(!code){
-        equipoAceptado = false;
-        setEquipmentStatus("Ingrese el código del equipo para comprobarlo.");
-        newEquipmentBox.classList.add("hidden");
-        return false;
-      }
-
-      const found = getEquipmentRecord(code);
-      if(found){
-        equipoAceptado = true;
-        const tipo = found.tipo ? " · " + found.tipo : "";
-        setEquipmentStatus("Equipo aceptado" + tipo, "ok");
-        newEquipmentBox.classList.add("hidden");
-        return true;
-      }
-
-      equipoAceptado = false;
-      setEquipmentStatus("Equipo no registrado. Seleccione como referencia uno de los tipos ya registrados.", "error");
-      refreshEquipmentTypeOptions();
-      newEquipmentBox.classList.remove("hidden");
-      return false;
     }
 
     function sanitizeNumericText(value, allowDecimal=true){
@@ -2745,8 +3135,10 @@
 
     function sanitizeEquipmentCode(value){
       return String(value ?? "")
-        .toUpperCase()
-        .replace(/[^A-Z0-9]/g, "");
+        .trim()
+        .toLocaleUpperCase("es")
+        .normalize("NFC")
+        .replace(/[^\p{L}\p{N}]/gu, "");
     }
 
     function enforceEquipmentInput(input){
@@ -2842,10 +3234,28 @@
       return totals;
     }
 
-    function applyDailyOutputsToInventory(){
+    async function fetchDailyOutputsFromSupabase(planta, fecha){
+      const plantKey = String(planta || "").trim();
+      const dateKey = normalizeDateKey(fecha);
+      const totals = Object.fromEntries(PRODUCTOS.map(nombre => [nombre, 0]));
+      if(!plantKey || !dateKey) return totals;
+      const rows = await sbRequest("combustible_movimientos", {
+        query:`?select=id,combustible_movimiento_detalle(producto,cantidad)&fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`
+      });
+      (rows || []).forEach(registro => {
+        (registro.combustible_movimiento_detalle || []).forEach(item => {
+          const producto = String(item.producto || "").trim().toUpperCase();
+          const cantidad = Number(item.cantidad || 0);
+          if(producto in totals && Number.isFinite(cantidad)) totals[producto] += cantidad;
+        });
+      });
+      return totals;
+    }
+
+    function applyDailyOutputsToInventory(totalsOverride=null){
       if(!currentPlant || !inventoryBody.querySelector("tr")) return;
 
-      const totals = getDailyOutputsByProduct(currentPlant, fechaInput.value);
+      const totals = totalsOverride || getDailyOutputsByProduct(currentPlant, fechaInput.value);
 
       inventoryBody.querySelectorAll("tr").forEach(row => {
         const producto = row.dataset.product;
@@ -2919,8 +3329,6 @@
       equipoInput.value = "";
       equipoAceptado = false;
       setEquipmentStatus("Ingrese el código del equipo para comprobarlo.");
-      newEquipmentBox.classList.add("hidden");
-      newEquipmentType.value = "";
       combustibleButtons.querySelectorAll(".fuel-btn.active").forEach(btn => {
         btn.classList.remove("active");
       });
@@ -3486,11 +3894,15 @@
       setLookupStatus('<span class="spinner"></span> Consultando únicamente el último inventario de la planta '+plantKey+'...');
 
       try{
-        const result = await buscarUltimoInventarioEnBD(plantKey, selectedDate);
+        const [result, dailyOutputs] = await Promise.all([
+          buscarUltimoInventarioEnBD(plantKey, selectedDate),
+          fetchDailyOutputsFromSupabase(plantKey, selectedDate)
+        ]);
         if(requestId !== inventoryLookupRequestId) return;
 
         lastInventoryLookupKey = lookupKey;
         renderInventory(result.items || []);
+        applyDailyOutputsToInventory(dailyOutputs);
 
         if(result.source === "supabase"){
           const previousDate = formatDateDisplay(result.fecha || "");
@@ -3610,6 +4022,85 @@
         .replace(/'/g,"&#039;");
     }
 
+    function actionIconSvg(type, size=16){
+      if(type === "edit") return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4 20 4.2-1 10.6-10.6a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="m14.5 6.5 3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+      return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    }
+
+    let editingRecordContext = null;
+
+    function closeRecordEditor(){
+      editingRecordContext = null;
+      recordEditOverlay?.classList.remove("show");
+      recordEditOverlay?.setAttribute("aria-hidden","true");
+      recordEditForm?.reset();
+    }
+
+    function openRecordEditor(movementId, detailId){
+      const movement = filteredMovementsCache.find(m => String(m.id) === String(movementId));
+      if(!movement) return;
+      const item = (movement.productos || []).find(p => String(p.detalle_id) === String(detailId));
+      if(!item){ showToast("No se encontró el detalle del registro.", true); return; }
+      editingRecordContext = {movementId:String(movementId), detailId:String(detailId)};
+      recordEditDate.value = normalizeDateKey(movement.fecha) || normalizeDateKey(recordsDate.value);
+      recordEditPlant.value = String(movement.planta || "").trim().toLocaleUpperCase("es");
+      recordEditEquipment.value = String(movement.equipo || "").trim().toLocaleUpperCase("es");
+      recordEditProduct.value = String(item.producto || "").trim().toLocaleUpperCase("es");
+      recordEditQty.value = Number(item.cantidad || 0);
+      const type = String(item.tipo_movimiento || "CONSUMO").trim().toLocaleUpperCase("es");
+      if(![...recordEditType.options].some(o => o.value === type)){
+        const option=document.createElement("option");option.value=type;option.textContent=type;recordEditType.appendChild(option);
+      }
+      recordEditType.value = type;
+      recordEditOil.value = item.cambio_aceite ? "true" : "false";
+      recordEditComment.value = String(item.comentario || "").trim().toLocaleUpperCase("es");
+      recordEditOverlay.classList.add("show");
+      recordEditOverlay.setAttribute("aria-hidden","false");
+      setTimeout(()=>recordEditDate?.focus(),0);
+    }
+
+    async function saveEditedRecord(){
+      if(!editingRecordContext) return;
+      const fecha = normalizeDateKey(recordEditDate.value);
+      const planta = String(recordEditPlant.value || "").trim().toLocaleUpperCase("es");
+      const equipo = String(recordEditEquipment.value || "").trim().toLocaleUpperCase("es");
+      const producto = String(recordEditProduct.value || "").trim().toLocaleUpperCase("es");
+      const cantidad = Number(recordEditQty.value || 0);
+      const tipo = String(recordEditType.value || "CONSUMO").trim().toLocaleUpperCase("es");
+      const comentario = String(recordEditComment.value || "").trim().toLocaleUpperCase("es");
+      const cambioAceite = recordEditOil.value === "true" || tipo.startsWith("CAMBIO DE ACEITE");
+      if(!fecha || !planta || !equipo || !producto || !Number.isFinite(cantidad) || cantidad <= 0){
+        showToast("Complete correctamente todos los datos del registro.", true);
+        return;
+      }
+      recordEditSave.disabled = true;
+      recordEditSave.textContent = "GUARDANDO...";
+      try{
+        await sbRequest("combustible_movimientos", {
+          method:"PATCH",
+          query:`?id=eq.${encodeURIComponent(editingRecordContext.movementId)}`,
+          body:{fecha,planta,equipo,updated_at:new Date().toISOString()},
+          prefer:"return=minimal"
+        });
+        await sbRequest("combustible_movimiento_detalle", {
+          method:"PATCH",
+          query:`?id=eq.${encodeURIComponent(editingRecordContext.detailId)}`,
+          body:{producto,cantidad,tipo_movimiento:tipo,comentario:comentario || null,cambio_aceite:cambioAceite},
+          prefer:"return=minimal"
+        });
+        closeRecordEditor();
+        await loadRecordsFromSupabase();
+        if(currentPlant) requestInventoryIfReady({force:true});
+        showToast("Registro actualizado correctamente.");
+      }catch(error){
+        console.error(error);
+        showToast("No se pudo actualizar el registro: " + error.message, true);
+      }finally{
+        recordEditSave.disabled = false;
+        recordEditSave.textContent = "GUARDAR CAMBIOS";
+      }
+    }
+
     let pendingDeleteAction = null;
 
     function openDeleteConfirm(message, action){
@@ -3626,30 +4117,19 @@
     }
 
     async function deleteSingleRecord(movementId, productIndex){
-      const movements = getLocalMovements();
-      const movementIndex = movements.findIndex(m => String(m.id) === String(movementId));
-      if(movementIndex === -1) return;
-
-      const movement = movements[movementIndex];
+      const movement = filteredMovementsCache.find(m => String(m.id) === String(movementId));
+      if(!movement) return;
       const products = Array.isArray(movement.productos) ? movement.productos : [];
       if(productIndex < 0 || productIndex >= products.length) return;
-
       try{
         const target = products[productIndex];
         if(products.length === 1){
           await sbRequest("combustible_movimientos", {method:"DELETE", query:`?id=eq.${encodeURIComponent(movementId)}`, prefer:"return=minimal"});
-          movements.splice(movementIndex, 1);
-        }else{
-          if(target?.detalle_id){
-            await sbRequest("combustible_movimiento_detalle", {method:"DELETE", query:`?id=eq.${encodeURIComponent(target.detalle_id)}`, prefer:"return=minimal"});
-          }
-          products.splice(productIndex, 1);
-          movement.productos = products;
+        }else if(target?.detalle_id){
+          await sbRequest("combustible_movimiento_detalle", {method:"DELETE", query:`?id=eq.${encodeURIComponent(target.detalle_id)}`, prefer:"return=minimal"});
         }
-        saveLocalMovements(movements);
-        applyDailyOutputsToInventory();
-        updateMenuCounters();
-        renderRecordsView();
+        await loadRecordsFromSupabase();
+        if(currentPlant) requestInventoryIfReady({force:true});
         showToast("Registro eliminado de Supabase.");
       }catch(error){
         console.error(error);
@@ -3661,24 +4141,15 @@
       const dateKey = normalizeDateKey(recordsDate.value);
       const plantKey = String(recordsPlant.value || "").trim();
       if(!dateKey || !plantKey) return;
-
       try{
         await sbRequest("combustible_movimientos", {
           method:"DELETE",
           query:`?fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`,
           prefer:"return=minimal"
         });
-        const movements = getLocalMovements();
-        const remaining = movements.filter(registro => !(
-          normalizeDateKey(registro.fecha) === dateKey &&
-          String(registro.planta || "").trim() === plantKey
-        ));
-        const deleted = movements.length - remaining.length;
-        saveLocalMovements(remaining);
-        applyDailyOutputsToInventory();
-        updateMenuCounters();
-        renderRecordsView();
-        showToast(deleted > 0 ? "Registros eliminados de Supabase." : "No había registros para eliminar.");
+        await loadRecordsFromSupabase();
+        if(currentPlant) requestInventoryIfReady({force:true});
+        showToast("Registros eliminados de Supabase.");
       }catch(error){
         console.error(error);
         showToast("No se pudieron eliminar los registros: " + error.message, true);
@@ -3686,33 +4157,19 @@
     }
 
     async function deleteSingleInventoryItem(inventoryId, itemIndex){
-      const inventories = getLocalDb();
-      const inventoryIndex = inventories.findIndex(inv => String(inv.id) === String(inventoryId));
-      if(inventoryIndex === -1) return;
-
-      const inventory = inventories[inventoryIndex];
+      const inventory = filteredInventoriesCache.find(inv => String(inv.id) === String(inventoryId));
+      if(!inventory) return;
       const items = Array.isArray(inventory.items) ? inventory.items : [];
       if(itemIndex < 0 || itemIndex >= items.length) return;
-
       try{
         const target = items[itemIndex];
         if(items.length === 1){
           await sbRequest("combustible_inventarios", {method:"DELETE", query:`?id=eq.${encodeURIComponent(inventoryId)}`, prefer:"return=minimal"});
-          inventories.splice(inventoryIndex, 1);
-        }else{
-          if(target?.detalle_id){
-            await sbRequest("combustible_inventario_detalle", {method:"DELETE", query:`?id=eq.${encodeURIComponent(target.detalle_id)}`, prefer:"return=minimal"});
-          }
-          items.splice(itemIndex, 1);
-          inventory.items = items;
+        }else if(target?.detalle_id){
+          await sbRequest("combustible_inventario_detalle", {method:"DELETE", query:`?id=eq.${encodeURIComponent(target.detalle_id)}`, prefer:"return=minimal"});
         }
-        saveLocalDb(inventories);
-        updateMenuCounters();
-        renderSavedInventoriesView();
-        if(currentPlant && String(currentPlant).trim() === String(savedInventoryPlant.value || "").trim()
-           && normalizeDateKey(fechaInput.value) === normalizeDateKey(savedInventoryDate.value)){
-          cargarInventario(currentPlant, fechaPicker.value, {force:true});
-        }
+        await loadSavedInventoriesFromSupabase();
+        if(currentPlant) requestInventoryIfReady({force:true});
         showToast("Inventario eliminado de Supabase.");
       }catch(error){
         console.error(error);
@@ -3724,30 +4181,122 @@
       const dateKey = normalizeDateKey(savedInventoryDate.value);
       const plantKey = String(savedInventoryPlant.value || "").trim();
       if(!dateKey || !plantKey) return;
-
       try{
         await sbRequest("combustible_inventarios", {
           method:"DELETE",
           query:`?fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`,
           prefer:"return=minimal"
         });
-        const inventories = getLocalDb();
-        const remaining = inventories.filter(inv => !(
-          normalizeDateKey(inv.fecha) === dateKey &&
-          String(inv.planta || "").trim() === plantKey
-        ));
-        const deleted = inventories.length - remaining.length;
-        saveLocalDb(remaining);
-        updateMenuCounters();
-        renderSavedInventoriesView();
-        if(currentPlant && String(currentPlant).trim() === plantKey
-           && normalizeDateKey(fechaInput.value) === dateKey){
-          cargarInventario(currentPlant, fechaPicker.value, {force:true});
-        }
-        showToast(deleted > 0 ? "Inventarios eliminados de Supabase." : "No había inventarios para eliminar.");
+        await loadSavedInventoriesFromSupabase();
+        if(currentPlant) requestInventoryIfReady({force:true});
+        showToast("Inventarios eliminados de Supabase.");
       }catch(error){
         console.error(error);
         showToast("No se pudieron eliminar los inventarios: " + error.message, true);
+      }
+    }
+
+    let filteredMovementsCache = [];
+    let filteredMovementsKey = "";
+    let filteredInventoriesCache = [];
+    let filteredInventoriesKey = "";
+    let recordsRequestId = 0;
+    let inventoriesRequestId = 0;
+
+    async function loadRecordsFromSupabase(){
+      const dateKey = normalizeDateKey(recordsDate.value);
+      const plantKey = String(recordsPlant.value || "").trim();
+      if(!dateKey || !plantKey){
+        filteredMovementsCache = [];
+        filteredMovementsKey = "";
+        renderRecordsView();
+        return;
+      }
+      const requestId = ++recordsRequestId;
+      recordsBody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:22px;color:#6b7280">CONSULTANDO SUPABASE...</td></tr>`;
+      deleteFilteredRecordsBtn.disabled = true;
+      recordsEmpty.classList.add("hidden");
+      recordsFilterMessage.textContent = "Consultando planta " + plantKey + " · " + formatDateDisplay(dateKey);
+      try{
+        const rows = await sbRequest("combustible_movimientos", {
+          query:`?select=id,fecha,planta,equipo,created_at,combustible_movimiento_detalle(id,producto,cantidad,tipo_movimiento,comentario,cambio_aceite,created_at)&fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}&order=created_at.desc`
+        });
+        if(requestId !== recordsRequestId) return;
+        filteredMovementsCache = (rows || []).map(row => ({
+          id:row.id,
+          fecha:formatDateDisplay(row.fecha),
+          planta:String(row.planta || "").trim().toUpperCase(),
+          equipo:sanitizeEquipmentCode(row.equipo),
+          tipo_movimiento:"CONSUMO",
+          created_at:row.created_at,
+          productos:(row.combustible_movimiento_detalle || []).map(item => ({
+            detalle_id:item.id,
+            producto:String(item.producto || "").trim().toUpperCase(),
+            cantidad:Number(item.cantidad || 0),
+            comentario:String(item.comentario || "").trim().toUpperCase(),
+            cambio_aceite:Boolean(item.cambio_aceite),
+            tipo_movimiento:String(item.tipo_movimiento || "CONSUMO").trim().toUpperCase()
+          }))
+        }));
+        filteredMovementsKey = `${plantKey}|${dateKey}`;
+        renderRecordsView();
+      }catch(error){
+        if(requestId !== recordsRequestId) return;
+        filteredMovementsCache = [];
+        filteredMovementsKey = "";
+        recordsBody.innerHTML = "";
+        recordsEmpty.classList.remove("hidden");
+        recordsEmpty.innerHTML = `<strong>Error consultando Supabase</strong><span>${escapeHtml(error.message || String(error))}</span>`;
+        recordsCount.textContent = "0 registros";
+        deleteFilteredRecordsBtn.disabled = true;
+      }
+    }
+
+    async function loadSavedInventoriesFromSupabase(){
+      const dateKey = normalizeDateKey(savedInventoryDate.value);
+      const plantKey = String(savedInventoryPlant.value || "").trim();
+      if(!dateKey || !plantKey){
+        filteredInventoriesCache = [];
+        filteredInventoriesKey = "";
+        renderSavedInventoriesView();
+        return;
+      }
+      const requestId = ++inventoriesRequestId;
+      savedInventoriesBody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:22px;color:#6b7280">CONSULTANDO SUPABASE...</td></tr>`;
+      deleteFilteredInventoriesBtn.disabled = true;
+      savedInventoriesEmpty.classList.add("hidden");
+      savedInventoryFilterMessage.textContent = "Consultando planta " + plantKey + " · " + formatDateDisplay(dateKey);
+      try{
+        const rows = await sbRequest("combustible_inventarios", {
+          query:`?select=id,fecha,planta,created_at,combustible_inventario_detalle(id,producto,ivfa,inicial,entrada,salida,final,created_at)&fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}&order=created_at.desc`
+        });
+        if(requestId !== inventoriesRequestId) return;
+        filteredInventoriesCache = (rows || []).map(row => ({
+          id:row.id,
+          fecha:formatDateDisplay(row.fecha),
+          planta:String(row.planta || "").trim().toUpperCase(),
+          created_at:row.created_at,
+          items:(row.combustible_inventario_detalle || []).map(item => ({
+            detalle_id:item.id,
+            nombre:String(item.producto || "").trim().toUpperCase(),
+            ivfa:Number(item.ivfa || 0),
+            inicial:Number(item.inicial || 0),
+            entrada:Number(item.entrada || 0),
+            salida:Number(item.salida || 0),
+            final:Number(item.final || 0)
+          }))
+        }));
+        filteredInventoriesKey = `${plantKey}|${dateKey}`;
+        renderSavedInventoriesView();
+      }catch(error){
+        if(requestId !== inventoriesRequestId) return;
+        filteredInventoriesCache = [];
+        filteredInventoriesKey = "";
+        savedInventoriesBody.innerHTML = "";
+        savedInventoriesEmpty.classList.remove("hidden");
+        savedInventoriesEmpty.innerHTML = `<strong>Error consultando Supabase</strong><span>${escapeHtml(error.message || String(error))}</span>`;
+        savedInventoriesCount.textContent = "0 inventarios";
+        deleteFilteredInventoriesBtn.disabled = true;
       }
     }
 
@@ -3770,11 +4319,8 @@
         return;
       }
 
-      const inventories = getLocalDb()
-        .filter(inv =>
-          normalizeDateKey(inv.fecha) === dateKey &&
-          String(inv.planta || "").trim() === plantKey
-        )
+      const cacheKey = `${plantKey}|${dateKey}`;
+      const inventories = (filteredInventoriesKey === cacheKey ? filteredInventoriesCache : [])
         .sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
 
       const rows = [];
@@ -3821,12 +4367,12 @@
           <td>
             <button
               type="button"
-              class="delete-record-btn delete-inventory-btn"
+              class="record-icon-btn delete delete-inventory-btn"
               data-inventory-id="${escapeHtml(row.inventoryId)}"
               data-item-index="${row.itemIndex}"
               title="Eliminar inventario guardado"
               aria-label="Eliminar inventario guardado"
-            >×</button>
+            >${actionIconSvg("delete")}</button>
           </td>
         </tr>
       `).join("");
@@ -3865,11 +4411,8 @@
         return;
       }
 
-      const movements = getLocalMovements()
-        .filter(registro =>
-          normalizeDateKey(registro.fecha) === dateKey &&
-          String(registro.planta || "").trim() === plantKey
-        )
+      const cacheKey = `${plantKey}|${dateKey}`;
+      const movements = (filteredMovementsKey === cacheKey ? filteredMovementsCache : [])
         .sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
 
       const rows = [];
@@ -3877,6 +4420,7 @@
         (registro.productos || []).forEach((item, productIndex) => {
           rows.push({
             movementId: registro.id,
+            detailId: item.detalle_id || "",
             productIndex,
             fecha: registro.fecha || formatDateDisplay(dateKey),
             planta: registro.planta || "",
@@ -3915,18 +4459,16 @@
           <td>${escapeHtml(row.tipo)}</td>
           <td>${row.cambioAceite ? '<span class="record-oil-yes">✓ SÍ</span>' : 'NO'}</td>
           <td>${row.comentario ? escapeHtml(row.comentario) : "—"}</td>
-          <td>
-            <button
-              type="button"
-              class="delete-record-btn"
-              data-movement-id="${escapeHtml(row.movementId)}"
-              data-product-index="${row.productIndex}"
-              title="Eliminar registro"
-              aria-label="Eliminar registro"
-            >×</button>
-          </td>
+          <td><div class="record-actions-cell">
+            <button type="button" class="record-icon-btn edit edit-record-btn" data-movement-id="${escapeHtml(row.movementId)}" data-detail-id="${escapeHtml(row.detailId || "")}" title="Editar registro" aria-label="Editar registro">${actionIconSvg("edit")}</button>
+            <button type="button" class="record-icon-btn delete delete-record-btn" data-movement-id="${escapeHtml(row.movementId)}" data-product-index="${row.productIndex}" title="Eliminar registro" aria-label="Eliminar registro">${actionIconSvg("delete")}</button>
+          </div></td>
         </tr>
       `).join("");
+
+      recordsBody.querySelectorAll(".edit-record-btn").forEach(btn => {
+        btn.addEventListener("click", () => openRecordEditor(btn.dataset.movementId, btn.dataset.detailId));
+      });
 
       recordsBody.querySelectorAll(".delete-record-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -4519,11 +5061,11 @@
       if(showRecords){
         if(fechaPicker?.value) recordsDate.value = fechaPicker.value;
         if(plantaInput?.value && !recordsPlant.value) recordsPlant.value = plantaInput.value;
-        renderRecordsView();
+        loadRecordsFromSupabase();
       }else{
         if(fechaPicker?.value) savedInventoryDate.value = fechaPicker.value;
         if(plantaInput?.value && !savedInventoryPlant.value) savedInventoryPlant.value = plantaInput.value;
-        renderSavedInventoriesView();
+        loadSavedInventoriesFromSupabase();
       }
     }
 
@@ -4537,6 +5079,7 @@
       inventoryView.classList.remove("view-hidden");
       historyView.classList.add("view-hidden");
       reportsView.classList.add("view-hidden");
+      equipmentAdminView.classList.add("view-hidden");
       userAdminView.classList.add("view-hidden");
       mainWorkspace.classList.remove("single-view");
       currentViewLabel.textContent = "";
@@ -4554,6 +5097,7 @@
       inventoryView.classList.remove("view-hidden");
       historyView.classList.add("view-hidden");
       reportsView.classList.add("view-hidden");
+      equipmentAdminView.classList.add("view-hidden");
       userAdminView.classList.add("view-hidden");
       mainWorkspace.classList.remove("single-view");
 
@@ -4582,11 +5126,29 @@
         inventoryView.classList.add("view-hidden");
         historyView.classList.add("view-hidden");
         userAdminView.classList.add("view-hidden");
+        equipmentAdminView.classList.add("view-hidden");
         reportsView.classList.remove("view-hidden");
         mainWorkspace.classList.add("single-view");
         currentViewLabel.textContent = "REPORTES";
         // No se consulta Supabase al abrir la vista. Solo al pulsar GENERAR REPORTE.
         updateReportGenerateState();
+      }else if(view === "equipment-admin"){
+        if(currentUser?.rol !== "admin"){
+          showToast("Solo un administrador puede agregar nuevos equipos.", true);
+          showDashboard();
+          return;
+        }
+        movementView.classList.add("view-hidden");
+        inventoryView.classList.add("view-hidden");
+        historyView.classList.add("view-hidden");
+        reportsView.classList.add("view-hidden");
+        userAdminView.classList.add("view-hidden");
+        equipmentAdminView.classList.remove("view-hidden");
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent = "AGREGAR NUEVO EQUIPO";
+        resetEquipmentAdminForm();
+        loadEquipmentTypeCatalogFromSupabase();
+        setEquipmentAdminTab("new");
       }else if(view === "users"){
         if(currentUser?.rol !== "admin"){
           showToast("Solo un administrador puede gestionar usuarios.", true);
@@ -4597,13 +5159,17 @@
         inventoryView.classList.add("view-hidden");
         historyView.classList.add("view-hidden");
         reportsView.classList.add("view-hidden");
+        equipmentAdminView.classList.add("view-hidden");
         userAdminView.classList.remove("view-hidden");
         mainWorkspace.classList.add("single-view");
         currentViewLabel.textContent = "GESTIÓN DE USUARIOS";
+        resetUserAdminForm();
         loadAdminUsers();
       }else{
         historyView.classList.add("view-hidden");
         reportsView.classList.add("view-hidden");
+        equipmentAdminView.classList.add("view-hidden");
+        userAdminView.classList.add("view-hidden");
         currentViewLabel.textContent = "VISTA PC";
       }
 
@@ -4649,11 +5215,17 @@
       if(e.target === deleteConfirmOverlay) closeDeleteConfirm();
     });
 
-    recordsDate.addEventListener("change", renderRecordsView);
+    let recordsFilterTimer = null;
+    recordsDate.addEventListener("change", loadRecordsFromSupabase);
     recordsPlant.addEventListener("input", () => {
       const cleaned = String(recordsPlant.value || "").replace(/[^0-9]/g, "");
       if(recordsPlant.value !== cleaned) recordsPlant.value = cleaned;
-      renderRecordsView();
+      clearTimeout(recordsFilterTimer);
+      if(!recordsPlant.value.trim()){
+        loadRecordsFromSupabase();
+        return;
+      }
+      recordsFilterTimer = setTimeout(loadRecordsFromSupabase, 450);
     });
 
     deleteFilteredInventoriesBtn.addEventListener("click", () => {
@@ -4670,11 +5242,17 @@
       );
     });
 
-    savedInventoryDate.addEventListener("change", renderSavedInventoriesView);
+    let inventoryHistoryFilterTimer = null;
+    savedInventoryDate.addEventListener("change", loadSavedInventoriesFromSupabase);
     savedInventoryPlant.addEventListener("input", () => {
       const cleaned = String(savedInventoryPlant.value || "").replace(/[^0-9]/g, "");
       if(savedInventoryPlant.value !== cleaned) savedInventoryPlant.value = cleaned;
-      renderSavedInventoriesView();
+      clearTimeout(inventoryHistoryFilterTimer);
+      if(!savedInventoryPlant.value.trim()){
+        loadSavedInventoriesFromSupabase();
+        return;
+      }
+      inventoryHistoryFilterTimer = setTimeout(loadSavedInventoriesFromSupabase, 450);
     });
 
     loginPasswordToggle.addEventListener("click", () => {
@@ -4726,6 +5304,7 @@
         showToast("Solo un administrador puede gestionar usuarios.", true);
         return;
       }
+      const userId = String(adminEditingUserId?.value || "").trim();
       const nombre = adminUserName.value.trim();
       const correo = adminUserEmail.value.trim().toLowerCase();
       const password = adminUserPassword.value;
@@ -4734,91 +5313,250 @@
         showToast("Complete nombre, correo y rol.", true);
         return;
       }
+      if(!userId && password.length < 6){
+        showToast("Para un usuario nuevo la contraseña debe tener al menos 6 caracteres.", true);
+        return;
+      }
+      if(userId && password && password.length < 6){
+        showToast("La nueva contraseña debe tener al menos 6 caracteres.", true);
+        return;
+      }
       adminUserSubmit.disabled = true;
-      adminUserSubmit.textContent = "GUARDANDO...";
+      adminUserSubmit.textContent = userId ? "ACTUALIZANDO..." : "GUARDANDO...";
       try{
-        await sbRpc("guardar_usuario", {
-          p_token:currentSessionToken,
-          p_nombre:nombre,
-          p_correo:correo,
-          p_password:password,
-          p_rol:rol
-        });
-        adminUserPassword.value = "";
-        showToast("Usuario registrado / actualizado correctamente.");
+        if(userId){
+          await sbRpc("editar_usuario_admin", {
+            p_token:currentSessionToken,
+            p_usuario_id:userId,
+            p_nombre:nombre,
+            p_correo:correo,
+            p_password:password,
+            p_rol:rol
+          });
+          showToast("Credenciales del usuario actualizadas correctamente.");
+        }else{
+          await sbRpc("guardar_usuario", {
+            p_token:currentSessionToken,
+            p_nombre:nombre,
+            p_correo:correo,
+            p_password:password,
+            p_rol:rol
+          });
+          showToast("Usuario registrado correctamente.");
+        }
+        resetUserAdminForm();
         await loadAdminUsers();
       }catch(error){
         console.error(error);
         showToast("No se pudo guardar el usuario: " + error.message, true);
       }finally{
         adminUserSubmit.disabled = false;
-        adminUserSubmit.textContent = "REGISTRAR / ACTUALIZAR";
+        adminUserSubmit.textContent = adminEditingUserId?.value ? "GUARDAR CAMBIOS" : "REGISTRAR USUARIO";
       }
     });
 
-    adminUsersBody.addEventListener("click", (event) => {
-      const row = event.target.closest("tr");
-      if(!row || !row.cells || row.cells.length < 3) return;
-      const nombre = row.cells[0]?.textContent?.trim();
-      const correo = row.cells[1]?.textContent?.trim();
-      const rol = row.cells[2]?.textContent?.trim()?.toLowerCase();
-      if(!correo || correo.includes("Cargando")) return;
-      adminUserName.value = nombre || "";
-      adminUserEmail.value = correo || "";
-      if(["usuario","supervisor","admin"].includes(rol)) adminUserRole.value = rol;
-      adminUserPassword.value = "";
-      adminUserName.focus();
+    adminUserCancelEdit?.addEventListener("click", () => {
+      resetUserAdminForm();
+      adminUserName?.focus();
     });
+
+    adminUsersBody.addEventListener("click", (event) => {
+      const btn = event.target.closest("[data-user-action]");
+      if(!btn) return;
+      if(currentUser?.rol !== "admin"){
+        showToast("Solo un administrador puede gestionar usuarios.", true);
+        return;
+      }
+      const userId = String(btn.dataset.userId || "");
+      const action = btn.dataset.userAction;
+      const user = adminUsersCache.find(item => String(item.id) === userId);
+      if(!user) return;
+
+      if(action === "edit"){
+        startUserEdit(userId);
+        return;
+      }
+
+      if(action === "delete"){
+        if(String(currentUser?.id) === userId){
+          showToast("No puede eliminar la cuenta con la que inició sesión.", true);
+          return;
+        }
+        openDeleteConfirm(
+          `¿Desea eliminar las credenciales de ${String(user.nombre || user.correo || "este usuario").toLocaleUpperCase("es")}? Esta acción cerrará sus sesiones y eliminará su cuenta.`,
+          async () => {
+            try{
+              await sbRpc("eliminar_usuario_admin", {
+                p_token:currentSessionToken,
+                p_usuario_id:userId
+              });
+              if(String(adminEditingUserId?.value || "") === userId) resetUserAdminForm();
+              showToast("Usuario eliminado correctamente.");
+              await loadAdminUsers();
+            }catch(error){
+              console.error(error);
+              showToast("No se pudo eliminar el usuario: " + error.message, true);
+            }
+          }
+        );
+      }
+    });
+
+    recordEditCancel?.addEventListener("click", closeRecordEditor);
+    recordEditOverlay?.addEventListener("click", (event) => { if(event.target === recordEditOverlay) closeRecordEditor(); });
+    recordEditForm?.addEventListener("submit", async (event) => { event.preventDefault(); await saveEditedRecord(); });
+    recordEditType?.addEventListener("change", () => { if(String(recordEditType.value).startsWith("CAMBIO DE ACEITE")) recordEditOil.value = "true"; });
+    recordEditPlant?.addEventListener("input", () => { recordEditPlant.value = String(recordEditPlant.value || "").toLocaleUpperCase("es"); });
+    recordEditEquipment?.addEventListener("input", () => { recordEditEquipment.value = String(recordEditEquipment.value || "").toLocaleUpperCase("es"); });
+    recordEditComment?.addEventListener("input", () => { recordEditComment.value = String(recordEditComment.value || "").toLocaleUpperCase("es"); });
 
     initializeCurrentDate();
     refreshEquipmentTypeOptions();
     updateMenuCounters();
 
-    // EQUIPO: es el único campo que permite letras y números.
+    // EQUIPO: letras y números. La existencia se valida directamente en Supabase.
     enforceEquipmentInput(equipoInput);
+    let equipmentLookupTimer = null;
     equipoInput.addEventListener("input", () => {
-      validateEquipment();
-    });
-    equipoInput.addEventListener("blur", validateEquipment);
-
-    addEquipmentBtn.addEventListener("click", async () => {
       const code = sanitizeEquipmentCode(equipoInput.value);
-      const tipo = String(newEquipmentType.value || "").trim().toUpperCase();
-      equipoInput.value = code;
+      if(equipoInput.value !== code) equipoInput.value = code;
+      equipoAceptado = false;
+      clearTimeout(equipmentLookupTimer);
+      if(!code){
+        setEquipmentStatus("Ingrese el código del equipo para comprobarlo.");
+        return;
+      }
+      setEquipmentStatus("Comprobando equipo...");
+      equipmentLookupTimer = setTimeout(() => validateEquipmentFromSupabase(), 350);
+    });
+    equipoInput.addEventListener("blur", () => {
+      clearTimeout(equipmentLookupTimer);
+      validateEquipmentFromSupabase();
+    });
 
-      if(!code || !/^[A-Z0-9]+$/.test(code)){
-        showToast("Ingrese un código de equipo válido usando letras y números.", true);
+    adminEquipmentCode?.addEventListener("input", () => {
+      const upper = String(adminEquipmentCode.value || "").toLocaleUpperCase("es");
+      if(adminEquipmentCode.value !== upper) adminEquipmentCode.value = upper;
+    });
+
+    adminEquipmentType?.addEventListener("input", () => {
+      const upper = String(adminEquipmentType.value || "").toLocaleUpperCase("es");
+      if(adminEquipmentType.value !== upper) adminEquipmentType.value = upper;
+      renderEquipmentTypeSuggestions(adminEquipmentType.value);
+    });
+    adminEquipmentType?.addEventListener("focus", () => renderEquipmentTypeSuggestions(adminEquipmentType.value));
+
+    equipmentTypeSuggestions?.addEventListener("mousedown", (event) => {
+      const option = event.target.closest("[data-equipment-type]");
+      if(!option) return;
+      event.preventDefault();
+      adminEquipmentType.value = String(option.dataset.equipmentType || "").toLocaleUpperCase("es");
+      hideEquipmentTypeSuggestions();
+      adminEquipmentType.focus();
+    });
+
+    document.addEventListener("mousedown", (event) => {
+      if(!event.target.closest(".equipment-type-autocomplete-field")) hideEquipmentTypeSuggestions();
+    });
+
+    equipmentAdminNewTab?.addEventListener("click", () => {
+      resetEquipmentAdminForm();
+      setEquipmentAdminTab("new");
+    });
+    equipmentAdminListTab?.addEventListener("click", () => setEquipmentAdminTab("list"));
+    equipmentAdminListSearch?.addEventListener("input", () => {
+      const upper = String(equipmentAdminListSearch.value || "").toLocaleUpperCase("es");
+      if(equipmentAdminListSearch.value !== upper) equipmentAdminListSearch.value = upper;
+      renderEquipmentAdminList(equipmentAdminListSearch.value);
+    });
+
+    adminEquipmentCancelEdit?.addEventListener("click", () => {
+      resetEquipmentAdminForm();
+      adminEquipmentCode?.focus();
+    });
+
+    equipmentAdminListBody?.addEventListener("click", (event) => {
+      const btn = event.target.closest("[data-equipment-action]");
+      if(!btn) return;
+      const code = sanitizeEquipmentCode(btn.dataset.equipmentCode || "");
+      const action = btn.dataset.equipmentAction;
+      if(action === "edit"){
+        startEquipmentEdit(code);
+        return;
+      }
+      if(action === "delete"){
+        openDeleteConfirm(
+          "¿Desea eliminar el equipo " + code + " de la lista permitida? Los movimientos históricos no se eliminarán.",
+          async () => {
+            try{
+              await sbRpc("eliminar_equipo_admin", {p_token:currentSessionToken,p_codigo:code});
+              removeEquipmentAdminCache(code);
+              showToast("Equipo eliminado de la lista permitida.");
+            }catch(error){
+              showToast("No se pudo eliminar el equipo: " + error.message, true);
+            }
+          }
+        );
+      }
+    });
+
+    equipmentAdminForm?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if(currentUser?.rol !== "admin" || !currentSessionToken){
+        showToast("Solo un administrador puede agregar o editar equipos.", true);
         return;
       }
 
-      if(!tipo || !getRegisteredEquipmentTypes().includes(tipo)){
-        showToast("Seleccione un tipo de equipo de la lista de referencias registradas.", true);
-        newEquipmentType.focus();
+      const rawCode = String(adminEquipmentCode?.value || "").trim().toLocaleUpperCase("es");
+      const code = sanitizeEquipmentCode(rawCode);
+      const tipo = String(adminEquipmentType?.value || "").trim().toLocaleUpperCase("es");
+
+      if(!rawCode || !code || rawCode !== code){
+        showToast("El número de equipo debe contener únicamente letras y números.", true);
+        adminEquipmentCode?.focus();
+        return;
+      }
+      if(!tipo){
+        showToast("Ingrese o seleccione el tipo de equipo.", true);
+        adminEquipmentType?.focus();
         return;
       }
 
-      if(getEquipmentRecord(code)){
-        validateEquipment();
-        showToast("Ese equipo ya está registrado.");
-        return;
-      }
-
+      const isEditing = Boolean(editingEquipmentOriginalCode);
+      adminEquipmentSubmit.disabled = true;
+      adminEquipmentSubmit.textContent = isEditing ? "ACTUALIZANDO..." : "GUARDANDO...";
       try{
-        await sbRequest("combustible_equipos", {
-          method:"POST",
-          body:{codigo:code, tipo:tipo || null, activo:true}
-        });
-        const custom = getCustomEquipments();
-        custom.push({codigo:code, tipo, created_at:new Date().toISOString()});
-        saveCustomEquipments(custom);
-        newEquipmentType.value = "";
-        refreshEquipmentTypeOptions();
-        validateEquipment();
-        showToast("Equipo agregado a Supabase.");
-        updateMenuCounters();
+        const previousCode = editingEquipmentOriginalCode;
+        let savedEquipment;
+        if(isEditing){
+          savedEquipment = await sbRpc("editar_equipo_admin", {
+            p_token:currentSessionToken,
+            p_codigo_actual:previousCode,
+            p_codigo_nuevo:code,
+            p_tipo:tipo
+          });
+          showToast("Equipo actualizado correctamente.");
+        }else{
+          savedEquipment = await sbRpc("guardar_equipo_admin", {
+            p_token:currentSessionToken,
+            p_codigo:code,
+            p_tipo:tipo
+          });
+          showToast("Equipo agregado correctamente.");
+        }
+        if(equipmentAdminListLoaded){
+          upsertEquipmentAdminCache(savedEquipment || {codigo:code,tipo}, previousCode);
+        }else{
+          await loadEquipmentTypeCatalogFromSupabase();
+        }
+        resetEquipmentAdminForm();
+        await setEquipmentAdminTab("list");
       }catch(error){
         console.error(error);
-        showToast("No se pudo agregar el equipo: " + error.message, true);
+        showToast("No se pudo guardar el equipo: " + error.message, true);
+      }finally{
+        adminEquipmentSubmit.disabled = false;
+        adminEquipmentSubmit.textContent = editingEquipmentOriginalCode ? "GUARDAR CAMBIOS" : "AGREGAR EQUIPO";
       }
     });
 
@@ -4856,8 +5594,8 @@
         equipoInput.focus();
         return;
       }
-      if(!validateEquipment()){
-        showToast("El equipo no está registrado. Agréguelo antes de guardar.", true);
+      if(!(await validateEquipmentFromSupabase())){
+        showToast("El equipo no está registrado. Solicite a un administrador que lo agregue.", true);
         equipoInput.focus();
         return;
       }
