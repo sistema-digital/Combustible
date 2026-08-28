@@ -328,6 +328,46 @@
     .diesel-period-row.highest .diesel-period-track{outline:2px solid rgba(21,144,168,.22)}
     .diesel-period-row.highest .diesel-period-label,.diesel-period-row.highest .diesel-period-value{color:#0e7490}
     .diesel-period-value{min-width:78px;text-align:right;font-size:11px;font-weight:950;color:#173f8f}
+    .report-drill-toggle{cursor:pointer}
+    .fuel-summary-card.report-drill-toggle{width:100%;border:1px solid #dfe5ee;text-align:left;font:inherit;color:inherit}
+    .fuel-summary-card.report-drill-toggle:hover,.fuel-summary-card.report-drill-toggle.open{background:#f8fbff;border-color:#bdd0ef}
+    .report-drill-chevron{margin-left:auto;display:grid;place-items:center;color:#315fb2;transition:transform .28s ease;flex:0 0 auto}
+    .report-drill-toggle.open .report-drill-chevron{transform:rotate(180deg)}
+    button.chart-track,button.diesel-period-track{display:block;width:100%;border:0;padding:0;appearance:none;-webkit-appearance:none;text-align:left;cursor:pointer}
+    button.chart-track:focus-visible,button.diesel-period-track:focus-visible,.fuel-summary-card.report-drill-toggle:focus-visible{outline:3px solid rgba(49,95,178,.24);outline-offset:2px}
+    button.chart-track:hover .chart-bar,button.chart-track.open .chart-bar{filter:brightness(.92)}
+    button.diesel-period-track:hover .diesel-period-bar,button.diesel-period-track.open .diesel-period-bar{filter:brightness(.9)}
+    .report-drill-detail{display:grid;grid-template-rows:0fr;opacity:0;margin-top:0;transition:grid-template-rows .3s ease,opacity .22s ease,margin-top .3s ease}
+    .report-drill-detail.open{grid-template-rows:1fr;opacity:1;margin-top:8px}
+    .report-drill-inner{overflow:hidden}
+    .report-drill-card{border:1px solid #dbe6f5;border-radius:11px;background:#fff;padding:9px 10px;display:grid;gap:7px}
+    .report-drill-title{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:10px;font-weight:950;color:#173f8f;text-transform:uppercase}
+    .report-daily-list{display:grid;gap:5px}
+    .report-daily-row{display:grid;grid-template-columns:minmax(96px,135px) minmax(90px,1fr) auto auto;gap:8px;align-items:center;min-width:0;border-radius:8px;cursor:pointer;transition:box-shadow .16s ease,opacity .16s ease}
+    .report-daily-row:hover,.report-daily-row.position-selected{box-shadow:0 0 0 2px #22c55e;opacity:1}
+    .report-daily-row.position-selected{box-shadow:0 0 0 3px #16a34a}
+    .report-daily-date{font-size:10px;font-weight:900;color:#475569;text-transform:uppercase}
+    .report-daily-track{height:8px;background:#eef2f7;border-radius:999px;overflow:hidden}
+    .report-daily-bar{height:100%;border-radius:999px;background:#6f93d3}
+    .report-daily-value{min-width:62px;text-align:right;font-size:10px;font-weight:950;color:#173f8f}
+    .report-daily-count{min-width:130px;text-align:right;font-size:9px;font-weight:800;color:#64748b;text-transform:uppercase}
+    .report-daily-consumption-detail{display:flex;justify-content:flex-end;gap:5px;align-items:baseline;flex-wrap:wrap}
+    .report-daily-consumption-detail strong{font-size:9px;color:inherit}
+    .report-daily-consumption-detail span{font-size:8px;font-weight:700;color:#64748b;max-width:220px;white-space:normal}
+    .report-daily-consumption-detail.empty{opacity:.7}
+    .report-type-totals{margin-top:4px;border-top:1px solid #dbe6f5;padding-top:8px;display:grid;gap:5px}
+    .report-type-totals-title{font-size:9px;font-weight:950;color:#173f8f;text-transform:uppercase;letter-spacing:.02em}
+    .report-type-total-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-radius:7px;background:#f8fafc;padding:6px 8px}
+    .report-type-total-row span{font-size:9px;font-weight:850;color:#475569;text-transform:uppercase;min-width:0;overflow-wrap:anywhere}
+    .report-type-total-row strong{font-size:10px;font-weight:950;color:#173f8f;white-space:nowrap}
+    .report-daily-row.zero{opacity:.62}
+    .report-daily-row.highest{background:#fff1f2;border:1px solid #fecaca;border-radius:8px;padding:5px 6px}
+    .report-daily-row.highest .report-daily-date,.report-daily-row.highest .report-daily-value,.report-daily-row.highest .report-daily-count,.report-daily-row.highest .report-daily-consumption-detail span{color:#b91c1c}
+    .report-daily-row.highest .report-daily-track{background:#fee2e2}
+    .report-daily-row.highest .report-daily-bar{background:#dc2626}
+    .fuel-summary-item{min-width:0}
+    .fuel-summary-item .report-drill-detail{margin-left:0;margin-right:0}
+    .chart-row + .report-drill-detail,.diesel-period-row + .report-drill-detail{grid-column:1/-1}
     .diesel-highest-card{display:flex;align-items:center;gap:10px;border:1px solid #bae6ee;background:#ecfeff;border-radius:13px;padding:11px 12px;color:#155e75}
     .diesel-highest-card svg{flex:0 0 auto}
     .diesel-highest-card span{display:block;font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
@@ -358,6 +398,8 @@
     .pdf-report-export .diesel-comparison-chart{padding:9px;gap:6px}
     .pdf-report-export .diesel-period-row{gap:7px}
     .pdf-report-export .diesel-period-track{height:16px}
+    .pdf-report-export .report-drill-detail{display:none!important}
+    .pdf-report-export .report-drill-chevron{display:none!important}
     .pdf-report-export .oil-history{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
     .pdf-report-export .oil-history-item{padding:7px 8px;gap:3px}
     .pdf-report-export .oil-history-date{font-size:11px}
@@ -373,6 +415,8 @@
       .chart-row{grid-template-columns:125px minmax(80px,1fr) auto}
       .diesel-period-row{grid-template-columns:110px minmax(70px,1fr) auto}
       .fuel-summary-grid{grid-template-columns:1fr}
+      .report-daily-row{grid-template-columns:92px minmax(55px,1fr) auto}
+      .report-daily-count{grid-column:1/-1;text-align:left;margin-left:100px}
       .auth-screen{padding:12px}.auth-card{padding:20px;border-radius:18px}
       .auth-grid,.user-admin-form{grid-template-columns:1fr}
       .auth-field.full,.user-admin-form .full,.auth-submit,.user-admin-submit{grid-column:1}
@@ -648,10 +692,15 @@
 
     .records-filters{
       display:grid;
-      grid-template-columns:minmax(180px,1fr) minmax(180px,1fr);
+      grid-template-columns:minmax(250px,1.25fr) minmax(160px,.75fr) minmax(210px,1fr);
       gap:12px;
       padding:0 20px 16px;
+      align-items:end;
     }
+
+    .records-date-range-picker{position:relative}
+    .records-date-range-picker input{padding-left:42px!important;cursor:pointer}
+    .records-filter-field datalist{display:none}
 
     .records-filter-field label{
       display:block;
@@ -2432,22 +2481,34 @@
         <section id="recordsView" class="records-view history-panel active" role="tabpanel">
         <div class="card-header">
           <h2>REGISTROS</h2>
-          <p>Consulte los movimientos guardados utilizando solamente fecha y planta.</p>
+          <p>Consulte los movimientos por rango de fecha y filtre por planta, número de equipo o ambos.</p>
         </div>
 
         <div class="records-filters">
           <div class="records-filter-field">
-            <label for="recordsDate">FECHA</label>
-            <input id="recordsDate" type="date" value="2026-08-25">
+            <label for="recordsDateRange">RANGO DE FECHA</label>
+            <div class="records-date-range-picker report-date-range-picker">
+              <span class="report-calendar-icon" aria-hidden="true">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M7 3v3M17 3v3M4 9h16M5 5h14v16H5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <input id="recordsDateRange" class="report-filter-input" type="text" readonly autocomplete="off" placeholder="SELECCIONE FECHA INICIAL Y FINAL" aria-label="Rango de fecha de movimientos">
+            </div>
+            <input id="recordsDateFrom" type="hidden">
+            <input id="recordsDateTo" type="hidden">
           </div>
           <div class="records-filter-field">
             <label for="recordsPlant">PLANTA</label>
             <input id="recordsPlant" type="text" inputmode="numeric" autocomplete="off" placeholder="Ingrese la planta">
           </div>
+          <div class="records-filter-field">
+            <label for="recordsEquipment">NÚMERO DE EQUIPO</label>
+            <input id="recordsEquipment" type="text" list="recordsEquipmentOptions" autocomplete="off" placeholder="EJ. 422005">
+            <datalist id="recordsEquipmentOptions"></datalist>
+          </div>
         </div>
 
         <div class="records-summary">
-          <span id="recordsFilterMessage">Ingrese la planta para mostrar los registros.</span>
+          <span id="recordsFilterMessage">Seleccione el rango de fecha y filtre por planta o equipo.</span>
           <div class="records-actions">
             <button id="deleteFilteredRecordsBtn" type="button" class="delete-filtered-btn" disabled title="Eliminar todos los registros" aria-label="Eliminar todos los registros"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             <span id="recordsCount" class="records-count">0 registros</span>
@@ -2474,7 +2535,7 @@
 
           <div id="recordsEmpty" class="records-empty">
             <strong>Sin registros para mostrar</strong>
-            <span>Seleccione una fecha e ingrese la planta.</span>
+            <span>Seleccione un rango de fecha y filtre por planta o número de equipo.</span>
           </div>
         </div>
         </section>
@@ -2912,8 +2973,12 @@
     const historyMovementsTab = document.getElementById("historyMovementsTab");
     const historyInventoriesTab = document.getElementById("historyInventoriesTab");
     const recordsView = document.getElementById("recordsView");
-    const recordsDate = document.getElementById("recordsDate");
+    const recordsDateRange = document.getElementById("recordsDateRange");
+    const recordsDateFrom = document.getElementById("recordsDateFrom");
+    const recordsDateTo = document.getElementById("recordsDateTo");
     const recordsPlant = document.getElementById("recordsPlant");
+    const recordsEquipment = document.getElementById("recordsEquipment");
+    const recordsEquipmentOptions = document.getElementById("recordsEquipmentOptions");
     const recordsBody = document.getElementById("recordsBody");
     const recordsEmpty = document.getElementById("recordsEmpty");
     const recordsCount = document.getElementById("recordsCount");
@@ -3310,7 +3375,7 @@
         await loadViewVisibilityConfig({force:true});
         // No se descargan listas completas al iniciar.
         // EQUIPOS: la lista se consulta solo al entrar en LISTA DE EQUIPOS.
-        // MOVIMIENTOS / INVENTARIOS: se consultan directamente por PLANTA + FECHA.
+        // MOVIMIENTOS: se consultan por RANGO + PLANTA/EQUIPO. INVENTARIOS: por PLANTA + FECHA.
         supabaseConnected = true;
         setSupabaseStatus("connected", "Conexión correcta con la nueva base de datos");
         setLookupStatus("Supabase conectado. Los datos se consultarán únicamente cuando corresponda según cada filtro.", "ok");
@@ -3565,7 +3630,9 @@
             <td>${currentUser?.rol === "admin" ? `<div class="equipment-row-actions">
               <button type="button" class="equipment-action-btn edit" data-equipment-action="edit" data-equipment-code="${escapeHtml(item.codigo)}" title="Editar equipo" aria-label="Editar equipo">${actionIconSvg("edit")}</button>
               <button type="button" class="equipment-action-btn delete" data-equipment-action="delete" data-equipment-code="${escapeHtml(item.codigo)}" title="Eliminar equipo" aria-label="Eliminar equipo">${actionIconSvg("delete")}</button>
-            </div>` : `<span class="role-pill">SOLO ADMIN</span>`}</td>
+            </div>` : currentUser?.rol === "supervisor" ? `<div class="equipment-row-actions">
+              <button type="button" class="equipment-action-btn edit" data-equipment-action="edit" data-equipment-code="${escapeHtml(item.codigo)}" title="Editar equipo" aria-label="Editar equipo">${actionIconSvg("edit")}</button>
+            </div>` : `<span class="role-pill">SOLO LECTURA</span>`}</td>
           </tr>`).join("")
         : `<tr><td colspan="3" class="equipment-list-empty">NO SE ENCONTRARON EQUIPOS.</td></tr>`;
     }
@@ -3619,8 +3686,8 @@
     }
 
     function startEquipmentEdit(code){
-      if(currentUser?.rol !== "admin"){
-        showToast("Solo un administrador puede editar equipos existentes.", true);
+      if(!["admin","supervisor"].includes(currentUser?.rol)){
+        showToast("Solo ADMIN o SUPERVISOR pueden editar equipos existentes.", true);
         return;
       }
       const normal = sanitizeEquipmentCode(code);
@@ -3896,7 +3963,7 @@
       fechaPicker.value = "";
       fechaInput.value = "";
       if(currentDateChip) currentDateChip.textContent = todayDisplay;
-      if(recordsDate) recordsDate.value = todayISO;
+      if(recordsDateFrom && recordsDateTo) setRecordsDateRange(todayISO, todayISO, false);
       if(savedInventoryDate) savedInventoryDate.value = todayISO;
     }
 
@@ -4794,7 +4861,7 @@
       const item = (movement.productos || []).find(p => String(p.detalle_id) === String(detailId));
       if(!item){ showToast("No se encontró el detalle del registro.", true); return; }
       editingRecordContext = {movementId:String(movementId), detailId:String(detailId)};
-      recordEditDate.value = normalizeDateKey(movement.fecha) || normalizeDateKey(recordsDate.value);
+      recordEditDate.value = normalizeDateKey(movement.fecha) || normalizeDateKey(recordsDateFrom?.value) || getLocalTodayISO();
       recordEditPlant.value = String(movement.planta || "").trim().toLocaleUpperCase("es");
       recordEditEquipment.value = String(movement.equipo || "").trim().toLocaleUpperCase("es");
       recordEditProduct.value = String(item.producto || "").trim().toLocaleUpperCase("es");
@@ -4892,13 +4959,15 @@
     }
 
     async function deleteAllFilteredRecords(){
-      const dateKey = normalizeDateKey(recordsDate.value);
-      const plantKey = String(recordsPlant.value || "").trim();
-      if(!dateKey || !plantKey) return;
+      const filters = getRecordsFilterState();
+      if(!isRecordsFilterReady(filters)) return;
       try{
+        let query = `?fecha=gte.${encodeURIComponent(filters.from)}&fecha=lte.${encodeURIComponent(filters.to)}`;
+        if(filters.plant) query += `&planta=eq.${encodeURIComponent(filters.plant)}`;
+        if(filters.equipment) query += `&equipo=eq.${encodeURIComponent(filters.equipment)}`;
         await sbRequest("combustible_movimientos", {
           method:"DELETE",
-          query:`?fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`,
+          query,
           prefer:"return=minimal"
         });
         dashboardConsumptionLoaded = false;
@@ -4957,11 +5026,90 @@
     let filteredInventoriesKey = "";
     let recordsRequestId = 0;
     let inventoriesRequestId = 0;
+    let recordsEquipmentOptionsLoaded = false;
+    let recordsDateRangePicker = null;
+
+    function getRecordsFilterState(){
+      return {
+        from: normalizeDateKey(recordsDateFrom?.value || ""),
+        to: normalizeDateKey(recordsDateTo?.value || ""),
+        plant: String(recordsPlant?.value || "").trim(),
+        equipment: sanitizeEquipmentCode(recordsEquipment?.value || "")
+      };
+    }
+
+    function isRecordsFilterReady(filters=getRecordsFilterState()){
+      return Boolean(filters.from && filters.to && filters.from <= filters.to && (filters.plant || filters.equipment));
+    }
+
+    function getRecordsFilterCacheKey(filters=getRecordsFilterState()){
+      return `${filters.from}|${filters.to}|${filters.plant}|${filters.equipment}`;
+    }
+
+    function formatRecordsDateRange(from, to){
+      if(!from || !to) return "";
+      return from === to ? formatDateDisplay(from) : `${formatDateDisplay(from)} AL ${formatDateDisplay(to)}`;
+    }
+
+    function getRecordsFilterDescription(filters=getRecordsFilterState()){
+      const parts = [];
+      if(filters.from && filters.to) parts.push(formatRecordsDateRange(filters.from, filters.to));
+      if(filters.plant) parts.push(`Planta ${filters.plant}`);
+      if(filters.equipment) parts.push(`Equipo ${filters.equipment}`);
+      return parts.join(" · ");
+    }
+
+    async function loadRecordsEquipmentOptions(force=false){
+      if(!recordsEquipmentOptions || !currentUser) return;
+      if(recordsEquipmentOptionsLoaded && !force) return;
+      try{
+        const rows = await sbRequest("combustible_equipos", {
+          query:"?select=codigo,tipo&activo=eq.true&order=codigo.asc",
+          prefer:""
+        });
+        const seen = new Set();
+        const items = (rows || []).map(item => ({
+          codigo:sanitizeEquipmentCode(item.codigo),
+          tipo:String(item.tipo || "").trim().toLocaleUpperCase("es")
+        })).filter(item => item.codigo && !seen.has(item.codigo) && seen.add(item.codigo));
+        recordsEquipmentOptions.innerHTML = items.map(item =>
+          `<option value="${escapeHtml(item.codigo)}" label="${escapeHtml(item.tipo || 'SIN TIPO')}"></option>`
+        ).join("");
+        recordsEquipmentOptionsLoaded = true;
+      }catch(error){
+        console.warn("Lista de equipos para Movimientos:", error);
+        const merged = [...EQUIPOS_BASE, ...getCustomEquipments()];
+        const seen = new Set();
+        recordsEquipmentOptions.innerHTML = merged.map(item => ({
+          codigo:sanitizeEquipmentCode(item.codigo),
+          tipo:String(item.tipo || "").trim().toLocaleUpperCase("es")
+        })).filter(item => item.codigo && !seen.has(item.codigo) && seen.add(item.codigo))
+          .sort((a,b)=>a.codigo.localeCompare(b.codigo,"es",{numeric:true}))
+          .map(item => `<option value="${escapeHtml(item.codigo)}" label="${escapeHtml(item.tipo || 'SIN TIPO')}"></option>`).join("");
+      }
+    }
+
+    async function fetchFilteredMovements(filters){
+      const allRows = [];
+      const pageSize = 1000;
+      let offset = 0;
+      while(true){
+        let query = `?select=id,fecha,planta,equipo,created_at,combustible_movimiento_detalle(id,producto,cantidad,tipo_movimiento,comentario,cambio_aceite,created_at)&fecha=gte.${encodeURIComponent(filters.from)}&fecha=lte.${encodeURIComponent(filters.to)}`;
+        if(filters.plant) query += `&planta=eq.${encodeURIComponent(filters.plant)}`;
+        if(filters.equipment) query += `&equipo=eq.${encodeURIComponent(filters.equipment)}`;
+        query += `&order=fecha.desc,created_at.desc&limit=${pageSize}&offset=${offset}`;
+        const batch = await sbRequest("combustible_movimientos", {query, prefer:""});
+        const rows = Array.isArray(batch) ? batch : [];
+        allRows.push(...rows);
+        if(rows.length < pageSize) break;
+        offset += pageSize;
+      }
+      return allRows;
+    }
 
     async function loadRecordsFromSupabase(){
-      const dateKey = normalizeDateKey(recordsDate.value);
-      const plantKey = String(recordsPlant.value || "").trim();
-      if(!dateKey || !plantKey){
+      const filters = getRecordsFilterState();
+      if(!isRecordsFilterReady(filters)){
         filteredMovementsCache = [];
         filteredMovementsKey = "";
         renderRecordsView();
@@ -4971,15 +5119,14 @@
       recordsBody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:22px;color:#6b7280">CONSULTANDO SUPABASE...</td></tr>`;
       deleteFilteredRecordsBtn.disabled = true;
       recordsEmpty.classList.add("hidden");
-      recordsFilterMessage.textContent = "Consultando planta " + plantKey + " · " + formatDateDisplay(dateKey);
+      recordsFilterMessage.textContent = "Consultando " + getRecordsFilterDescription(filters);
       try{
-        const rows = await sbRequest("combustible_movimientos", {
-          query:`?select=id,fecha,planta,equipo,created_at,combustible_movimiento_detalle(id,producto,cantidad,tipo_movimiento,comentario,cambio_aceite,created_at)&fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}&order=created_at.desc`
-        });
+        const rows = await fetchFilteredMovements(filters);
         if(requestId !== recordsRequestId) return;
         filteredMovementsCache = (rows || []).map(row => ({
           id:row.id,
           fecha:formatDateDisplay(row.fecha),
+          fecha_iso:normalizeDateKey(row.fecha),
           planta:String(row.planta || "").trim().toUpperCase(),
           equipo:sanitizeEquipmentCode(row.equipo),
           tipo_movimiento:"CONSUMO",
@@ -4993,7 +5140,7 @@
             tipo_movimiento:String(item.tipo_movimiento || "CONSUMO").trim().toUpperCase()
           }))
         }));
-        filteredMovementsKey = `${plantKey}|${dateKey}`;
+        filteredMovementsKey = getRecordsFilterCacheKey(filters);
         renderRecordsView();
       }catch(error){
         if(requestId !== recordsRequestId) return;
@@ -5148,27 +5295,33 @@
     }
 
     function renderRecordsView(){
-      const dateKey = normalizeDateKey(recordsDate.value);
-      const plantKey = String(recordsPlant.value || "").trim();
+      const filters = getRecordsFilterState();
 
-      if(!dateKey || !plantKey){
+      if(!isRecordsFilterReady(filters)){
         recordsBody.innerHTML = "";
         recordsEmpty.classList.remove("hidden");
         recordsEmpty.innerHTML = `
-          <strong>Complete fecha y planta</strong>
-          <span>Estos son los únicos filtros de esta vista.</span>
+          <strong>Complete el rango y un filtro</strong>
+          <span>Seleccione el rango de fecha y escriba la planta, el número de equipo o ambos.</span>
         `;
         recordsCount.textContent = "0 registros";
         deleteFilteredRecordsBtn.disabled = true;
-        recordsFilterMessage.textContent = !plantKey
-          ? "Ingrese la planta para mostrar los registros."
-          : "Seleccione una fecha para mostrar los registros.";
+        if(!filters.from || !filters.to){
+          recordsFilterMessage.textContent = "Seleccione el rango de fecha para mostrar los registros.";
+        }else if(!filters.plant && !filters.equipment){
+          recordsFilterMessage.textContent = "Ingrese una planta o seleccione un número de equipo.";
+        }else if(filters.from > filters.to){
+          recordsFilterMessage.textContent = "La fecha inicial no puede ser posterior a la fecha final.";
+        }
         return;
       }
 
-      const cacheKey = `${plantKey}|${dateKey}`;
+      const cacheKey = getRecordsFilterCacheKey(filters);
       const movements = (filteredMovementsKey === cacheKey ? filteredMovementsCache : [])
-        .sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        .sort((a,b) => {
+          const dateDiff = String(b.fecha_iso || "").localeCompare(String(a.fecha_iso || ""));
+          return dateDiff || (new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        });
 
       const rows = [];
       movements.forEach(registro => {
@@ -5177,7 +5330,7 @@
             movementId: registro.id,
             detailId: item.detalle_id || "",
             productIndex,
-            fecha: registro.fecha || formatDateDisplay(dateKey),
+            fecha: registro.fecha || "",
             planta: registro.planta || "",
             equipo: sanitizeEquipmentCode(registro.equipo || ""),
             producto: item.producto || "",
@@ -5191,14 +5344,14 @@
 
       recordsCount.textContent = rows.length + (rows.length === 1 ? " registro" : " registros");
       deleteFilteredRecordsBtn.disabled = rows.length === 0;
-      recordsFilterMessage.textContent = "Planta " + plantKey + " · " + formatDateDisplay(dateKey);
+      recordsFilterMessage.textContent = getRecordsFilterDescription(filters);
 
       if(!rows.length){
         recordsBody.innerHTML = "";
         recordsEmpty.classList.remove("hidden");
         recordsEmpty.innerHTML = `
           <strong>No hay registros</strong>
-          <span>No se encontraron movimientos para la fecha y planta seleccionadas.</span>
+          <span>No se encontraron movimientos para el rango y los filtros seleccionados.</span>
         `;
         return;
       }
@@ -5375,49 +5528,165 @@
       return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18a8 8 0 1 1 16 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 10v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="m12 14 3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 8.5 5.5 7M17 8.5 18.5 7M12 6V4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
     }
 
-    function renderFuelSummary(consumos){
+    function reportProductQuantityForMovement(movement, product){
+      const wanted=String(product || "").trim().toUpperCase();
+      let total=0;
+      let registros=0;
+      const detalles=[];
+      (movement?.combustible_movimiento_detalle || []).forEach(item => {
+        const producto=String(item.producto || "").trim().toUpperCase();
+        const tipo=String(item.tipo_movimiento || "CONSUMO").trim().toUpperCase();
+        if(producto !== wanted || tipo === "TRANSFERENCIA") return;
+        const cantidad=Number(item.cantidad || 0);
+        if(!Number.isFinite(cantidad) || cantidad <= 0) return;
+        total += cantidad;
+        registros += 1;
+        detalles.push({
+          tipo,
+          cantidad,
+          comentario:String(item.comentario || "").trim().toUpperCase()
+        });
+      });
+      return {cantidad:total,registros,detalles};
+    }
+
+    function reportDayLabel(iso){
+      const date=localDateFromIso(iso);
+      if(!date) return formatDateDisplay(iso);
+      return date.toLocaleDateString("es-PA",{weekday:"short",day:"2-digit",month:"2-digit"})
+        .replace(/\./g,"").toUpperCase();
+    }
+
+    function buildDailyProductBreakdown(rows,product,from,to){
+      const start=localDateFromIso(from);
+      const finish=localDateFromIso(to);
+      if(!start || !finish || start > finish) return [];
+      const days=[];
+      const byDate=new Map();
+      let cursor=new Date(start);
+      let guard=0;
+      while(cursor <= finish && guard < 370){
+        const key=isoFromLocalDate(cursor);
+        const item={fecha:key,cantidad:0,registros:0,detalles:[]};
+        days.push(item);
+        byDate.set(key,item);
+        cursor.setDate(cursor.getDate()+1);
+        guard += 1;
+      }
+      (rows || []).forEach(movement => {
+        const fecha=normalizeDateKey(movement.fecha);
+        const day=byDate.get(fecha);
+        if(!day) return;
+        const values=reportProductQuantityForMovement(movement,product);
+        day.cantidad += values.cantidad;
+        day.registros += values.registros;
+        if(Array.isArray(values.detalles) && values.detalles.length){
+          day.detalles.push(...values.detalles);
+        }
+      });
+      return days;
+    }
+
+    function renderDailyProductBreakdown(rows,product,from,to,detailId,showLubricantExtras=false){
+      const days=buildDailyProductBreakdown(rows,product,from,to);
+      const max=Math.max(...days.map(day=>Number(day.cantidad || 0)),0);
+      const total=days.reduce((sum,day)=>sum+Number(day.cantidad || 0),0);
+      const content=days.map(day => {
+        const qty=Number(day.cantidad || 0);
+        const pct=max > 0 ? Math.min(100,(qty/max)*100) : 0;
+        const isHighest=max > 0 && qty === max;
+        const detailContent=showLubricantExtras
+          ? ((day.detalles || []).length
+              ? day.detalles.map(detail => `<div class="report-daily-consumption-detail"><strong>${escapeHtml(detail.tipo || "CONSUMO")}</strong>${detail.comentario ? `<span>${escapeHtml(detail.comentario)}</span>` : ""}</div>`).join("")
+              : `<div class="report-daily-consumption-detail empty"><strong>SIN CONSUMO</strong></div>`)
+          : `${Number(day.registros || 0)} ${Number(day.registros || 0) === 1 ? "REGISTRO" : "REGISTROS"}`;
+        return `<div class="report-daily-row${qty > 0 ? "" : " zero"}${isHighest ? " highest" : ""}">
+          <div class="report-daily-date">${escapeHtml(reportDayLabel(day.fecha))}</div>
+          <div class="report-daily-track"><div class="report-daily-bar" style="width:${pct.toFixed(2)}%"></div></div>
+          <div class="report-daily-value">${formatReportNumber(qty)}</div>
+          <div class="report-daily-count">${detailContent}</div>
+        </div>`;
+      }).join("");
+      let totalsSection="";
+      if(showLubricantExtras){
+        const totalsByType=new Map();
+        days.forEach(day => {
+          (day.detalles || []).forEach(detail => {
+            const tipo=String(detail.tipo || "CONSUMO").trim().toUpperCase() || "CONSUMO";
+            const cantidad=Number(detail.cantidad || 0);
+            if(!Number.isFinite(cantidad) || cantidad <= 0) return;
+            totalsByType.set(tipo,(totalsByType.get(tipo) || 0)+cantidad);
+          });
+        });
+        const typeTotalsHtml=[...totalsByType.entries()]
+          .sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0],"es"))
+          .map(([tipo,cantidad])=>`<div class="report-type-total-row"><span>${escapeHtml(tipo)}</span><strong>${formatReportNumber(cantidad)}</strong></div>`)
+          .join("");
+        totalsSection=`<div class="report-type-totals"><div class="report-type-totals-title">TOTAL POR TIPO DE CONSUMO</div>${typeTotalsHtml || `<div class="report-type-total-row"><span>SIN CONSUMO</span><strong>0</strong></div>`}</div>`;
+      }
+      return `<div id="${escapeHtml(detailId)}" class="report-drill-detail" aria-hidden="true">
+        <div class="report-drill-inner">
+          <div class="report-drill-card">
+            <div class="report-drill-title"><span>${escapeHtml(product)} · DETALLE POR DÍA</span><span>TOTAL ${formatReportNumber(total)}</span></div>
+            <div class="report-daily-list">${content}</div>
+            ${totalsSection}
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function drillChevronIcon(){
+      return `<span class="report-drill-chevron" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+    }
+
+    function renderFuelSummary(consumos,rangeRows=[],from="",to=""){
       const findQty = product => Number(consumos.find(item => item.producto === product)?.cantidad || 0);
       const gasolina = findQty("GASOLINA");
       const diesel = findQty("DIESEL");
       const cards = [];
 
       if(gasolina > 0){
-        cards.push(`<div class="fuel-summary-card gasoline">
+        const detailId="report-fuel-gasoline-days";
+        cards.push(`<div class="fuel-summary-item"><button type="button" class="fuel-summary-card gasoline report-drill-toggle" data-drill-target="${detailId}" aria-expanded="false">
           <span class="fuel-summary-icon">${productConsumptionIcon("GASOLINA",20)}</span>
           <div><span>CONSUMO GASOLINA</span><strong>${formatReportNumber(gasolina)}</strong></div>
-        </div>`);
+          ${drillChevronIcon()}
+        </button>${renderDailyProductBreakdown(rangeRows,"GASOLINA",from,to,detailId)}</div>`);
       }
 
       if(diesel > 0){
-        cards.push(`<div class="fuel-summary-card diesel">
+        const detailId="report-fuel-diesel-days";
+        cards.push(`<div class="fuel-summary-item"><button type="button" class="fuel-summary-card diesel report-drill-toggle" data-drill-target="${detailId}" aria-expanded="false">
           <span class="fuel-summary-icon">${productConsumptionIcon("DIESEL",20)}</span>
           <div><span>CONSUMO DIESEL</span><strong>${formatReportNumber(diesel)}</strong></div>
-        </div>`);
+          ${drillChevronIcon()}
+        </button>${renderDailyProductBreakdown(rangeRows,"DIESEL",from,to,detailId)}</div>`);
       }
 
       return cards.length ? `<div class="fuel-summary-grid">${cards.join("")}</div>` : "";
     }
 
-    function renderConsumptionChart(consumos, footerText="CANTIDAD ACUMULADA"){
+    function renderConsumptionChart(consumos, footerText="CANTIDAD ACUMULADA", rangeRows=[], from="", to=""){
       if(!consumos.length){
         return `<div class="report-no-data">No hay consumos registrados para este equipo dentro del rango seleccionado.</div>`;
       }
       const max = Math.max(...consumos.map(item => item.cantidad), 1);
-      const rows = consumos.map(item => {
+      const rows = consumos.map((item,index) => {
         const pct = Math.max(0.8, Math.min(100, (item.cantidad / max) * 100));
         const iconClass = item.producto === "GASOLINA" ? "gasoline" : item.producto === "DIESEL" ? "diesel" : "lubricant";
+        const detailId=`report-product-days-${index}`;
         return `<div class="chart-row">
           <div class="chart-product-label" title="${escapeHtml(item.producto)}">
             <span class="chart-product-icon ${iconClass}">${productConsumptionIcon(item.producto,15)}</span>
             <div class="chart-label">${escapeHtml(item.producto)}</div>
           </div>
-          <div class="chart-track" aria-label="${escapeHtml(item.producto)} ${formatReportNumber(item.cantidad)}">
+          <button type="button" class="chart-track report-drill-toggle" data-drill-target="${detailId}" aria-expanded="false" aria-label="Ver consumo por día de ${escapeHtml(item.producto)}">
             <div class="chart-bar" style="width:${pct.toFixed(2)}%"></div>
-          </div>
+          </button>
           <div class="chart-value">${formatReportNumber(item.cantidad)}</div>
-        </div>`;
+        </div>${renderDailyProductBreakdown(rangeRows,item.producto,from,to,detailId,item.producto !== "GASOLINA" && item.producto !== "DIESEL")}`;
       }).join("");
-      return `<div class="consumption-chart">${rows}<div class="chart-footer">${escapeHtml(footerText)}</div></div>`;
+      return `<div class="consumption-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER EL DETALLE POR DÍA · ${escapeHtml(footerText)}</div></div>`;
     }
 
     function splitReportConsumption(consumos){
@@ -5460,67 +5729,142 @@
       return total;
     }
 
-    function buildDailyDieselComparison(rows,from,to){
+    function buildWeeklyDieselComparison(rows,from,to){
       const start=localDateFromIso(from);
       const finish=localDateFromIso(to);
-      if(!start || !finish || start > finish) return [];
-
+      if(!start || !finish) return [];
       const periods=[];
-      const byKey=new Map();
-      const dayNames=["DOM","LUN","MAR","MIÉ","JUE","VIE","SÁB"];
       let cursor=new Date(start);
-      let safety=0;
-      while(cursor <= finish && safety < 4000){
-        const key=isoFromLocalDate(cursor);
-        const label=`${dayNames[cursor.getDay()]} ${String(cursor.getDate()).padStart(2,"0")}/${String(cursor.getMonth()+1).padStart(2,"0")}`;
-        const period={key,label,cantidad:0};
-        periods.push(period);
-        byKey.set(key,period);
+      let n=1;
+      while(cursor <= finish){
+        const weekStart=new Date(cursor);
+        const day=weekStart.getDay(); // 0 domingo, 1 lunes
+        const daysUntilSunday=(7-day)%7;
+        let weekEnd=new Date(weekStart);
+        weekEnd.setDate(weekEnd.getDate()+daysUntilSunday);
+        if(weekEnd > finish) weekEnd=new Date(finish);
+        periods.push({
+          key:`W${n}`,
+          label:`SEMANA ${n} · ${String(weekStart.getDate()).padStart(2,"0")}-${String(weekEnd.getDate()).padStart(2,"0")}`,
+          from:isoFromLocalDate(weekStart),
+          to:isoFromLocalDate(weekEnd),
+          cantidad:0
+        });
+        cursor=new Date(weekEnd);
         cursor.setDate(cursor.getDate()+1);
-        safety += 1;
+        n += 1;
       }
-
       (rows || []).forEach(movement => {
         const fecha=normalizeDateKey(movement.fecha);
         const qty=dieselQuantityForMovement(movement);
         if(!qty || !fecha) return;
-        const period=byKey.get(fecha);
+        const period=periods.find(p => fecha >= p.from && fecha <= p.to);
         if(period) period.cantidad += qty;
       });
       return periods;
     }
 
-    function buildDieselComparison(rows,from,to){
-      const periods=buildDailyDieselComparison(rows,from,to);
-      return {mode:"day",periods};
+    function buildMonthlyDieselComparison(rows,from,to){
+      const pFrom=isoDateParts(from);
+      const pTo=isoDateParts(to);
+      if(!pFrom || !pTo) return [];
+      const periods=[];
+      let year=pFrom.year, month=pFrom.month;
+      let n=0;
+      while(year < pTo.year || (year === pTo.year && month <= pTo.month)){
+        const key=`${year}-${String(month).padStart(2,"0")}`;
+        const first=`${key}-01`;
+        const lastDay=new Date(year,month,0).getDate();
+        const last=`${key}-${String(lastDay).padStart(2,"0")}`;
+        periods.push({
+          key,
+          label:monthDisplayName(year,month),
+          from:first < from ? from : first,
+          to:last > to ? to : last,
+          cantidad:0
+        });
+        month += 1;
+        if(month > 12){month=1;year += 1;}
+        if(++n > 60) break;
+      }
+      const byKey=new Map(periods.map(p=>[p.key,p]));
+      (rows || []).forEach(movement => {
+        const fecha=normalizeDateKey(movement.fecha);
+        const qty=dieselQuantityForMovement(movement);
+        if(!qty || !fecha) return;
+        const p=byKey.get(fecha.slice(0,7));
+        if(p) p.cantidad += qty;
+      });
+      return periods;
     }
 
-    function renderDieselComparison(comparison){
+    function isFullCalendarMonth(from,to){
+      const a=isoDateParts(from), b=isoDateParts(to);
+      if(!a || !b || a.year !== b.year || a.month !== b.month || a.day !== 1) return false;
+      return b.day === new Date(b.year,b.month,0).getDate();
+    }
+
+    function buildDieselComparison(rows,from,to){
+      const a=isoDateParts(from), b=isoDateParts(to);
+      if(!a || !b) return {mode:"none",periods:[],fullMonth:false};
+      const sameMonth=a.year===b.year && a.month===b.month;
+      if(sameMonth){
+        return {mode:"week",periods:buildWeeklyDieselComparison(rows,from,to),fullMonth:isFullCalendarMonth(from,to)};
+      }
+      return {mode:"month",periods:buildMonthlyDieselComparison(rows,from,to),fullMonth:false};
+    }
+
+    function renderDieselComparison(comparison,rangeRows=[]){
       const periods=(comparison?.periods || []);
       if(!periods.length){
         return `<div class="report-no-data">No hay periodos disponibles para comparar el consumo de DIESEL.</div>`;
       }
       const max=Math.max(...periods.map(p=>Number(p.cantidad || 0)),0);
       const highest=periods.reduce((best,p)=>Number(p.cantidad||0)>Number(best?.cantidad||-1)?p:best,null);
-      const rows=periods.map(period => {
+      const rows=periods.map((period,index) => {
         const qty=Number(period.cantidad || 0);
         const pct=max > 0 ? Math.max(qty > 0 ? 1 : 0, Math.min(100,(qty/max)*100)) : 0;
         const isHighest=max > 0 && period === highest;
+        const detailId=`report-diesel-period-days-${index}`;
         return `<div class="diesel-period-row${isHighest ? " highest" : ""}">
           <div class="diesel-period-label">${escapeHtml(period.label)}${isHighest ? " · MAYOR" : ""}</div>
-          <div class="diesel-period-track"><div class="diesel-period-bar" style="width:${pct.toFixed(2)}%"></div></div>
+          <button type="button" class="diesel-period-track report-drill-toggle" data-drill-target="${detailId}" aria-expanded="false" aria-label="Ver consumo de diesel por día en ${escapeHtml(period.label)}"><div class="diesel-period-bar" style="width:${pct.toFixed(2)}%"></div></button>
           <div class="diesel-period-value">${formatReportNumber(qty)}</div>
-        </div>`;
+        </div>${renderDailyProductBreakdown(rangeRows,"DIESEL",period.from,period.to,detailId)}`;
       }).join("");
       if(max <= 0){
         return `<div class="report-no-data">No se registró consumo de DIESEL en el rango seleccionado.</div>`;
       }
-      return `<div class="diesel-comparison-chart">${rows}</div>`;
+      return `<div class="diesel-comparison-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER LOS REGISTROS DE CADA DÍA</div></div>`;
+    }
+
+    function initializeReportDrilldowns(){
+      if(!reportDetailPanel) return;
+      reportDetailPanel.querySelectorAll(".report-drill-toggle").forEach(toggle => {
+        toggle.addEventListener("click", () => {
+          const targetId=toggle.dataset.drillTarget || "";
+          const detail=targetId ? document.getElementById(targetId) : null;
+          if(!detail) return;
+          const open=!detail.classList.contains("open");
+          detail.classList.toggle("open",open);
+          detail.setAttribute("aria-hidden",open ? "false" : "true");
+          toggle.classList.toggle("open",open);
+          toggle.setAttribute("aria-expanded",open ? "true" : "false");
+        });
+      });
+      reportDetailPanel.querySelectorAll(".report-daily-row").forEach(row => {
+        row.addEventListener("click", () => {
+          reportDetailPanel.querySelectorAll(".report-daily-row.position-selected").forEach(selected => {
+            selected.classList.remove("position-selected");
+          });
+          row.classList.add("position-selected");
+        });
+      });
     }
 
     function renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount,rangeRows}){
       const split=splitReportConsumption(summary.consumos);
-      const fuelSummaryHtml=renderFuelSummary(split.combustibles);
+      const fuelSummaryHtml=renderFuelSummary(split.combustibles,rangeRows,from,to);
       const fuelSectionHtml = fuelSummaryHtml ? `<div class="report-section">
           <div class="report-section-title">
             ${productConsumptionIcon("GASOLINA",18)}
@@ -5528,9 +5872,9 @@
           </div>
           ${fuelSummaryHtml}
         </div>` : "";
-      const lubricantChartHtml=renderConsumptionChart(split.lubricantes,"CANTIDAD ACUMULADA DE LUBRICANTES");
+      const lubricantChartHtml=renderConsumptionChart(split.lubricantes,"CANTIDAD ACUMULADA DE LUBRICANTES",rangeRows,from,to);
       const dieselComparison=buildDieselComparison(rangeRows,from,to);
-      const dieselComparisonHtml=renderDieselComparison(dieselComparison);
+      const dieselComparisonHtml=renderDieselComparison(dieselComparison,rangeRows);
       const oilHtml = oilChanges.length
         ? oilChanges.map(change => `<div class="oil-history-item">
             <div class="oil-history-top">
@@ -5568,7 +5912,7 @@
         <div class="report-section">
           <div class="report-section-title">
             ${productConsumptionIcon("DIESEL",18)}
-            COMPARATIVA DIARIA DE CONSUMO DIESEL
+            COMPARATIVA DE CONSUMO DIESEL
           </div>
           ${dieselComparisonHtml}
         </div>
@@ -5582,6 +5926,7 @@
         </div>
       </div>`;
 
+      initializeReportDrilldowns();
       const downloadReportBtn = document.getElementById("downloadReportBtn");
       downloadReportBtn?.addEventListener("click", () => downloadGeneratedReportPDF(equipo));
     }
@@ -5703,6 +6048,56 @@
       return `${year}-${month}-${day}`;
     }
 
+    function isoToLocalDate(iso){
+      const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(!m) return null;
+      return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 12, 0, 0, 0);
+    }
+
+    function setRecordsDateRange(from, to, triggerLoad=true){
+      const start = normalizeDateKey(from);
+      const end = normalizeDateKey(to || from);
+      if(recordsDateFrom) recordsDateFrom.value = start;
+      if(recordsDateTo) recordsDateTo.value = end;
+      if(recordsDateRange){
+        recordsDateRange.value = start && end ? (start === end ? formatDateDisplay(start) : `${formatDateDisplay(start)} AL ${formatDateDisplay(end)}`) : "";
+      }
+      if(recordsDateRangePicker && start && end){
+        const dates = [isoToLocalDate(start), isoToLocalDate(end)].filter(Boolean);
+        if(dates.length) recordsDateRangePicker.setDate(dates, false);
+      }
+      if(triggerLoad) loadRecordsFromSupabase();
+    }
+
+    function initializeRecordsRangeCalendar(){
+      if(!recordsDateRange) return;
+      if(typeof window.flatpickr !== "function"){
+        recordsDateRange.removeAttribute("readonly");
+        recordsDateRange.placeholder = "DD/MM/AAAA AL DD/MM/AAAA";
+        return;
+      }
+      const localeBase = window.flatpickr.l10ns?.es || {};
+      recordsDateRangePicker = window.flatpickr(recordsDateRange,{
+        mode:"range",
+        dateFormat:"d/m/Y",
+        disableMobile:true,
+        monthSelectorType:"static",
+        locale:{...localeBase,firstDayOfWeek:1,rangeSeparator:" AL "},
+        onChange(selectedDates){
+          recordsDateFrom.value = selectedDates[0] ? reportDateToIso(selectedDates[0]) : "";
+          recordsDateTo.value = selectedDates[1] ? reportDateToIso(selectedDates[1]) : "";
+          if(selectedDates.length === 2) loadRecordsFromSupabase();
+          else renderRecordsView();
+        },
+        onClose(selectedDates){
+          if(selectedDates.length === 1){
+            recordsDateTo.value = "";
+            renderRecordsView();
+          }
+        }
+      });
+    }
+
     function initializeReportRangeCalendar(){
       if(!reportDateRange) return;
       if(typeof window.flatpickr !== "function"){
@@ -5734,6 +6129,7 @@
 
     generateReportBtn?.addEventListener("click", generateReportsFromSupabase);
     initializeReportRangeCalendar();
+    initializeRecordsRangeCalendar();
     populateReportEquipmentOptions();
     updateReportGenerateState();
 
@@ -5877,8 +6273,12 @@
       historyInventoriesTab.setAttribute("aria-selected", showRecords ? "false" : "true");
 
       if(showRecords){
-        if(fechaPicker?.value) recordsDate.value = fechaPicker.value;
+        if(fechaPicker?.value && !recordsDateFrom?.value && !recordsDateTo?.value){
+          setRecordsDateRange(fechaPicker.value, fechaPicker.value, false);
+        }
         if(plantaInput?.value && !recordsPlant.value) recordsPlant.value = plantaInput.value;
+        if(equipoInput?.value && !recordsEquipment?.value) recordsEquipment.value = sanitizeEquipmentCode(equipoInput.value);
+        loadRecordsEquipmentOptions();
         loadRecordsFromSupabase();
       }else{
         if(fechaPicker?.value) savedInventoryDate.value = fechaPicker.value;
@@ -6354,6 +6754,7 @@
       adminUsersCache = [];
       filteredMovementsCache = [];
       filteredMovementsKey = "";
+      recordsEquipmentOptionsLoaded = false;
       filteredInventoriesCache = [];
       filteredInventoriesKey = "";
       lastInventoryLookupKey = "";
@@ -6424,15 +6825,11 @@
     backToMenuBtn.addEventListener("click", showDashboard);
 
     deleteFilteredRecordsBtn.addEventListener("click", () => {
-      const dateKey = normalizeDateKey(recordsDate.value);
-      const plantKey = String(recordsPlant.value || "").trim();
+      const filters = getRecordsFilterState();
       const visibleCount = recordsBody.querySelectorAll("tr").length;
-
-      if(!dateKey || !plantKey || visibleCount === 0) return;
-
+      if(!isRecordsFilterReady(filters) || visibleCount === 0) return;
       openDeleteConfirm(
-        "Se eliminarán todos los registros de la planta " + plantKey +
-        " para la fecha " + formatDateDisplay(dateKey) + ". Esta acción no se puede deshacer.",
+        "Se eliminarán todos los registros que coincidan con: " + getRecordsFilterDescription(filters) + ". Esta acción no se puede deshacer.",
         deleteAllFilteredRecords
       );
     });
@@ -6450,17 +6847,22 @@
     });
 
     let recordsFilterTimer = null;
-    recordsDate.addEventListener("change", loadRecordsFromSupabase);
+    function scheduleRecordsFilter(){
+      clearTimeout(recordsFilterTimer);
+      recordsFilterTimer = setTimeout(loadRecordsFromSupabase, 350);
+    }
     recordsPlant.addEventListener("input", () => {
       const cleaned = String(recordsPlant.value || "").replace(/[^0-9]/g, "");
       if(recordsPlant.value !== cleaned) recordsPlant.value = cleaned;
-      clearTimeout(recordsFilterTimer);
-      if(!recordsPlant.value.trim()){
-        loadRecordsFromSupabase();
-        return;
-      }
-      recordsFilterTimer = setTimeout(loadRecordsFromSupabase, 450);
+      scheduleRecordsFilter();
     });
+    recordsEquipment?.addEventListener("focus", () => loadRecordsEquipmentOptions());
+    recordsEquipment?.addEventListener("input", () => {
+      const cleaned = sanitizeEquipmentCode(recordsEquipment.value);
+      if(recordsEquipment.value !== cleaned) recordsEquipment.value = cleaned;
+      scheduleRecordsFilter();
+    });
+    recordsEquipment?.addEventListener("change", loadRecordsFromSupabase);
 
     deleteFilteredInventoriesBtn.addEventListener("click", () => {
       const dateKey = normalizeDateKey(savedInventoryDate.value);
@@ -6740,15 +7142,19 @@
       if(!btn) return;
       const code = sanitizeEquipmentCode(btn.dataset.equipmentCode || "");
       const action = btn.dataset.equipmentAction;
-      if(currentUser?.rol !== "admin"){
-        showToast("Solo un administrador puede editar o eliminar equipos existentes.", true);
-        return;
-      }
       if(action === "edit"){
+        if(!["admin","supervisor"].includes(currentUser?.rol)){
+          showToast("Solo ADMIN o SUPERVISOR pueden editar equipos existentes.", true);
+          return;
+        }
         startEquipmentEdit(code);
         return;
       }
       if(action === "delete"){
+        if(currentUser?.rol !== "admin"){
+          showToast("Solo un administrador puede eliminar equipos.", true);
+          return;
+        }
         openDeleteConfirm(
           "¿Desea eliminar el equipo " + code + " de la lista permitida? Los movimientos históricos no se eliminarán.",
           async () => {
@@ -6787,8 +7193,8 @@
       }
 
       const isEditing = Boolean(editingEquipmentOriginalCode);
-      if(isEditing && currentUser?.rol !== "admin"){
-        showToast("Solo un administrador puede editar equipos existentes.", true);
+      if(isEditing && !["admin","supervisor"].includes(currentUser?.rol)){
+        showToast("Solo ADMIN o SUPERVISOR pueden editar equipos existentes.", true);
         resetEquipmentAdminForm();
         return;
       }

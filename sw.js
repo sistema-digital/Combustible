@@ -1,4 +1,4 @@
-const CACHE_NAME = "registro-combustible-pwa-v5";
+const CACHE_NAME = "registro-combustible-pwa-v13-supervisor-edita-equipos";
 const CORE_ASSETS = [
   "./",
   "./index.html",
