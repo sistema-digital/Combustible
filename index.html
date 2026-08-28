@@ -5460,80 +5460,39 @@
       return total;
     }
 
-    function buildWeeklyDieselComparison(rows,from,to){
+    function buildDailyDieselComparison(rows,from,to){
       const start=localDateFromIso(from);
       const finish=localDateFromIso(to);
-      if(!start || !finish) return [];
+      if(!start || !finish || start > finish) return [];
+
       const periods=[];
+      const byKey=new Map();
+      const dayNames=["DOM","LUN","MAR","MIÉ","JUE","VIE","SÁB"];
       let cursor=new Date(start);
-      let n=1;
-      while(cursor <= finish){
-        const weekStart=new Date(cursor);
-        const day=weekStart.getDay(); // 0 domingo, 1 lunes
-        const daysUntilSunday=(7-day)%7;
-        let weekEnd=new Date(weekStart);
-        weekEnd.setDate(weekEnd.getDate()+daysUntilSunday);
-        if(weekEnd > finish) weekEnd=new Date(finish);
-        periods.push({
-          key:`W${n}`,
-          label:`SEMANA ${n} · ${String(weekStart.getDate()).padStart(2,"0")}-${String(weekEnd.getDate()).padStart(2,"0")}`,
-          from:isoFromLocalDate(weekStart),
-          to:isoFromLocalDate(weekEnd),
-          cantidad:0
-        });
-        cursor=new Date(weekEnd);
+      let safety=0;
+      while(cursor <= finish && safety < 4000){
+        const key=isoFromLocalDate(cursor);
+        const label=`${dayNames[cursor.getDay()]} ${String(cursor.getDate()).padStart(2,"0")}/${String(cursor.getMonth()+1).padStart(2,"0")}`;
+        const period={key,label,cantidad:0};
+        periods.push(period);
+        byKey.set(key,period);
         cursor.setDate(cursor.getDate()+1);
-        n += 1;
+        safety += 1;
       }
+
       (rows || []).forEach(movement => {
         const fecha=normalizeDateKey(movement.fecha);
         const qty=dieselQuantityForMovement(movement);
         if(!qty || !fecha) return;
-        const period=periods.find(p => fecha >= p.from && fecha <= p.to);
+        const period=byKey.get(fecha);
         if(period) period.cantidad += qty;
       });
       return periods;
     }
 
-    function buildMonthlyDieselComparison(rows,from,to){
-      const pFrom=isoDateParts(from);
-      const pTo=isoDateParts(to);
-      if(!pFrom || !pTo) return [];
-      const periods=[];
-      let year=pFrom.year, month=pFrom.month;
-      let n=0;
-      while(year < pTo.year || (year === pTo.year && month <= pTo.month)){
-        const key=`${year}-${String(month).padStart(2,"0")}`;
-        periods.push({key,label:monthDisplayName(year,month),cantidad:0});
-        month += 1;
-        if(month > 12){month=1;year += 1;}
-        if(++n > 60) break;
-      }
-      const byKey=new Map(periods.map(p=>[p.key,p]));
-      (rows || []).forEach(movement => {
-        const fecha=normalizeDateKey(movement.fecha);
-        const qty=dieselQuantityForMovement(movement);
-        if(!qty || !fecha) return;
-        const p=byKey.get(fecha.slice(0,7));
-        if(p) p.cantidad += qty;
-      });
-      return periods;
-    }
-
-    function isFullCalendarMonth(from,to){
-      const a=isoDateParts(from), b=isoDateParts(to);
-      if(!a || !b || a.year !== b.year || a.month !== b.month || a.day !== 1) return false;
-      return b.day === new Date(b.year,b.month,0).getDate();
-    }
-
     function buildDieselComparison(rows,from,to){
-      const a=isoDateParts(from), b=isoDateParts(to);
-      if(!a || !b) return {mode:"none",periods:[],fullMonth:false};
-      const sameMonth=a.year===b.year && a.month===b.month;
-      if(sameMonth){
-        return {mode:"week",periods:buildWeeklyDieselComparison(rows,from,to),fullMonth:isFullCalendarMonth(from,to)};
-      }
-      return {mode:"month",periods:buildMonthlyDieselComparison(rows,from,to),fullMonth:false};
+      const periods=buildDailyDieselComparison(rows,from,to);
+      return {mode:"day",periods};
     }
 
     function renderDieselComparison(comparison){
@@ -5609,7 +5568,7 @@
         <div class="report-section">
           <div class="report-section-title">
             ${productConsumptionIcon("DIESEL",18)}
-            COMPARATIVA DE CONSUMO DIESEL
+            COMPARATIVA DIARIA DE CONSUMO DIESEL
           </div>
           ${dieselComparisonHtml}
         </div>
