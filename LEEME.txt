@@ -1,0 +1,11 @@
+REGISTRO DE COMBUSTIBLE - PWA
+
+Sube TODOS estos archivos y carpetas a la misma carpeta de tu sitio (por ejemplo, la raíz de GitHub Pages):
+- index.html
+- manifest.webmanifest
+- sw.js
+- carpeta icons/ completa
+
+La instalación requiere HTTPS (GitHub Pages ya usa HTTPS).
+En Chrome/Edge aparecerá el botón INSTALAR cuando el navegador confirme que la PWA es instalable.
+En iPhone/iPad: Safari > Compartir > Añadir a pantalla de inicio.
