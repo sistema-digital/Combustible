@@ -9,3 +9,5 @@ Sube TODOS estos archivos y carpetas a la misma carpeta de tu sitio (por ejemplo
 La instalación requiere HTTPS (GitHub Pages ya usa HTTPS).
 En Chrome/Edge aparecerá el botón INSTALAR cuando el navegador confirme que la PWA es instalable.
 En iPhone/iPad: Safari > Compartir > Añadir a pantalla de inicio.
+
+La app incluye un botón "Instalar aplicación" dentro del MENÚ PRINCIPAL. En navegadores compatibles abre el instalador PWA oficial.
