@@ -692,7 +692,7 @@
 
     .records-filters{
       display:grid;
-      grid-template-columns:minmax(250px,1.25fr) minmax(160px,.75fr) minmax(210px,1fr);
+      grid-template-columns:minmax(235px,1.2fr) minmax(145px,.65fr) minmax(190px,.9fr) minmax(190px,.9fr);
       gap:12px;
       padding:0 20px 16px;
       align-items:end;
@@ -710,7 +710,8 @@
       color:#374151;
     }
 
-    .records-filter-field input{
+    .records-filter-field input,
+    .records-filter-field select{
       width:100%;
       height:44px;
       border:2px solid #214494;
@@ -984,7 +985,7 @@
 
     .saved-inventories-filters{
       display:grid;
-      grid-template-columns:minmax(180px,1fr) minmax(180px,1fr);
+      grid-template-columns:minmax(180px,.8fr) minmax(180px,.8fr) minmax(220px,1fr);
       gap:12px;
       padding:0 20px 16px;
     }
@@ -997,7 +998,8 @@
       color:#374151;
     }
 
-    .saved-inventories-filter-field input{
+    .saved-inventories-filter-field input,
+    .saved-inventories-filter-field select{
       width:100%;
       height:44px;
       border:2px solid #214494;
@@ -1005,6 +1007,12 @@
       padding:0 12px;
       font-size:15px;
       background:#fff;
+    }
+
+    /* Elementos solicitados como ocultos: el estado IVFA y la etiqueta de planta del inventario. */
+    #lookupStatus,
+    .inventory-plant-picker{
+      display:none !important;
     }
 
     .saved-inventories-summary{
@@ -1396,6 +1404,60 @@
       padding:4px 0 2px;
       min-height:42px;
     }
+    .plant-selector-caption{
+      margin-top:8px;
+      color:#64748b;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+    .plant-selector{
+      display:flex;
+      flex-wrap:wrap;
+      gap:7px;
+      margin-top:6px;
+    }
+    .plant-selector-btn{
+      min-width:52px;
+      border:1.5px solid #cbd5e1;
+      background:#fff;
+      color:#173f8f;
+      border-radius:9px;
+      padding:8px 11px;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.16s ease;
+    }
+    .plant-selector-btn:hover{
+      border-color:#214494;
+      background:#eef4ff;
+    }
+    .plant-selector-btn.active{
+      border-color:#214494;
+      background:#214494;
+      color:#fff;
+      box-shadow:0 4px 10px rgba(49,95,178,.18);
+    }
+    .inventory-plant-filter{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:10px 12px;
+      border-top:1px solid #e5e7eb;
+      border-bottom:1px solid #e5e7eb;
+      background:#fbfcfe;
+    }
+    .inventory-plant-filter-label{
+      color:#64748b;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.02em;
+    }
+    .inventory-plant-filter .plant-selector{
+      margin-top:0;
+    }
     .combustible-empty{
       width:100%;
       padding:12px 14px;
@@ -1603,6 +1665,11 @@
       font-size:14px;
       background:#fff;
     }
+    .combustible-comment-input.needs-comment{
+      border-color:#d97706;
+      background:#fff7ed;
+      box-shadow:0 0 0 3px rgba(217,119,6,.12);
+    }
     .combustible-qty:focus,
     .combustible-comment-input:focus{
       border-color:var(--blue);
@@ -1622,6 +1689,25 @@
     .equipment-status.error{color:#a32020;font-weight:700}
     .movement-equipment-autocomplete{position:relative}
     .movement-equipment-input-row{display:block}
+    .plant-autocomplete{position:relative}
+    .plant-suggestions{
+      position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:90;
+      max-height:260px;overflow:auto;background:#fff;border:1px solid #cfd9e8;
+      border-radius:12px;box-shadow:0 14px 34px rgba(23,63,143,.17);padding:6px
+    }
+    .plant-suggestion{
+      width:100%;min-height:42px;border:0;background:#fff;border-radius:9px;cursor:pointer;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 12px;text-align:left;color:#172033;font-weight:900
+    }
+    .plant-suggestion:hover,.plant-suggestion:focus,.plant-suggestion.active{background:#eef4ff;outline:none}
+    .plant-suggestion + .plant-suggestion{margin-top:2px}
+    .plant-suggestion-code{font-size:14px;font-weight:950;color:#173f8f;letter-spacing:.3px}
+    .plant-suggestion-products{font-size:10px;font-weight:800;color:#64748b;text-align:right}
+    .plant-suggestions-empty{padding:12px 11px;font-size:11px;font-weight:800;color:#64748b;text-align:center}
+    .inventory-plant-picker{position:relative}
+    #inventoryPlantBadge{cursor:pointer}
+    .inventory-plant-suggestions{left:auto;right:0;top:calc(100% + 7px);width:min(320px,82vw)}
     .movement-equipment-suggestions{
       position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:80;
       max-height:280px;overflow:auto;background:#fff;border:1px solid #cfd9e8;
@@ -2340,8 +2426,11 @@
 
           <div class="field">
             <label for="planta">PLANTA</label>
-            <input id="planta" type="number" inputmode="numeric" min="0" placeholder="Ingrese el número de planta" autocomplete="off">
-            <div id="lookupStatus" class="lookup-status">Seleccione la fecha e ingrese la planta para consultar únicamente el último inventario.</div>
+            <div class="plant-autocomplete">
+              <input id="planta" type="text" inputmode="numeric" maxlength="3" placeholder="Seleccione el número de planta" autocomplete="off" aria-autocomplete="list" aria-expanded="false" aria-controls="plantSuggestions">
+              <div id="plantSuggestions" class="plant-suggestions hidden" role="listbox" aria-label="Plantas disponibles"></div>
+            </div>
+            <div id="lookupStatus" class="lookup-status">Seleccione la fecha y una planta para consultar únicamente el último inventario.</div>
           </div>
 
           <div class="field">
@@ -2431,7 +2520,10 @@
             <h2>INVENTARIO</h2>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
               <span id="negativeInventoryBadge" class="hidden" style="font-size:12px;color:#b91c1c;background:#fff0f0;border:1px solid #fecaca;padding:6px 9px;border-radius:999px;font-weight:800">⚠ INVENTARIO NEGATIVO</span>
-              <span id="inventoryPlantBadge">Sin planta</span>
+              <div class="inventory-plant-picker">
+                <button id="inventoryPlantBadge" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="inventoryPlantSuggestions">Sin planta</button>
+                <div id="inventoryPlantSuggestions" class="plant-suggestions inventory-plant-suggestions hidden" role="listbox" aria-label="Seleccionar planta para inventario"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -2481,7 +2573,7 @@
         <section id="recordsView" class="records-view history-panel active" role="tabpanel">
         <div class="card-header">
           <h2>REGISTROS</h2>
-          <p>Consulte los movimientos por rango de fecha y filtre por planta, número de equipo o ambos.</p>
+          <p>Consulte los movimientos por rango de fecha y filtre por planta, número de equipo y/o combustible o lubricante.</p>
         </div>
 
         <div class="records-filters">
@@ -2505,10 +2597,31 @@
             <input id="recordsEquipment" type="text" list="recordsEquipmentOptions" autocomplete="off" placeholder="EJ. 422005">
             <datalist id="recordsEquipmentOptions"></datalist>
           </div>
+          <div class="records-filter-field">
+            <label for="recordsProduct">COMBUSTIBLE | LUBRICANTE</label>
+            <select id="recordsProduct" autocomplete="off">
+              <option value="">TODOS LOS PRODUCTOS</option>
+              <option value="GASOLINA">GASOLINA</option>
+              <option value="DIESEL">DIESEL</option>
+              <option value="SAE-30">SAE-30</option>
+              <option value="ISOVG46">ISOVG46</option>
+              <option value="15W40">15W40</option>
+              <option value="10W30">10W30</option>
+              <option value="GX 90">GX 90</option>
+              <option value="ATF">ATF</option>
+              <option value="HIDR100">HIDR100</option>
+              <option value="HD140">HD140</option>
+              <option value="GRASA">GRASA</option>
+              <option value="TFH1000 (TD)">TFH1000 (TD)</option>
+              <option value="TC10W">TC10W</option>
+              <option value="8T9577">8T9577</option>
+              <option value="AW68">AW68</option>
+            </select>
+          </div>
         </div>
 
         <div class="records-summary">
-          <span id="recordsFilterMessage">Seleccione el rango de fecha y filtre por planta o equipo.</span>
+          <span id="recordsFilterMessage">Seleccione el rango de fecha y aplique al menos un filtro.</span>
           <div class="records-actions">
             <button id="deleteFilteredRecordsBtn" type="button" class="delete-filtered-btn" disabled title="Eliminar todos los registros" aria-label="Eliminar todos los registros"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             <span id="recordsCount" class="records-count">0 registros</span>
@@ -2535,7 +2648,7 @@
 
           <div id="recordsEmpty" class="records-empty">
             <strong>Sin registros para mostrar</strong>
-            <span>Seleccione un rango de fecha y filtre por planta o número de equipo.</span>
+            <span>Seleccione un rango de fecha y filtre por planta, equipo o producto.</span>
           </div>
         </div>
         </section>
@@ -2543,7 +2656,7 @@
         <section id="savedInventoriesView" class="saved-inventories-view history-panel" role="tabpanel">
         <div class="card-header">
           <h2>INVENTARIOS GUARDADOS</h2>
-          <p>Consulte los inventarios guardados utilizando solamente fecha y planta.</p>
+          <p>Consulte los inventarios guardados por fecha, planta y, si desea, por combustible o lubricante.</p>
         </div>
 
         <div class="saved-inventories-filters">
@@ -2554,6 +2667,27 @@
           <div class="saved-inventories-filter-field">
             <label for="savedInventoryPlant">PLANTA</label>
             <input id="savedInventoryPlant" type="text" inputmode="numeric" autocomplete="off" placeholder="Ingrese la planta">
+          </div>
+          <div class="saved-inventories-filter-field">
+            <label for="savedInventoryProduct">COMBUSTIBLE | LUBRICANTE</label>
+            <select id="savedInventoryProduct" autocomplete="off">
+              <option value="">TODOS LOS PRODUCTOS</option>
+              <option value="GASOLINA">GASOLINA</option>
+              <option value="DIESEL">DIESEL</option>
+              <option value="SAE-30">SAE-30</option>
+              <option value="ISOVG46">ISOVG46</option>
+              <option value="15W40">15W40</option>
+              <option value="10W30">10W30</option>
+              <option value="GX 90">GX 90</option>
+              <option value="ATF">ATF</option>
+              <option value="HIDR100">HIDR100</option>
+              <option value="HD140">HD140</option>
+              <option value="GRASA">GRASA</option>
+              <option value="TFH1000 (TD)">TFH1000 (TD)</option>
+              <option value="TC10W">TC10W</option>
+              <option value="8T9577">8T9577</option>
+              <option value="AW68">AW68</option>
+            </select>
           </div>
         </div>
 
@@ -2584,7 +2718,7 @@
 
           <div id="savedInventoriesEmpty" class="saved-inventories-empty">
             <strong>Sin inventarios para mostrar</strong>
-            <span>Seleccione una fecha e ingrese la planta.</span>
+            <span>Seleccione una fecha e ingrese la planta; el producto es opcional.</span>
           </div>
         </div>
         </section>
@@ -2772,7 +2906,7 @@
         <div class="record-edit-field"><label for="recordEditPlant">PLANTA</label><input id="recordEditPlant" type="text" required></div>
         <div class="record-edit-field"><label for="recordEditEquipment">EQUIPO</label><input id="recordEditEquipment" type="text" required></div>
         <div class="record-edit-field"><label for="recordEditProduct">ARTÍCULO</label><select id="recordEditProduct" required>
-          <option>GASOLINA</option><option>DIESEL</option><option>SAE-30</option><option>ISOVG46</option><option>15W40</option><option>GX 90</option><option>ATF</option><option>HIDR100</option><option>HD140</option><option>GRASA</option><option>TFH1000 (TD)</option><option>TC10W</option><option>8T9577</option><option>AW68</option>
+          <option>GASOLINA</option><option>DIESEL</option><option>SAE-30</option><option>ISOVG46</option><option>15W40</option><option>10W30</option><option>GX 90</option><option>ATF</option><option>HIDR100</option><option>HD140</option><option>GRASA</option><option>TFH1000 (TD)</option><option>TC10W</option><option>8T9577</option><option>AW68</option>
         </select></div>
         <div class="record-edit-field"><label for="recordEditQty">CANTIDAD</label><input id="recordEditQty" type="number" min="0.01" step="0.01" required></div>
         <div class="record-edit-field"><label for="recordEditType">TIPO DE MOVIMIENTO</label><select id="recordEditType" required>
@@ -2817,9 +2951,28 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script>
         const PRODUCTOS = [
-      "GASOLINA","DIESEL","SAE-30","ISOVG46","15W40","GX 90","ATF",
+      "GASOLINA","DIESEL","SAE-30","ISOVG46","15W40","10W30","GX 90","ATF",
       "HIDR100","HD140","GRASA","TFH1000 (TD)","TC10W","8T9577","AW68"
     ];
+
+    const PRODUCTOS_LUBRICANTES_ESTANDAR = Object.freeze([
+      "DIESEL","SAE-30","ISOVG46","15W40","GX 90","ATF","HIDR100",
+      "HD140","GRASA","TFH1000 (TD)","TC10W","8T9577","AW68"
+    ]);
+
+    const PRODUCTOS_POR_PLANTA = Object.freeze({
+      "200": Object.freeze(["GASOLINA"]),
+      "300": PRODUCTOS_LUBRICANTES_ESTANDAR,
+      "402": PRODUCTOS_LUBRICANTES_ESTANDAR,
+      "403": PRODUCTOS_LUBRICANTES_ESTANDAR,
+      "404": PRODUCTOS_LUBRICANTES_ESTANDAR,
+      "405": PRODUCTOS_LUBRICANTES_ESTANDAR,
+      "406": PRODUCTOS_LUBRICANTES_ESTANDAR,
+      "407": PRODUCTOS_LUBRICANTES_ESTANDAR,
+      "408": PRODUCTOS_LUBRICANTES_ESTANDAR,
+      "600": Object.freeze(["DIESEL"]),
+      "900": Object.freeze(["10W30"])
+    });
 
     const OIL_MOVEMENT_OPTIONS = [
       "CONSUMO",
@@ -2860,12 +3013,15 @@
 
     const IVFA_DEMO = {
       "GASOLINA":0, "DIESEL":420, "SAE-30":0, "ISOVG46":0,
-      "15W40":14, "GX 90":0, "ATF":80, "HIDR100":0,
+      "15W40":14, "10W30":0, "GX 90":0, "ATF":80, "HIDR100":0,
       "HD140":5, "GRASA":221, "TFH1000 (TD)":49,
       "TC10W":13, "8T9577":0, "AW68":0
     };
 
     const plantaInput = document.getElementById("planta");
+    const plantSuggestions = document.getElementById("plantSuggestions");
+    const plantSelectorButtons = document.getElementById("plantSelectorButtons");
+    const inventoryPlantSelectorButtons = document.getElementById("inventoryPlantSelectorButtons");
     const areaConsumeField = document.getElementById("areaConsumeField");
     const areaConsumeInput = document.getElementById("areaConsume");
     const combustibleSelect = document.getElementById("combustible");
@@ -2875,6 +3031,7 @@
     const inventoryEmpty = document.getElementById("inventoryEmpty");
     const inventoryFooter = document.getElementById("inventoryFooter");
     const inventoryPlantBadge = document.getElementById("inventoryPlantBadge");
+    const inventoryPlantSuggestions = document.getElementById("inventoryPlantSuggestions");
     const negativeInventoryBadge = document.getElementById("negativeInventoryBadge");
     const lookupStatus = document.getElementById("lookupStatus");
     const saveInventoryBtn = document.getElementById("saveInventoryBtn");
@@ -2979,6 +3136,7 @@
     const recordsPlant = document.getElementById("recordsPlant");
     const recordsEquipment = document.getElementById("recordsEquipment");
     const recordsEquipmentOptions = document.getElementById("recordsEquipmentOptions");
+    const recordsProduct = document.getElementById("recordsProduct");
     const recordsBody = document.getElementById("recordsBody");
     const recordsEmpty = document.getElementById("recordsEmpty");
     const recordsCount = document.getElementById("recordsCount");
@@ -2987,6 +3145,7 @@
     const savedInventoriesView = document.getElementById("savedInventoriesView");
     const savedInventoryDate = document.getElementById("savedInventoryDate");
     const savedInventoryPlant = document.getElementById("savedInventoryPlant");
+    const savedInventoryProduct = document.getElementById("savedInventoryProduct");
     const savedInventoriesBody = document.getElementById("savedInventoriesBody");
     const savedInventoriesEmpty = document.getElementById("savedInventoriesEmpty");
     const savedInventoriesCount = document.getElementById("savedInventoriesCount");
@@ -3032,23 +3191,71 @@
       pendingOilQuestionPanel = null;
     }
 
+    function requiresConsumptionDetail(name, qty){
+      const product = String(name || "").trim().toUpperCase();
+      return !["GASOLINA","DIESEL","GRASA"].includes(product) && Number(qty || 0) > 4;
+    }
+
     function checkOilChangeCondition(entry){
       if(!entry) return;
-      const name = entry.dataset.product;
+      const name = String(entry.dataset.product || "").trim().toUpperCase();
       const qtyInput = entry.querySelector(".combustible-qty");
       const qty = Number(qtyInput?.value || 0);
-
-      if(["GASOLINA","DIESEL","GRASA"].includes(name)) return;
-      if(qty <= 10) return;
-
       const typeSelect = entry.querySelector(".oil-type-select");
-      if(!typeSelect || typeSelect.value !== "CONSUMO") return;
+      const movementRow = entry.querySelector(".movement-type-row");
+      const movementBtn = entry.querySelector(".movement-toggle-btn");
+      const commentRow = entry.querySelector(".comment-row");
+      const commentBtn = entry.querySelector(".comment-toggle-btn");
+      const commentInput = entry.querySelector(".combustible-comment-input");
+      const required = requiresConsumptionDetail(name, qty);
+      const wasRequired = entry.dataset.detailThresholdActive === "true";
 
-      const lastAskedValue = Number(entry.dataset.lastOilQuestionQty || 0);
-      if(lastAskedValue === qty) return;
+      if(!required){
+        entry.dataset.detailThresholdActive = "false";
+        entry.dataset.lastOilQuestionQty = "";
+        entry.dataset.requiresOilType = "false";
+        entry.dataset.requiresComment = "false";
+        typeSelect?.classList.remove("needs-selection");
+        commentInput?.classList.remove("needs-comment");
+        if(commentInput) commentInput.placeholder = `Escriba un comentario para ${name}`;
+        return;
+      }
 
-      entry.dataset.lastOilQuestionQty = String(qty);
-      openOilQuestion(entry);
+      entry.dataset.detailThresholdActive = "true";
+      movementRow?.classList.add("show");
+      movementBtn?.classList.add("active");
+
+      // Al superar 4 por primera vez, vuelve a preguntar si corresponde a un cambio de aceite.
+      if(!wasRequired){
+        if(typeSelect && String(typeSelect.value || "").trim() === "CONSUMO"){
+          typeSelect.value = "";
+        }
+        const lastAskedValue = Number(entry.dataset.lastOilQuestionQty || 0);
+        if(lastAskedValue !== qty){
+          entry.dataset.lastOilQuestionQty = String(qty);
+          setTimeout(() => openOilQuestion(entry), 0);
+        }
+      }
+
+      const hasType = Boolean(String(typeSelect?.value || "").trim());
+      entry.dataset.requiresOilType = hasType ? "false" : "true";
+      typeSelect?.classList.toggle("needs-selection", !hasType);
+
+      if(!hasType){
+        entry.dataset.requiresComment = "false";
+        commentInput?.classList.remove("needs-comment");
+        commentRow?.classList.remove("show");
+        commentBtn?.classList.remove("active");
+        return;
+      }
+
+      // Una vez escogido el tipo, el comentario pasa a ser obligatorio.
+      commentRow?.classList.add("show");
+      commentBtn?.classList.add("active");
+      const hasComment = Boolean(String(commentInput?.value || "").trim());
+      entry.dataset.requiresComment = hasComment ? "false" : "true";
+      commentInput?.classList.toggle("needs-comment", !hasComment);
+      if(commentInput) commentInput.placeholder = `Comentario obligatorio para ${name}`;
     }
 
     function setLookupStatus(message, type=""){
@@ -4202,10 +4409,23 @@
     }
 
     function renderInventory(items){
-      const byName = Object.fromEntries(items.map(i => [i.nombre,i]));
+      const byName = Object.fromEntries((items || []).map(i => [String(i.nombre || "").trim().toUpperCase(),i]));
+      const plantKey = String(currentPlant || plantaInput?.value || "").trim();
+      const inventoryProducts = getAllowedProductsForPlant(plantKey);
 
-      inventoryBody.innerHTML = PRODUCTOS.map(nombre => {
-        const previous = byName[nombre] || {};
+      if(!inventoryProducts.length){
+        inventoryBody.innerHTML = "";
+        inventoryFooter.classList.add("hidden");
+        inventoryEmpty.classList.remove("hidden");
+        inventoryEmpty.querySelector("strong").textContent = plantKey ? `La planta ${plantKey} no tiene productos configurados` : "Seleccione fecha y planta";
+        inventoryEmpty.querySelector("span").textContent = plantKey ? "Seleccione una de las plantas disponibles para cargar únicamente sus productos autorizados." : "El inventario se filtrará según los productos autorizados para la planta seleccionada.";
+        resetCombustibleOptions();
+        return;
+      }
+
+      inventoryEmpty.classList.add("hidden");
+      inventoryBody.innerHTML = inventoryProducts.map(nombre => {
+        const previous = byName[String(nombre).trim().toUpperCase()] || {};
         const ivfa = Number(previous.final ?? previous.ivfa ?? 0);
 
         return `
@@ -4328,7 +4548,7 @@
         : "";
 
       return `
-        <div class="movement-entry" data-product="${name}" data-entry-index="${index}" data-entry-role="${isExtra ? "extra" : "main"}" data-last-oil-question-qty="" data-requires-oil-type="false">
+        <div class="movement-entry" data-product="${name}" data-entry-index="${index}" data-entry-role="${isExtra ? "extra" : "main"}" data-last-oil-question-qty="" data-requires-oil-type="false" data-requires-comment="false" data-detail-threshold-active="false">
           <div class="fuel-panel-grid">
             <input class="combustible-qty" type="text" inputmode="decimal" autocomplete="off" value="${data.qty || ""}" placeholder="Cantidad">
             <div class="fuel-actions">
@@ -4369,6 +4589,8 @@
       if(!entry) return;
       entry.dataset.lastOilQuestionQty = "";
       entry.dataset.requiresOilType = "false";
+      entry.dataset.requiresComment = "false";
+      entry.dataset.detailThresholdActive = "false";
       const qty = entry.querySelector(".combustible-qty");
       const comment = entry.querySelector(".combustible-comment-input");
       const commentRow = entry.querySelector(".comment-row");
@@ -4377,7 +4599,11 @@
       const movementRow = entry.querySelector(".movement-type-row");
       const typeSelect = entry.querySelector(".oil-type-select");
       if(qty) qty.value = "";
-      if(comment) comment.value = "";
+      if(comment){
+        comment.value = "";
+        comment.classList.remove("needs-comment");
+        comment.placeholder = `Escriba un comentario para ${entry.dataset.product || "el producto"}`;
+      }
       if(commentRow) commentRow.classList.remove("show");
       if(commentBtn) commentBtn.classList.remove("active");
       if(movementRow) movementRow.classList.remove("show");
@@ -4434,6 +4660,7 @@
       const movementRow = entry.querySelector(".movement-type-row");
       const qtyInput = entry.querySelector(".combustible-qty");
       const typeSelect = entry.querySelector(".oil-type-select");
+      const commentInput = entry.querySelector(".combustible-comment-input");
       const removeBtn = entry.querySelector(".entry-remove-btn");
 
       if(removeBtn){
@@ -4445,11 +4672,19 @@
 
       if(toggle && row){
         toggle.addEventListener("click", () => {
+          const qty = Number(qtyInput?.value || 0);
+          const typeSelected = Boolean(String(typeSelect?.value || "").trim());
+          if(requiresConsumptionDetail(entry.dataset.product, qty) && typeSelected){
+            row.classList.add("show");
+            toggle.classList.add("active");
+            setTimeout(() => commentInput?.focus(), 0);
+            return;
+          }
           const show = !row.classList.contains("show");
           row.classList.toggle("show", show);
           toggle.classList.toggle("active", show);
           if(show){
-            setTimeout(() => entry.querySelector(".combustible-comment-input")?.focus(), 0);
+            setTimeout(() => commentInput?.focus(), 0);
           }
         });
       }
@@ -4472,15 +4707,26 @@
           if(typeSelect.value !== "CONSUMO"){
             entry.dataset.lastOilQuestionQty = qtyInput?.value || "";
           }
+          checkOilChangeCondition(entry);
           if(movementBtn){
-            movementBtn.classList.toggle("active", movementRow?.classList.contains("show") || typeSelect.value !== "CONSUMO");
+            movementBtn.classList.toggle("active", movementRow?.classList.contains("show") || Boolean(typeSelect.value));
+          }
+          const qty = Number(qtyInput?.value || 0);
+          if(requiresConsumptionDetail(entry.dataset.product, qty) && typeSelect.value){
+            setTimeout(() => commentInput?.focus(), 0);
           }
         });
       }
 
       if(qtyInput){
+        qtyInput.addEventListener("input", () => checkOilChangeCondition(entry));
         qtyInput.addEventListener("blur", () => checkOilChangeCondition(entry));
         qtyInput.addEventListener("change", () => checkOilChangeCondition(entry));
+      }
+
+      if(commentInput){
+        commentInput.addEventListener("input", () => checkOilChangeCondition(entry));
+        commentInput.addEventListener("blur", () => checkOilChangeCondition(entry));
       }
     }
 
@@ -4502,8 +4748,120 @@
       });
     }
 
+    function getConfiguredPlants(){
+      return Object.keys(PRODUCTOS_POR_PLANTA);
+    }
+
+    function hidePlantSuggestions(){
+      if(plantSuggestions) plantSuggestions.classList.add("hidden");
+      if(inventoryPlantSuggestions) inventoryPlantSuggestions.classList.add("hidden");
+      plantaInput?.setAttribute("aria-expanded","false");
+      inventoryPlantBadge?.setAttribute("aria-expanded","false");
+    }
+
+    function buildPlantSuggestionsHtml(filterValue = ""){
+      const filter = String(filterValue || "").trim();
+      const matches = getConfiguredPlants().filter(plant => !filter || plant.startsWith(filter));
+      if(!matches.length){
+        return '<div class="plant-suggestions-empty">No hay una planta configurada con ese número.</div>';
+      }
+      return matches.map(plant => {
+        const products = getAllowedProductsForPlant(plant);
+        const summary = products.length === 1 ? products[0] : `${products.length} productos`;
+        return `<button type="button" class="plant-suggestion" data-plant="${plant}" role="option" aria-selected="false"><span class="plant-suggestion-code">PLANTA ${plant}</span><span class="plant-suggestion-products">${summary}</span></button>`;
+      }).join("");
+    }
+
+    function bindPlantSuggestionButtons(container){
+      if(!container) return;
+      container.querySelectorAll(".plant-suggestion").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectConfiguredPlant(btn.dataset.plant);
+          hidePlantSuggestions();
+        });
+      });
+    }
+
+    function renderPlantSuggestions(filterValue = plantaInput?.value){
+      if(!plantSuggestions) return;
+      plantSuggestions.innerHTML = buildPlantSuggestionsHtml(filterValue);
+      bindPlantSuggestionButtons(plantSuggestions);
+      plantSuggestions.classList.remove("hidden");
+      plantaInput?.setAttribute("aria-expanded","true");
+    }
+
+    function renderInventoryPlantSuggestions(){
+      if(!inventoryPlantSuggestions) return;
+      inventoryPlantSuggestions.innerHTML = buildPlantSuggestionsHtml("");
+      bindPlantSuggestionButtons(inventoryPlantSuggestions);
+      inventoryPlantSuggestions.classList.remove("hidden");
+      inventoryPlantBadge?.setAttribute("aria-expanded","true");
+    }
+
+    function getPlantSelectorContainers(){
+      return [plantSelectorButtons, inventoryPlantSelectorButtons].filter(Boolean);
+    }
+
+    function syncPlantSelectorActive(){
+      const selected = String(plantaInput?.value || "").trim();
+      getPlantSelectorContainers().forEach(container => {
+        container.querySelectorAll(".plant-selector-btn").forEach(btn => {
+          const active = btn.dataset.plant === selected;
+          btn.classList.toggle("active", active);
+          btn.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+      });
+    }
+
+    function selectConfiguredPlant(plant){
+      const plantKey = String(plant || "").trim();
+      if(!PRODUCTOS_POR_PLANTA[plantKey]) return;
+      clearTimeout(debounceTimer);
+      plantaInput.value = plantKey;
+      hidePlantSuggestions();
+      syncPlantSelectorActive();
+      updateAreaConsumeVisibility();
+      resetCombustibleOptions();
+      requestInventoryIfReady({force:true});
+    }
+
+    function renderPlantSelectorButtons(){
+      const html = getConfiguredPlants().map(plant =>
+        `<button type="button" class="plant-selector-btn" data-plant="${plant}" aria-pressed="false">${plant}</button>`
+      ).join("");
+
+      getPlantSelectorContainers().forEach(container => {
+        container.innerHTML = html;
+        container.querySelectorAll(".plant-selector-btn").forEach(btn => {
+          btn.addEventListener("click", () => selectConfiguredPlant(btn.dataset.plant));
+        });
+      });
+      syncPlantSelectorActive();
+    }
+
+    function getAllowedProductsForPlant(planta = plantaInput?.value){
+      const plantKey = String(planta || "").trim();
+      return PRODUCTOS_POR_PLANTA[plantKey] ? [...PRODUCTOS_POR_PLANTA[plantKey]] : [];
+    }
+
+    function isProductAllowedForPlant(product, planta = plantaInput?.value){
+      const productKey = String(product || "").trim().toUpperCase();
+      return getAllowedProductsForPlant(planta).includes(productKey);
+    }
+
+    function getPlantProductEmptyMessage(){
+      const plantKey = String(plantaInput?.value || "").trim();
+      if(!plantKey) return "Seleccione una planta y active productos en verde";
+      if(!PRODUCTOS_POR_PLANTA[plantKey]) return `La planta ${plantKey} no tiene productos configurados`;
+      return `No hay productos permitidos con saldo disponible para la planta ${plantKey}`;
+    }
+
     function renderFuelButtons(selectedNames){
       const previous = captureCombustibleState();
+      const allowedProducts = getAllowedProductsForPlant();
+      selectedNames = [...new Set((selectedNames || [])
+        .map(name => String(name || "").trim().toUpperCase())
+        .filter(name => allowedProducts.includes(name)))];
 
       if(!selectedNames.length){
         resetCombustibleOptions();
@@ -4546,14 +4904,17 @@
     }
 
     function updateCombustibleOptions(){
+      const allowedProducts = getAllowedProductsForPlant();
       const activeRows = [...inventoryBody.querySelectorAll("tr.row-active-stock")];
-      const selectedNames = activeRows.map(row => row.dataset.product);
+      const selectedNames = activeRows
+        .map(row => String(row.dataset.product || "").trim().toUpperCase())
+        .filter(name => allowedProducts.includes(name));
       renderFuelButtons(selectedNames);
     }
 
     function resetCombustibleOptions(){
       combustibleSelect.value = "";
-      combustibleButtons.innerHTML = '<div class="combustible-empty">Seleccione una planta y active productos en verde</div>';
+      combustibleButtons.innerHTML = `<div class="combustible-empty">${getPlantProductEmptyMessage()}</div>`;
       combustibleDetails.innerHTML = "";
     }
 
@@ -4739,7 +5100,14 @@
       const selectedDate = String(fechaPicker.value || "").trim();
 
       if(!plantKey || !selectedDate){
-        clearInventoryLookup("Seleccione la fecha e ingrese la planta. No se consultará Supabase hasta tener ambos datos.");
+        clearInventoryLookup("Seleccione la fecha y una planta. No se consultará Supabase hasta tener ambos datos.");
+        return;
+      }
+
+      if(!PRODUCTOS_POR_PLANTA[plantKey]){
+        clearInventoryLookup(`La planta ${plantKey} no está configurada. Seleccione una planta de la lista disponible.`);
+        inventoryPlantBadge.textContent = "Planta no válida";
+        syncPlantSelectorActive();
         return;
       }
 
@@ -4765,10 +5133,23 @@
       }
     });
 
+    plantaInput.addEventListener("focus",()=>{
+      renderPlantSuggestions("");
+    });
+
+    plantaInput.addEventListener("click",()=>{
+      renderPlantSuggestions("");
+    });
+
     plantaInput.addEventListener("input",()=>{
       clearTimeout(debounceTimer);
+      const cleaned = String(plantaInput.value || "").replace(/\D+/g, "").slice(0,3);
+      if(plantaInput.value !== cleaned) plantaInput.value = cleaned;
+      renderPlantSuggestions(cleaned);
+      syncPlantSelectorActive();
       updateAreaConsumeVisibility();
-      if(!String(plantaInput.value || "").trim()){
+      resetCombustibleOptions();
+      if(!cleaned){
         clearInventoryLookup();
         return;
       }
@@ -4776,10 +5157,31 @@
     });
 
     plantaInput.addEventListener("keydown",e=>{
-      if(e.key === "Enter"){
-        clearTimeout(debounceTimer);
-        requestInventoryIfReady({force:true});
+      if(e.key === "Escape"){
+        hidePlantSuggestions();
+        return;
       }
+      if(e.key === "Enter"){
+        e.preventDefault();
+        clearTimeout(debounceTimer);
+        const exact = String(plantaInput.value || "").trim();
+        if(PRODUCTOS_POR_PLANTA[exact]){
+          selectConfiguredPlant(exact);
+        }else{
+          renderPlantSuggestions(exact);
+        }
+      }
+    });
+
+    inventoryPlantBadge?.addEventListener("click", e => {
+      e.stopPropagation();
+      const willOpen = inventoryPlantSuggestions?.classList.contains("hidden");
+      hidePlantSuggestions();
+      if(willOpen) renderInventoryPlantSuggestions();
+    });
+
+    document.addEventListener("click", e => {
+      if(!e.target.closest(".plant-autocomplete") && !e.target.closest(".inventory-plant-picker")) hidePlantSuggestions();
     });
 
 
@@ -4812,20 +5214,28 @@
     });
 
     oilQuestionNo.addEventListener("click", () => {
-      if(pendingOilQuestionPanel){
-        const typeSelect = pendingOilQuestionPanel.querySelector(".oil-type-select");
-        const movementRow = pendingOilQuestionPanel.querySelector(".movement-type-row");
-        const movementBtn = pendingOilQuestionPanel.querySelector(".movement-toggle-btn");
+      const entry = pendingOilQuestionPanel;
+      if(entry){
+        const typeSelect = entry.querySelector(".oil-type-select");
+        const movementRow = entry.querySelector(".movement-type-row");
+        const movementBtn = entry.querySelector(".movement-toggle-btn");
         if(typeSelect){
-          typeSelect.value = "CONSUMO";
-          typeSelect.classList.remove("needs-selection");
+          // Aunque NO sea cambio de aceite, el usuario debe escoger manualmente
+          // el tipo de consumo antes de poder escribir el comentario y guardar.
+          typeSelect.value = "";
+          typeSelect.classList.add("needs-selection");
+          entry.dataset.requiresOilType = "true";
         }
-        pendingOilQuestionPanel.dataset.requiresOilType = "false";
-        if(movementRow && !movementRow.classList.contains("show") && movementBtn){
-          movementBtn.classList.remove("active");
-        }
+        if(movementRow) movementRow.classList.add("show");
+        if(movementBtn) movementBtn.classList.add("active");
       }
       closeOilQuestion();
+      if(entry){
+        checkOilChangeCondition(entry);
+        const typeSelect = entry.querySelector(".oil-type-select");
+        setTimeout(() => typeSelect?.focus(), 0);
+        showToast("Seleccione el tipo de consumo y luego escriba el comentario.");
+      }
     });
 
     oilQuestionOverlay.addEventListener("click", (e) => {
@@ -4891,6 +5301,18 @@
       if(!fecha || !planta || !equipo || !producto || !Number.isFinite(cantidad) || cantidad <= 0){
         showToast("Complete correctamente todos los datos del registro.", true);
         return;
+      }
+      if(requiresConsumptionDetail(producto, cantidad)){
+        if(!tipo){
+          showToast("Para cantidades mayores de 4 debe especificar el tipo de consumo.", true);
+          recordEditType?.focus();
+          return;
+        }
+        if(!comentario){
+          showToast("Para cantidades mayores de 4 debe escribir un comentario.", true);
+          recordEditComment?.focus();
+          return;
+        }
       }
       recordEditSave.disabled = true;
       recordEditSave.textContent = "GUARDANDO...";
@@ -4962,14 +5384,30 @@
       const filters = getRecordsFilterState();
       if(!isRecordsFilterReady(filters)) return;
       try{
-        let query = `?fecha=gte.${encodeURIComponent(filters.from)}&fecha=lte.${encodeURIComponent(filters.to)}`;
-        if(filters.plant) query += `&planta=eq.${encodeURIComponent(filters.plant)}`;
-        if(filters.equipment) query += `&equipo=eq.${encodeURIComponent(filters.equipment)}`;
-        await sbRequest("combustible_movimientos", {
-          method:"DELETE",
-          query,
-          prefer:"return=minimal"
-        });
+        if(filters.product){
+          for(const movement of filteredMovementsCache){
+            const products = Array.isArray(movement.productos) ? movement.productos : [];
+            const matches = products.filter(item => String(item.producto || "").trim().toUpperCase() === filters.product);
+            if(!matches.length) continue;
+            if(matches.length === products.length){
+              await sbRequest("combustible_movimientos", {method:"DELETE", query:`?id=eq.${encodeURIComponent(movement.id)}`, prefer:"return=minimal"});
+            }else{
+              for(const item of matches){
+                if(!item.detalle_id) continue;
+                await sbRequest("combustible_movimiento_detalle", {method:"DELETE", query:`?id=eq.${encodeURIComponent(item.detalle_id)}`, prefer:"return=minimal"});
+              }
+            }
+          }
+        }else{
+          let query = `?fecha=gte.${encodeURIComponent(filters.from)}&fecha=lte.${encodeURIComponent(filters.to)}`;
+          if(filters.plant) query += `&planta=eq.${encodeURIComponent(filters.plant)}`;
+          if(filters.equipment) query += `&equipo=eq.${encodeURIComponent(filters.equipment)}`;
+          await sbRequest("combustible_movimientos", {
+            method:"DELETE",
+            query,
+            prefer:"return=minimal"
+          });
+        }
         dashboardConsumptionLoaded = false;
         await loadRecordsFromSupabase();
         if(currentPlant) requestInventoryIfReady({force:true});
@@ -5004,13 +5442,30 @@
     async function deleteAllFilteredInventories(){
       const dateKey = normalizeDateKey(savedInventoryDate.value);
       const plantKey = String(savedInventoryPlant.value || "").trim();
+      const productKey = String(savedInventoryProduct?.value || "").trim().toUpperCase();
       if(!dateKey || !plantKey) return;
       try{
-        await sbRequest("combustible_inventarios", {
-          method:"DELETE",
-          query:`?fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`,
-          prefer:"return=minimal"
-        });
+        if(productKey){
+          for(const inventory of filteredInventoriesCache){
+            const items = Array.isArray(inventory.items) ? inventory.items : [];
+            const matches = items.filter(item => String(item.nombre || "").trim().toUpperCase() === productKey);
+            if(!matches.length) continue;
+            if(matches.length === items.length){
+              await sbRequest("combustible_inventarios", {method:"DELETE", query:`?id=eq.${encodeURIComponent(inventory.id)}`, prefer:"return=minimal"});
+            }else{
+              for(const item of matches){
+                if(!item.detalle_id) continue;
+                await sbRequest("combustible_inventario_detalle", {method:"DELETE", query:`?id=eq.${encodeURIComponent(item.detalle_id)}`, prefer:"return=minimal"});
+              }
+            }
+          }
+        }else{
+          await sbRequest("combustible_inventarios", {
+            method:"DELETE",
+            query:`?fecha=eq.${encodeURIComponent(dateKey)}&planta=eq.${encodeURIComponent(plantKey)}`,
+            prefer:"return=minimal"
+          });
+        }
         await loadSavedInventoriesFromSupabase();
         if(currentPlant) requestInventoryIfReady({force:true});
         showToast("Inventarios eliminados de Supabase.");
@@ -5034,16 +5489,17 @@
         from: normalizeDateKey(recordsDateFrom?.value || ""),
         to: normalizeDateKey(recordsDateTo?.value || ""),
         plant: String(recordsPlant?.value || "").trim(),
-        equipment: sanitizeEquipmentCode(recordsEquipment?.value || "")
+        equipment: sanitizeEquipmentCode(recordsEquipment?.value || ""),
+        product: String(recordsProduct?.value || "").trim().toUpperCase()
       };
     }
 
     function isRecordsFilterReady(filters=getRecordsFilterState()){
-      return Boolean(filters.from && filters.to && filters.from <= filters.to && (filters.plant || filters.equipment));
+      return Boolean(filters.from && filters.to && filters.from <= filters.to && (filters.plant || filters.equipment || filters.product));
     }
 
     function getRecordsFilterCacheKey(filters=getRecordsFilterState()){
-      return `${filters.from}|${filters.to}|${filters.plant}|${filters.equipment}`;
+      return `${filters.from}|${filters.to}|${filters.plant}|${filters.equipment}|${filters.product}`;
     }
 
     function formatRecordsDateRange(from, to){
@@ -5056,6 +5512,7 @@
       if(filters.from && filters.to) parts.push(formatRecordsDateRange(filters.from, filters.to));
       if(filters.plant) parts.push(`Planta ${filters.plant}`);
       if(filters.equipment) parts.push(`Equipo ${filters.equipment}`);
+      if(filters.product) parts.push(`Producto ${filters.product}`);
       return parts.join(" · ");
     }
 
@@ -5205,13 +5662,14 @@
     function renderSavedInventoriesView(){
       const dateKey = normalizeDateKey(savedInventoryDate.value);
       const plantKey = String(savedInventoryPlant.value || "").trim();
+      const productKey = String(savedInventoryProduct?.value || "").trim().toUpperCase();
 
       if(!dateKey || !plantKey){
         savedInventoriesBody.innerHTML = "";
         savedInventoriesEmpty.classList.remove("hidden");
         savedInventoriesEmpty.innerHTML = `
           <strong>Complete fecha y planta</strong>
-          <span>Estos son los únicos filtros de esta vista.</span>
+          <span>Complete fecha y planta; el filtro de producto es opcional.</span>
         `;
         savedInventoriesCount.textContent = "0 inventarios";
         deleteFilteredInventoriesBtn.disabled = true;
@@ -5228,6 +5686,7 @@
       const rows = [];
       inventories.forEach(inv => {
         (inv.items || []).forEach((item, itemIndex) => {
+          if(productKey && String(item.nombre || "").trim().toUpperCase() !== productKey) return;
           rows.push({
             inventoryId: inv.id,
             itemIndex,
@@ -5244,14 +5703,14 @@
 
       savedInventoriesCount.textContent = rows.length + (rows.length === 1 ? " inventario" : " inventarios");
       deleteFilteredInventoriesBtn.disabled = rows.length === 0;
-      savedInventoryFilterMessage.textContent = "Planta " + plantKey + " · " + formatDateDisplay(dateKey);
+      savedInventoryFilterMessage.textContent = "Planta " + plantKey + " · " + formatDateDisplay(dateKey) + (productKey ? " · Producto " + productKey : "");
 
       if(!rows.length){
         savedInventoriesBody.innerHTML = "";
         savedInventoriesEmpty.classList.remove("hidden");
         savedInventoriesEmpty.innerHTML = `
           <strong>No hay inventarios guardados</strong>
-          <span>No se encontraron inventarios para la fecha y planta seleccionadas.</span>
+          <span>No se encontraron inventarios para la fecha, planta y producto seleccionados.</span>
         `;
         return;
       }
@@ -5302,14 +5761,14 @@
         recordsEmpty.classList.remove("hidden");
         recordsEmpty.innerHTML = `
           <strong>Complete el rango y un filtro</strong>
-          <span>Seleccione el rango de fecha y escriba la planta, el número de equipo o ambos.</span>
+          <span>Seleccione el rango de fecha y filtre por planta, número de equipo o combustible/lubricante.</span>
         `;
         recordsCount.textContent = "0 registros";
         deleteFilteredRecordsBtn.disabled = true;
         if(!filters.from || !filters.to){
           recordsFilterMessage.textContent = "Seleccione el rango de fecha para mostrar los registros.";
-        }else if(!filters.plant && !filters.equipment){
-          recordsFilterMessage.textContent = "Ingrese una planta o seleccione un número de equipo.";
+        }else if(!filters.plant && !filters.equipment && !filters.product){
+          recordsFilterMessage.textContent = "Ingrese una planta, seleccione un número de equipo o elija un combustible/lubricante.";
         }else if(filters.from > filters.to){
           recordsFilterMessage.textContent = "La fecha inicial no puede ser posterior a la fecha final.";
         }
@@ -5326,6 +5785,7 @@
       const rows = [];
       movements.forEach(registro => {
         (registro.productos || []).forEach((item, productIndex) => {
+          if(filters.product && String(item.producto || "").trim().toUpperCase() !== filters.product) return;
           rows.push({
             movementId: registro.id,
             detailId: item.detalle_id || "",
@@ -6863,6 +7323,7 @@
       scheduleRecordsFilter();
     });
     recordsEquipment?.addEventListener("change", loadRecordsFromSupabase);
+    recordsProduct?.addEventListener("change", loadRecordsFromSupabase);
 
     deleteFilteredInventoriesBtn.addEventListener("click", () => {
       const dateKey = normalizeDateKey(savedInventoryDate.value);
@@ -6871,15 +7332,18 @@
 
       if(!dateKey || !plantKey || visibleCount === 0) return;
 
+      const productKey = String(savedInventoryProduct?.value || "").trim().toUpperCase();
       openDeleteConfirm(
         "Se eliminarán todos los inventarios guardados de la planta " + plantKey +
-        " para la fecha " + formatDateDisplay(dateKey) + ". Esta acción no se puede deshacer.",
+        " para la fecha " + formatDateDisplay(dateKey) +
+        (productKey ? " del producto " + productKey : "") + ". Esta acción no se puede deshacer.",
         deleteAllFilteredInventories
       );
     });
 
     let inventoryHistoryFilterTimer = null;
     savedInventoryDate.addEventListener("change", loadSavedInventoriesFromSupabase);
+    savedInventoryProduct?.addEventListener("change", renderSavedInventoriesView);
     savedInventoryPlant.addEventListener("input", () => {
       const cleaned = String(savedInventoryPlant.value || "").replace(/[^0-9]/g, "");
       if(savedInventoryPlant.value !== cleaned) savedInventoryPlant.value = cleaned;
@@ -7292,17 +7756,50 @@
         equipoInput.focus();
         return;
       }
+      if(!PRODUCTOS_POR_PLANTA[planta]){
+        showToast(`La planta ${planta} no tiene productos configurados para registro.`, true);
+        plantaInput.focus();
+        return;
+      }
       if(!items.length){
-        showToast("Seleccione al menos un combustible o lubricante.", true);
+        showToast("Seleccione al menos un combustible o lubricante permitido para esta planta.", true);
+        return;
+      }
+      const productoNoPermitido = items.find(item => !isProductAllowedForPlant(item.producto, planta));
+      if(productoNoPermitido){
+        showToast(`${productoNoPermitido.producto} no está permitido para la planta ${planta}.`, true);
+        updateCombustibleOptions();
         return;
       }
 
-      const pendingOilTypePanel = [...combustibleDetails.querySelectorAll(".fuel-panel.show .movement-entry")]
-        .find(entry => entry.dataset.requiresOilType === "true" || entry.querySelector(".oil-type-select.needs-selection"));
-      if(pendingOilTypePanel){
-        showToast("Seleccione el tipo exacto de cambio de aceite antes de guardar.", true);
-        pendingOilTypePanel.querySelector(".oil-type-select")?.focus();
-        return;
+      const visibleMovementEntries = [...combustibleDetails.querySelectorAll(".fuel-panel.show .movement-entry")];
+      for(const entry of visibleMovementEntries){
+        const product = String(entry.dataset.product || "").trim().toUpperCase();
+        const qty = Number(entry.querySelector(".combustible-qty")?.value || 0);
+        if(!requiresConsumptionDetail(product, qty)) continue;
+
+        checkOilChangeCondition(entry);
+        const typeSelect = entry.querySelector(".oil-type-select");
+        const commentInput = entry.querySelector(".combustible-comment-input");
+        const type = String(typeSelect?.value || "").trim();
+        const comment = String(commentInput?.value || "").trim();
+
+        if(!type){
+          showToast(`${product}: para cantidades mayores de 4 debe especificar el tipo de consumo.`, true);
+          typeSelect?.classList.add("needs-selection");
+          entry.querySelector(".movement-type-row")?.classList.add("show");
+          typeSelect?.focus();
+          return;
+        }
+
+        if(!comment){
+          showToast(`${product}: después de seleccionar el tipo de consumo debe escribir un comentario.`, true);
+          entry.querySelector(".comment-row")?.classList.add("show");
+          entry.querySelector(".comment-toggle-btn")?.classList.add("active");
+          commentInput?.classList.add("needs-comment");
+          commentInput?.focus();
+          return;
+        }
       }
 
       const itemsInvalidos = items.filter(item => !Number.isFinite(item.cantidad) || item.cantidad <= 0);
