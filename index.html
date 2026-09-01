@@ -2961,6 +2961,7 @@
     ]);
 
     const PRODUCTOS_POR_PLANTA = Object.freeze({
+      "100": Object.freeze(["DIESEL"]),
       "200": Object.freeze(["GASOLINA"]),
       "300": PRODUCTOS_LUBRICANTES_ESTANDAR,
       "402": PRODUCTOS_LUBRICANTES_ESTANDAR,
@@ -4922,12 +4923,27 @@
       const inicial = Number(row.querySelector(".initial-input").value || 0);
       const entrada = Number(row.querySelector(".entry-input").value || 0);
       const salida = Number(row.querySelector(".exit-value").dataset.value || 0);
+      const ivfa = Number(row.dataset.ivfa || 0);
       const finalValue = inicial + entrada - salida;
+      const wasActive = row.classList.contains("row-active-stock");
 
       row.querySelector(".final-value").textContent = formatDecimal(finalValue);
       row.classList.toggle("inventory-negative", finalValue < 0);
 
+      // Una ENTRADA disponible habilita automáticamente el producto para registrar movimientos,
+      // aunque el saldo FINAL todavía permanezca negativo.
+      if(entrada > 0){
+        row.classList.add("row-active-stock");
+      }else if(ivfa <= 0){
+        row.classList.remove("row-active-stock");
+      }
+
       updateNegativeInventoryWarning();
+
+      // Sincroniza inmediatamente los botones verdes del INGRESO DE MOVIMIENTO.
+      if(wasActive !== row.classList.contains("row-active-stock")){
+        updateCombustibleOptions();
+      }
     }
 
     function updateNegativeInventoryWarning(){
