@@ -327,7 +327,18 @@
     .diesel-period-bar{height:100%;min-width:4px;border-radius:999px;background:#1590a8}
     .diesel-period-row.highest .diesel-period-track{outline:2px solid rgba(21,144,168,.22)}
     .diesel-period-row.highest .diesel-period-label,.diesel-period-row.highest .diesel-period-value{color:#0e7490}
-    .diesel-period-value{min-width:78px;text-align:right;font-size:11px;font-weight:950;color:#173f8f}
+    .diesel-period-value{min-width:128px;text-align:right;font-size:11px;font-weight:950;color:#173f8f}
+    .diesel-period-metrics{display:grid;gap:2px;justify-items:end;line-height:1.12}
+    .diesel-period-metrics strong{font-size:11px;color:#173f8f}
+    .diesel-period-hours{font-size:10px;font-weight:950;color:#0e7490}
+    .diesel-period-rate{font-size:9px;font-weight:850;color:#64748b}
+    .diesel-hours-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:2px}
+    .diesel-hours-card{border:1px solid #cfe8ef;border-radius:11px;background:#fff;padding:9px 10px;min-width:0}
+    .diesel-hours-card span{display:block;font-size:9px;font-weight:950;color:#64748b;letter-spacing:.04em;text-transform:uppercase}
+    .diesel-hours-card strong{display:block;margin-top:4px;font-size:14px;font-weight:950;color:#0e7490;overflow-wrap:anywhere}
+    .diesel-hours-card.rate strong{color:#173f8f}
+    .diesel-hours-source{border:1px solid #bae6ee;background:#ecfeff;color:#155e75;border-radius:10px;padding:8px 10px;font-size:9px;font-weight:850;line-height:1.4;text-transform:uppercase}
+    .diesel-hours-source.warn{border-color:#fed7aa;background:#fff7ed;color:#9a3412}
     .report-drill-toggle{cursor:pointer}
     .fuel-summary-card.report-drill-toggle{width:100%;border:1px solid #dfe5ee;text-align:left;font:inherit;color:inherit}
     .fuel-summary-card.report-drill-toggle:hover,.fuel-summary-card.report-drill-toggle.open{background:#f8fbff;border-color:#bdd0ef}
@@ -355,6 +366,284 @@
     .report-daily-consumption-detail strong{font-size:9px;color:inherit}
     .report-daily-consumption-detail span{font-size:8px;font-weight:700;color:#64748b;max-width:220px;white-space:normal}
     .report-daily-consumption-detail.empty{opacity:.7}
+    .report-daily-diesel-metrics{display:grid;gap:2px;justify-items:end;min-width:118px}
+    .report-daily-diesel-hours{font-size:9px;font-weight:950;color:#0e7490;white-space:nowrap}
+    .report-daily-diesel-rate{font-size:8px;font-weight:850;color:#64748b;white-space:nowrap}
+    .report-daily-diesel-metrics.unavailable .report-daily-diesel-hours{color:#94a3b8}
+
+    /* Detalle diario de DIESEL: distribución compacta y legible */
+    .report-daily-row.diesel-day{
+      grid-template-columns:minmax(0,1fr) auto;
+      grid-template-areas:
+        "date value"
+        "track track"
+        "metrics metrics";
+      gap:7px 10px;
+      padding:8px 9px;
+      border:1px solid #e7edf5;
+      background:#fff;
+    }
+    .report-daily-row.diesel-day .report-daily-date{grid-area:date;font-size:10px;align-self:center}
+    .report-daily-row.diesel-day .report-daily-track{grid-area:track;height:7px;width:100%}
+    .report-daily-row.diesel-day .report-daily-value{grid-area:value;min-width:0;font-size:10px;white-space:nowrap;text-align:right}
+    .report-daily-row.diesel-day .report-daily-count{
+      grid-area:metrics;
+      min-width:0;
+      width:100%;
+      text-align:center;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    .report-daily-row.diesel-day .report-daily-diesel-metrics{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      align-items:center;
+      gap:8px;
+      width:100%;
+      min-width:0;
+      margin:0 auto;
+    }
+    .report-daily-row.diesel-day .report-daily-diesel-hours,
+    .report-daily-row.diesel-day .report-daily-diesel-rate{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 1 138px;
+      width:min(138px,100%);
+      max-width:100%;
+      min-height:28px;
+      padding:6px 8px;
+      border-radius:8px;
+      background:#f8fafc;
+      border:1px solid #e5eaf2;
+      text-align:center;
+      line-height:1.15;
+      white-space:normal;
+      font-size:8.5px;
+      font-weight:900;
+      margin:0;
+    }
+    .report-daily-row.diesel-day .report-daily-diesel-hours{background:#f0fbfd;border-color:#d8f0f4;color:#0e7490}
+    .report-daily-row.diesel-day .report-daily-diesel-rate{background:#f5f8ff;border-color:#dfe8f7;color:#315fb2}
+    .report-daily-row.diesel-day.zero{opacity:.72}
+    .report-daily-row.diesel-day.highest{background:#fff5f5;border-color:#fecaca;padding:8px 9px}
+    .report-daily-row.diesel-day.highest .report-daily-diesel-hours,
+    .report-daily-row.diesel-day.highest .report-daily-diesel-rate{border-color:#fee2e2}
+    .report-daily-row.diesel-day.highest .report-daily-diesel-rate{color:#b91c1c;background:#fff1f2}
+    @media(max-width:520px){
+      .report-daily-row.diesel-day{
+        gap:6px 8px;
+        padding:8px;
+        overflow:hidden;
+      }
+      .report-daily-row.diesel-day .report-daily-count{
+        justify-content:center;
+      }
+      .report-daily-row.diesel-day .report-daily-diesel-metrics{
+        display:grid;
+        grid-template-columns:1fr;
+        justify-items:center;
+        align-items:center;
+        gap:6px;
+        width:100%;
+        margin:0 auto;
+      }
+      .report-daily-row.diesel-day .report-daily-diesel-hours,
+      .report-daily-row.diesel-day .report-daily-diesel-rate{
+        flex:none;
+        width:min(100%,160px);
+        max-width:100%;
+        font-size:8px;
+        padding:5px 8px;
+        min-height:26px;
+        margin:0 auto;
+      }
+    }
+
+
+    /* ===== COMPARATIVA DIESEL · DETALLE POR DÍA (MODO TABLA COMPACTA) ===== */
+    .diesel-reference-detail.report-drill-detail.open{margin-top:12px}
+    .diesel-reference-detail .report-drill-inner{overflow:hidden}
+    .diesel-reference-shell{
+      width:100%;
+      border:1px solid #dce4ef;
+      border-radius:18px;
+      background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+      padding:14px;
+      box-shadow:0 8px 22px rgba(27,46,94,.06);
+    }
+    .diesel-reference-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .diesel-reference-title{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .diesel-reference-title-icon{
+      width:42px;
+      height:42px;
+      flex:0 0 42px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background:#eef4ff;
+      color:#2f6fe5;
+    }
+    .diesel-reference-title-icon svg{width:22px;height:22px;stroke-width:1.9}
+    .diesel-reference-title h4{
+      margin:0;
+      color:#14264a;
+      font-size:16px;
+      font-weight:950;
+      line-height:1.15;
+      text-transform:none;
+      white-space:nowrap;
+    }
+    .diesel-reference-stats{
+      flex:0 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:42px;
+      padding:0 16px;
+      border-radius:14px;
+      background:#eef4ff;
+      color:#1f63d8;
+      font-size:12px;
+      font-weight:950;
+      white-space:nowrap;
+    }
+    .diesel-reference-table{display:grid;gap:8px}
+    .diesel-reference-table-head{
+      display:grid;
+      grid-template-columns:64px minmax(96px,1fr) 44px 56px 48px;
+      align-items:center;
+      gap:10px;
+      min-height:46px;
+      padding:0 12px;
+      border-radius:12px;
+      background:#f1f5f9;
+      color:#5d728e;
+      font-size:11px;
+      font-weight:900;
+    }
+    .diesel-reference-head-spacer{display:block}
+    .diesel-reference-days{display:grid;gap:0}
+    .diesel-reference-day{
+      display:grid;
+      grid-template-columns:64px minmax(96px,1fr) 44px 56px 48px;
+      align-items:center;
+      gap:10px;
+      padding:12px 12px;
+      border-bottom:1px solid #e8eef5;
+      background:#fff;
+    }
+    .diesel-reference-day:last-child{border-bottom:0}
+    .diesel-reference-day.critical{
+      margin:6px 0;
+      border:1px solid #fecaca;
+      border-radius:14px;
+      background:#fff8f8;
+      box-shadow:0 2px 10px rgba(239,68,68,.06);
+    }
+    .diesel-reference-day-label{min-width:0}
+    .diesel-reference-day-name{
+      display:block;
+      color:#1f3257;
+      font-size:13px;
+      font-weight:950;
+      line-height:1.05;
+    }
+    .diesel-reference-day-date{
+      display:block;
+      margin-top:5px;
+      color:#59708d;
+      font-size:11px;
+      font-weight:800;
+      line-height:1;
+    }
+    .diesel-reference-day.critical .diesel-reference-day-name,
+    .diesel-reference-day.critical .diesel-reference-day-date,
+    .diesel-reference-day.critical .diesel-reference-value{
+      color:#dc2626;
+    }
+    .diesel-reference-bar-track{
+      position:relative;
+      height:12px;
+      border-radius:999px;
+      background:#e7edf4;
+      overflow:hidden;
+    }
+    .diesel-reference-bar-fill{
+      position:absolute;
+      inset:0 auto 0 0;
+      width:0%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#7daef2 0%,#4e8ee5 100%);
+    }
+    .diesel-reference-day.critical .diesel-reference-bar-fill{
+      background:linear-gradient(90deg,#ff6565 0%,#ef4444 100%);
+    }
+    .diesel-reference-day.zero .diesel-reference-bar-fill{width:0 !important}
+    .diesel-reference-value{
+      color:#22385d;
+      font-size:13px;
+      font-weight:950;
+      line-height:1;
+      text-align:center;
+      white-space:nowrap;
+    }
+    @media(max-width:620px){
+      .diesel-reference-shell{padding:12px;border-radius:16px}
+      .diesel-reference-header{gap:10px}
+      .diesel-reference-title{gap:10px}
+      .diesel-reference-title-icon{width:40px;height:40px;flex-basis:40px}
+      .diesel-reference-title h4{font-size:15px}
+      .diesel-reference-stats{min-height:40px;padding:0 14px;font-size:11px}
+      .diesel-reference-table-head,
+      .diesel-reference-day{
+        grid-template-columns:54px minmax(70px,1fr) 36px 48px 42px;
+        gap:8px;
+        padding-left:10px;
+        padding-right:10px;
+      }
+      .diesel-reference-table-head{min-height:42px;font-size:10px}
+      .diesel-reference-day-name{font-size:11px}
+      .diesel-reference-day-date{font-size:10px}
+      .diesel-reference-value{font-size:11px}
+      .diesel-reference-bar-track{height:11px}
+    }
+    @media(max-width:560px){
+      .diesel-reference-header{flex-direction:column;align-items:stretch}
+      .diesel-reference-title{width:100%}
+      .diesel-reference-title h4{white-space:normal}
+      .diesel-reference-stats{
+        width:100%;
+        justify-content:flex-start;
+        padding:10px 14px;
+        min-height:auto;
+      }
+    }
+    @media(max-width:390px){
+      .diesel-reference-table-head,
+      .diesel-reference-day{
+        grid-template-columns:50px minmax(56px,1fr) 32px 42px 38px;
+        gap:6px;
+        padding-left:8px;
+        padding-right:8px;
+      }
+      .diesel-reference-table-head{font-size:9px}
+      .diesel-reference-value{font-size:10.5px}
+    }
+
     .report-type-totals{margin-top:4px;border-top:1px solid #dbe6f5;padding-top:8px;display:grid;gap:5px}
     .report-type-totals-title{font-size:9px;font-weight:950;color:#173f8f;text-transform:uppercase;letter-spacing:.02em}
     .report-type-total-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-radius:7px;background:#f8fafc;padding:6px 8px}
@@ -399,6 +688,7 @@
     .pdf-report-export .diesel-period-row{gap:7px}
     .pdf-report-export .diesel-period-track{height:16px}
     .pdf-report-export .report-drill-detail{display:none!important}
+    .pdf-report-export .diesel-reference-detail{display:none!important}
     .pdf-report-export .report-drill-chevron{display:none!important}
     .pdf-report-export .oil-history{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
     .pdf-report-export .oil-history-item{padding:7px 8px;gap:3px}
@@ -413,7 +703,8 @@
       .generate-report-btn{width:100%}
       .report-info-grid{grid-template-columns:1fr}
       .chart-row{grid-template-columns:125px minmax(80px,1fr) auto}
-      .diesel-period-row{grid-template-columns:110px minmax(70px,1fr) auto}
+      .diesel-period-row{grid-template-columns:110px minmax(70px,1fr) minmax(104px,auto)}
+      .diesel-hours-summary{grid-template-columns:1fr}
       .fuel-summary-grid{grid-template-columns:1fr}
       .report-daily-row{grid-template-columns:92px minmax(55px,1fr) auto}
       .report-daily-count{grid-column:1/-1;text-align:left;margin-left:100px}
@@ -462,7 +753,7 @@
 
     .dashboard-kpis{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
     }
 
@@ -692,7 +983,7 @@
 
     .records-filters{
       display:grid;
-      grid-template-columns:minmax(235px,1.2fr) minmax(145px,.65fr) minmax(190px,.9fr) minmax(190px,.9fr);
+      grid-template-columns:minmax(235px,1.25fr) minmax(120px,.55fr) minmax(165px,.8fr) minmax(175px,.85fr) minmax(210px,1fr);
       gap:12px;
       padding:0 20px 16px;
       align-items:end;
@@ -1866,7 +2157,7 @@
         grid-template-columns:1fr 1fr;
       }
       .dashboard-kpis{
-        grid-template-columns:repeat(3,minmax(0,1fr));
+        grid-template-columns:repeat(2,minmax(0,1fr));
       }
       .inventory-card{
         min-height:460px;
@@ -2600,7 +2891,7 @@
         <section id="recordsView" class="records-view history-panel active" role="tabpanel">
         <div class="card-header">
           <h2>REGISTROS</h2>
-          <p>Consulte los movimientos por rango de fecha y filtre por planta, número de equipo y/o combustible o lubricante.</p>
+          <p>Consulte los movimientos por rango de fecha y filtre por planta, número de equipo, combustible/lubricante y tipo de movimiento.</p>
         </div>
 
         <div class="records-filters">
@@ -2643,6 +2934,22 @@
               <option value="TC10W">TC10W</option>
               <option value="8T9577">8T9577</option>
               <option value="AW68">AW68</option>
+            </select>
+          </div>
+          <div class="records-filter-field">
+            <label for="recordsMovementType">TIPO DE MOVIMIENTO</label>
+            <select id="recordsMovementType" autocomplete="off">
+              <option value="">TODOS LOS TIPOS</option>
+              <option value="CONSUMO">CONSUMO</option>
+              <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+              <option value="CAMBIO DE ACEITE DE MANDOS Y DIFERENCIALES">CAMBIO DE ACEITE DE MANDOS Y DIFERENCIALES</option>
+              <option value="CAMBIO DE ACEITE HIDRAULICO">CAMBIO DE ACEITE HIDRAULICO</option>
+              <option value="CAMBIO DE ACEITE DE MOTOR">CAMBIO DE ACEITE DE MOTOR</option>
+              <option value="CAMBIO DE ACEITE TRANSMISION">CAMBIO DE ACEITE TRANSMISION</option>
+              <option value="CAMBIO DE ACEITE DE TRANSMISION">CAMBIO DE ACEITE DE TRANSMISION</option>
+              <option value="CAMBIO DE ACEITE DE DIFERENCIALES">CAMBIO DE ACEITE DE DIFERENCIALES</option>
+              <option value="ROPTURA MANGUERA">ROPTURA MANGUERA</option>
+              <option value="FUGA DE ACEITE">FUGA DE ACEITE</option>
             </select>
           </div>
         </div>
@@ -3001,6 +3308,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script>
@@ -3203,6 +3511,7 @@
     const recordsEquipment = document.getElementById("recordsEquipment");
     const recordsEquipmentOptions = document.getElementById("recordsEquipmentOptions");
     const recordsProduct = document.getElementById("recordsProduct");
+    const recordsMovementType = document.getElementById("recordsMovementType");
     const recordsBody = document.getElementById("recordsBody");
     const recordsEmpty = document.getElementById("recordsEmpty");
     const recordsCount = document.getElementById("recordsCount");
@@ -3331,6 +3640,12 @@
 
     const SUPABASE_URL = "https://vlxlulekdkyguygjxmuo.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZseGx1bGVrZGt5Z3V5Z2p4bXVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2ODQ4NDgsImV4cCI6MjEwMzI2MDg0OH0.zGCCQb-CYUZ7pQkDOuoFYHSnv-Cr5v777SJeqLHmZxY";
+
+    // Base independiente de Registro de horas.
+    // En combustible: 484091 -> en horas: 84091 (se elimina el primer 4).
+    const HOURS_SUPABASE_URL = "https://resyxhjfpgdmaelmvxmo.supabase.co";
+    const HOURS_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlc3l4aGpmcGdkbWFlbG12eG1vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDMxMTYsImV4cCI6MjEwMzc3OTExNn0.iHGdhCT3fcGt6bzoo4o8TRjF4XJzkp1lOM2o2186rSM";
+    const HOURS_SUPABASE_TABLE = "registros_horas";
     const supabaseStatus = document.getElementById("supabaseStatus");
     let supabaseConnected = false;
     let supabaseLastError = "";
@@ -5593,16 +5908,17 @@
         to: normalizeDateKey(recordsDateTo?.value || ""),
         plant: String(recordsPlant?.value || "").trim(),
         equipment: sanitizeEquipmentCode(recordsEquipment?.value || ""),
-        product: String(recordsProduct?.value || "").trim().toUpperCase()
+        product: String(recordsProduct?.value || "").trim().toUpperCase(),
+        movementType: String(recordsMovementType?.value || "").trim().toUpperCase()
       };
     }
 
     function isRecordsFilterReady(filters=getRecordsFilterState()){
-      return Boolean(filters.from && filters.to && filters.from <= filters.to && (filters.plant || filters.equipment || filters.product));
+      return Boolean(filters.from && filters.to && filters.from <= filters.to && (filters.plant || filters.equipment || filters.product || filters.movementType));
     }
 
     function getRecordsFilterCacheKey(filters=getRecordsFilterState()){
-      return `${filters.from}|${filters.to}|${filters.plant}|${filters.equipment}|${filters.product}`;
+      return `${filters.from}|${filters.to}|${filters.plant}|${filters.equipment}|${filters.product}|${filters.movementType}`;
     }
 
     function formatRecordsDateRange(from, to){
@@ -5616,6 +5932,7 @@
       if(filters.plant) parts.push(`Planta ${filters.plant}`);
       if(filters.equipment) parts.push(`Equipo ${filters.equipment}`);
       if(filters.product) parts.push(`Producto ${filters.product}`);
+      if(filters.movementType) parts.push(`Tipo ${filters.movementType}`);
       return parts.join(" · ");
     }
 
@@ -5864,14 +6181,14 @@
         recordsEmpty.classList.remove("hidden");
         recordsEmpty.innerHTML = `
           <strong>Complete el rango y un filtro</strong>
-          <span>Seleccione el rango de fecha y filtre por planta, número de equipo o combustible/lubricante.</span>
+          <span>Seleccione el rango de fecha y filtre por planta, número de equipo, combustible/lubricante o tipo de movimiento.</span>
         `;
         recordsCount.textContent = "0 registros";
         deleteFilteredRecordsBtn.disabled = true;
         if(!filters.from || !filters.to){
           recordsFilterMessage.textContent = "Seleccione el rango de fecha para mostrar los registros.";
-        }else if(!filters.plant && !filters.equipment && !filters.product){
-          recordsFilterMessage.textContent = "Ingrese una planta, seleccione un número de equipo o elija un combustible/lubricante.";
+        }else if(!filters.plant && !filters.equipment && !filters.product && !filters.movementType){
+          recordsFilterMessage.textContent = "Ingrese una planta, seleccione un número de equipo, un combustible/lubricante o un tipo de movimiento.";
         }else if(filters.from > filters.to){
           recordsFilterMessage.textContent = "La fecha inicial no puede ser posterior a la fecha final.";
         }
@@ -5889,6 +6206,7 @@
       movements.forEach(registro => {
         (registro.productos || []).forEach((item, productIndex) => {
           if(filters.product && String(item.producto || "").trim().toUpperCase() !== filters.product) return;
+          if(filters.movementType && String(item.tipo_movimiento || registro.tipo_movimiento || "CONSUMO").trim().toUpperCase() !== filters.movementType) return;
           rows.push({
             movementId: registro.id,
             detailId: item.detalle_id || "",
@@ -6150,23 +6468,44 @@
       return days;
     }
 
-    function renderDailyProductBreakdown(rows,product,from,to,detailId,showLubricantExtras=false){
+    function renderDailyProductBreakdown(rows,product,from,to,detailId,showLubricantExtras=false,hoursRows=[],hoursAvailable=false){
       const days=buildDailyProductBreakdown(rows,product,from,to);
+      const normalizedProduct=String(product || "").trim().toUpperCase();
+      const includeMachineHours=normalizedProduct === "DIESEL";
+      const hoursByDate=new Map();
+      if(includeMachineHours && hoursAvailable){
+        (hoursRows || []).forEach(row => {
+          const fecha=normalizeDateKey(row.fecha);
+          const horas=Number(row.horas || 0);
+          if(!fecha || !Number.isFinite(horas)) return;
+          hoursByDate.set(fecha,(hoursByDate.get(fecha) || 0)+horas);
+        });
+      }
       const max=Math.max(...days.map(day=>Number(day.cantidad || 0)),0);
       const total=days.reduce((sum,day)=>sum+Number(day.cantidad || 0),0);
+      const totalHours=includeMachineHours && hoursAvailable
+        ? days.reduce((sum,day)=>sum+Number(hoursByDate.get(day.fecha) || 0),0)
+        : 0;
       const content=days.map(day => {
         const qty=Number(day.cantidad || 0);
         const pct=max > 0 ? Math.min(100,(qty/max)*100) : 0;
         const isHighest=max > 0 && qty === max;
-        const detailContent=showLubricantExtras
-          ? ((day.detalles || []).length
-              ? day.detalles.map(detail => `<div class="report-daily-consumption-detail"><strong>${escapeHtml(detail.tipo || "CONSUMO")}</strong>${detail.comentario ? `<span>${escapeHtml(detail.comentario)}</span>` : ""}</div>`).join("")
-              : `<div class="report-daily-consumption-detail empty"><strong>SIN CONSUMO</strong></div>`)
-          : `${Number(day.registros || 0)} ${Number(day.registros || 0) === 1 ? "REGISTRO" : "REGISTROS"}`;
-        return `<div class="report-daily-row${qty > 0 ? "" : " zero"}${isHighest ? " highest" : ""}">
+        const dayHours=includeMachineHours && hoursAvailable ? Number(hoursByDate.get(day.fecha) || 0) : 0;
+        const dayRate=dayHours > 0 ? qty / dayHours : 0;
+        const detailContent=includeMachineHours
+          ? `<div class="report-daily-diesel-metrics${hoursAvailable ? "" : " unavailable"}">
+              <span class="report-daily-diesel-hours">${hoursAvailable ? `${formatMachineHours(dayHours)} H MÁQ.` : "H MÁQ. —"}</span>
+              <span class="report-daily-diesel-rate">${hoursAvailable && dayHours > 0 ? `${formatMachineHours(dayRate)} GAL/H` : "GAL/H —"}</span>
+            </div>`
+          : showLubricantExtras
+            ? ((day.detalles || []).length
+                ? day.detalles.map(detail => `<div class="report-daily-consumption-detail"><strong>${escapeHtml(detail.tipo || "CONSUMO")}</strong>${detail.comentario ? `<span>${escapeHtml(detail.comentario)}</span>` : ""}</div>`).join("")
+                : `<div class="report-daily-consumption-detail empty"><strong>SIN CONSUMO</strong></div>`)
+            : `${Number(day.registros || 0)} ${Number(day.registros || 0) === 1 ? "REGISTRO" : "REGISTROS"}`;
+        return `<div class="report-daily-row${includeMachineHours ? " diesel-day" : ""}${qty > 0 ? "" : " zero"}${isHighest ? " highest" : ""}">
           <div class="report-daily-date">${escapeHtml(reportDayLabel(day.fecha))}</div>
           <div class="report-daily-track"><div class="report-daily-bar" style="width:${pct.toFixed(2)}%"></div></div>
-          <div class="report-daily-value">${formatReportNumber(qty)}</div>
+          <div class="report-daily-value">${formatReportNumber(qty)}${includeMachineHours ? " GAL" : ""}</div>
           <div class="report-daily-count">${detailContent}</div>
         </div>`;
       }).join("");
@@ -6190,10 +6529,110 @@
       return `<div id="${escapeHtml(detailId)}" class="report-drill-detail" aria-hidden="true">
         <div class="report-drill-inner">
           <div class="report-drill-card">
-            <div class="report-drill-title"><span>${escapeHtml(product)} · DETALLE POR DÍA</span><span>TOTAL ${formatReportNumber(total)}</span></div>
+            <div class="report-drill-title"><span>${escapeHtml(product)} · DETALLE POR DÍA</span><span>TOTAL ${formatReportNumber(total)}${includeMachineHours ? ` GAL${hoursAvailable ? ` · ${formatMachineHours(totalHours)} H MÁQ.` : ""}` : ""}</span></div>
             <div class="report-daily-list">${content}</div>
             ${totalsSection}
           </div>
+        </div>
+      </div>`;
+    }
+
+
+    function dieselDetailDateParts(iso){
+      const date=localDateFromIso(iso);
+      if(!date) return {short:formatDateDisplay(iso),weekday:"Día",weekdayLower:"día"};
+      const rawShort=date.toLocaleDateString("es-PA",{weekday:"short",day:"2-digit",month:"2-digit"}).replace(/\./g,"");
+      const short=rawShort.charAt(0).toLocaleUpperCase("es") + rawShort.slice(1);
+      const rawWeekday=date.toLocaleDateString("es-PA",{weekday:"long"}).replace(/\./g,"");
+      const weekday=rawWeekday.charAt(0).toLocaleUpperCase("es") + rawWeekday.slice(1);
+      return {short,weekday,weekdayLower:rawWeekday.toLocaleLowerCase("es")};
+    }
+
+    function dieselDetailObservation(day,isCritical,total,criticalQty){
+      const qty=Number(day?.cantidad || 0);
+      const parts=dieselDetailDateParts(day?.fecha);
+      const comments=[...new Set((day?.detalles || [])
+        .map(detail=>String(detail?.comentario || "").trim())
+        .filter(Boolean))];
+      if(comments.length){
+        return comments.slice(0,2).join(" · ");
+      }
+      if(isCritical && qty > 0){
+        if(total > 0 && Math.abs(qty-total) < 0.000001){
+          return `Todo el consumo del período se registró el ${parts.weekdayLower} ${formatDateDisplay(day.fecha).slice(0,5)}.`;
+        }
+        const share=total > 0 ? (qty/total)*100 : 0;
+        return `Fue el día de mayor consumo del período${share >= 1 ? `, con ${share.toLocaleString("es-PA",{maximumFractionDigits:0})}% del total` : ""}.`;
+      }
+      if(qty > 0) return "Consumo de diésel registrado durante este día.";
+      return "No se registró consumo de diésel durante este día.";
+    }
+
+    function renderDieselComparisonDailyDetail(rows,from,to,detailId,hoursRows=[],hoursAvailable=false){
+      const days=buildDailyProductBreakdown(rows,"DIESEL",from,to);
+      const hoursByDate=new Map();
+      if(hoursAvailable){
+        (hoursRows || []).forEach(row => {
+          const fecha=normalizeDateKey(row.fecha);
+          const horas=Number(row.horas || 0);
+          if(!fecha || !Number.isFinite(horas)) return;
+          hoursByDate.set(fecha,(hoursByDate.get(fecha) || 0)+horas);
+        });
+      }
+
+      const total=days.reduce((sum,day)=>sum+Number(day.cantidad || 0),0);
+      const totalHours=hoursAvailable
+        ? days.reduce((sum,day)=>sum+Number(hoursByDate.get(day.fecha) || 0),0)
+        : 0;
+      const maxQty=Math.max(...days.map(day=>Number(day.cantidad || 0)),0);
+      const criticalDay=maxQty > 0 ? days.find(day=>Number(day.cantidad || 0)===maxQty) : null;
+
+      const daysHtml=days.map(day=>{
+        const qty=Number(day.cantidad || 0);
+        const dayHours=hoursAvailable ? Number(hoursByDate.get(day.fecha) || 0) : 0;
+        const isCritical=Boolean(criticalDay && day.fecha===criticalDay.fecha);
+        const rate=hoursAvailable && dayHours > 0 ? qty / dayHours : 0;
+        const iso=isoDateParts(day.fecha);
+        const dateObj=localDateFromIso(day.fecha);
+        const dayNameRaw=dateObj ? dateObj.toLocaleDateString("es-PA",{weekday:"short"}).replace(/\./g,"") : "Día";
+        const dayName=dayNameRaw.charAt(0).toLocaleUpperCase("es") + dayNameRaw.slice(1).toLocaleLowerCase("es");
+        const monthDay=iso ? `${String(iso.month).padStart(2,"0")}/${String(iso.day).padStart(2,"0")}` : formatDateDisplay(day.fecha);
+        const pct=maxQty > 0 ? Math.max(0, Math.min(100,(qty / maxQty) * 100)) : 0;
+        return `<div class="diesel-reference-day${isCritical ? " critical" : ""}${qty <= 0 ? " zero" : ""}">
+          <div class="diesel-reference-day-label">
+            <span class="diesel-reference-day-name">${escapeHtml(dayName)}</span>
+            <span class="diesel-reference-day-date">${escapeHtml(monthDay)}</span>
+          </div>
+          <div class="diesel-reference-bar-track" aria-hidden="true">
+            <span class="diesel-reference-bar-fill" style="width:${pct.toFixed(2)}%"></span>
+          </div>
+          <div class="diesel-reference-value">${formatReportNumber(qty)}</div>
+          <div class="diesel-reference-value">${hoursAvailable ? formatMachineHours(dayHours) : "—"}</div>
+          <div class="diesel-reference-value">${hoursAvailable ? formatMachineHours(rate) : "—"}</div>
+        </div>`;
+      }).join("");
+
+      return `<div id="${escapeHtml(detailId)}" class="report-drill-detail diesel-reference-detail" aria-hidden="true">
+        <div class="report-drill-inner">
+          <section class="diesel-reference-shell" aria-label="Detalle de consumo de diésel por día">
+            <div class="diesel-reference-header">
+              <div class="diesel-reference-title">
+                <span class="diesel-reference-title-icon" aria-hidden="true"><i data-lucide="fuel"></i></span>
+                <div><h4>Diesel · Detalle por día</h4></div>
+              </div>
+              <div class="diesel-reference-stats">${formatReportNumber(total)} gal · ${hoursAvailable ? `${formatMachineHours(totalHours)} h máq.` : "— h máq."}</div>
+            </div>
+            <div class="diesel-reference-table">
+              <div class="diesel-reference-table-head">
+                <div>Día</div>
+                <div class="diesel-reference-head-spacer"></div>
+                <div>Gal</div>
+                <div>H máq.</div>
+                <div>Gal/h</div>
+              </div>
+              <div class="diesel-reference-days">${daysHtml || '<div class="report-no-data">No hay días disponibles en este período.</div>'}</div>
+            </div>
+          </section>
         </div>
       </div>`;
     }
@@ -6202,7 +6641,7 @@
       return `<span class="report-drill-chevron" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
     }
 
-    function renderFuelSummary(consumos,rangeRows=[],from="",to=""){
+    function renderFuelSummary(consumos,rangeRows=[],from="",to="",hoursResult=null){
       const findQty = product => Number(consumos.find(item => item.producto === product)?.cantidad || 0);
       const gasolina = findQty("GASOLINA");
       const diesel = findQty("DIESEL");
@@ -6221,9 +6660,18 @@
         const detailId="report-fuel-diesel-days";
         cards.push(`<div class="fuel-summary-item"><button type="button" class="fuel-summary-card diesel report-drill-toggle" data-drill-target="${detailId}" aria-expanded="false">
           <span class="fuel-summary-icon">${productConsumptionIcon("DIESEL",20)}</span>
-          <div><span>CONSUMO DIESEL</span><strong>${formatReportNumber(diesel)}</strong></div>
+          <div><span>CONSUMO DIESEL</span><strong>${formatReportNumber(diesel)} GAL</strong></div>
           ${drillChevronIcon()}
-        </button>${renderDailyProductBreakdown(rangeRows,"DIESEL",from,to,detailId)}</div>`);
+        </button>${renderDailyProductBreakdown(
+          rangeRows,
+          "DIESEL",
+          from,
+          to,
+          detailId,
+          false,
+          Array.isArray(hoursResult?.rows) ? hoursResult.rows : [],
+          Boolean(hoursResult?.connected)
+        )}</div>`);
       }
 
       return cards.length ? `<div class="fuel-summary-grid">${cards.join("")}</div>` : "";
@@ -6256,6 +6704,99 @@
       const combustibles = (consumos || []).filter(item => item.producto === "GASOLINA" || item.producto === "DIESEL");
       const lubricantes = (consumos || []).filter(item => item.producto !== "GASOLINA" && item.producto !== "DIESEL");
       return {combustibles,lubricantes};
+    }
+
+    function fuelEquipmentToHoursEquipment(equipo){
+      const code=sanitizeEquipmentCode(equipo);
+      if(!code) return "";
+      // Regla solicitada: 484091 -> 84091, 484101 -> 84101.
+      if(/^4(?:840|841)\d+$/.test(code)) return code.slice(1);
+      // Permite consultar directamente un código 840/841 si ya llega en ese formato.
+      if(/^(?:840|841)\d+$/.test(code)) return code;
+      return "";
+    }
+
+    function machineHoursFriendlyError(error){
+      const raw=String(error?.message || error || "Error desconocido");
+      if(/401|403|42501|row-level security|permission denied/i.test(raw)){
+        return "La base de horas bloqueó la consulta por permisos/RLS para la clave anon.";
+      }
+      if(/42P01|relation .* does not exist/i.test(raw)){
+        return "No se encontró la tabla registros_horas en la base de horas.";
+      }
+      if(/42703|column .* does not exist/i.test(raw)){
+        return "La tabla de horas no tiene alguno de los campos requeridos: equipo_numero, fecha o cantidad.";
+      }
+      return raw;
+    }
+
+    async function hoursSbRequest(query=""){
+      const headers={
+        "apikey":HOURS_SUPABASE_ANON_KEY,
+        "Authorization":"Bearer " + HOURS_SUPABASE_ANON_KEY,
+        "Accept":"application/json"
+      };
+      let response;
+      try{
+        response=await fetch(`${HOURS_SUPABASE_URL}/rest/v1/${HOURS_SUPABASE_TABLE}${query}`,{
+          method:"GET",headers,mode:"cors",cache:"no-store"
+        });
+      }catch(networkError){
+        throw new Error("No se pudo alcanzar la base de horas máquina. " + (networkError?.message || networkError));
+      }
+      const raw=await response.text();
+      let data=[];
+      if(raw){
+        try{data=JSON.parse(raw);}catch{data=raw;}
+      }
+      if(!response.ok){
+        const code=data?.code ? ` [${data.code}]` : "";
+        const details=data?.message || data?.hint || data?.details || String(data || response.statusText || "");
+        throw new Error(`HTTP ${response.status}${code}: ${details}`);
+      }
+      return Array.isArray(data) ? data : [];
+    }
+
+    async function fetchMachineHoursRange(equipo,from,to){
+      const hoursEquipment=fuelEquipmentToHoursEquipment(equipo);
+      if(!hoursEquipment){
+        return {connected:false,notApplicable:true,equipoHoras:"",rows:[],error:"El equipo no tiene equivalencia 840/841 para consultar horas máquina."};
+      }
+
+      const all=[];
+      const pageSize=1000;
+      try{
+        for(let offset=0;offset<50000;offset+=pageSize){
+          const equipmentFilter=`or=(equipo_numero.eq.${encodeURIComponent(hoursEquipment)},equipo_numero.eq.${encodeURIComponent(hoursEquipment + ".0")})`;
+          const query=`?select=fecha,equipo_numero,cantidad&${equipmentFilter}&fecha=gte.${encodeURIComponent(from)}&fecha=lte.${encodeURIComponent(to)}&order=fecha.asc&limit=${pageSize}&offset=${offset}`;
+          const page=await hoursSbRequest(query);
+          all.push(...page);
+          if(page.length < pageSize) break;
+        }
+        const rows=all.map(row=>({
+          fecha:normalizeDateKey(row.fecha),
+          equipo:String(row.equipo_numero || "").trim(),
+          horas:Number(row.cantidad || 0)
+        })).filter(row=>row.fecha && Number.isFinite(row.horas));
+        return {connected:true,notApplicable:false,equipoHoras:hoursEquipment,rows,error:""};
+      }catch(error){
+        console.error("Horas máquina Supabase:",error);
+        return {connected:false,notApplicable:false,equipoHoras:hoursEquipment,rows:[],error:machineHoursFriendlyError(error)};
+      }
+    }
+
+    function sumMachineHours(hoursRows,from,to){
+      return (hoursRows || []).reduce((sum,row)=>{
+        const fecha=normalizeDateKey(row.fecha);
+        const horas=Number(row.horas || 0);
+        if(!fecha || fecha < from || fecha > to || !Number.isFinite(horas)) return sum;
+        return sum + horas;
+      },0);
+    }
+
+    function formatMachineHours(value){
+      const num=Number(value || 0);
+      return num.toLocaleString("es-PA",{minimumFractionDigits:0,maximumFractionDigits:2});
     }
 
     function isoDateParts(value){
@@ -6377,28 +6918,62 @@
       return {mode:"month",periods:buildMonthlyDieselComparison(rows,from,to),fullMonth:false};
     }
 
-    function renderDieselComparison(comparison,rangeRows=[]){
+    function renderDieselComparison(comparison,rangeRows=[],hoursResult=null){
       const periods=(comparison?.periods || []);
       if(!periods.length){
         return `<div class="report-no-data">No hay periodos disponibles para comparar el consumo de DIESEL.</div>`;
       }
+      const hoursRows=Array.isArray(hoursResult?.rows) ? hoursResult.rows : [];
+      periods.forEach(period => {
+        period.horasMaquina=sumMachineHours(hoursRows,period.from,period.to);
+      });
+
       const max=Math.max(...periods.map(p=>Number(p.cantidad || 0)),0);
       const highest=periods.reduce((best,p)=>Number(p.cantidad||0)>Number(best?.cantidad||-1)?p:best,null);
+      const totalDiesel=periods.reduce((sum,p)=>sum+Number(p.cantidad || 0),0);
+      const totalHours=periods.reduce((sum,p)=>sum+Number(p.horasMaquina || 0),0);
+      const totalRate=totalHours > 0 ? totalDiesel / totalHours : 0;
+      const hoursAvailable=Boolean(hoursResult?.connected);
+      const mappedEquipment=String(hoursResult?.equipoHoras || "");
+
       const rows=periods.map((period,index) => {
         const qty=Number(period.cantidad || 0);
+        const hours=Number(period.horasMaquina || 0);
+        const rate=hours > 0 ? qty / hours : 0;
         const pct=max > 0 ? Math.max(qty > 0 ? 1 : 0, Math.min(100,(qty/max)*100)) : 0;
         const isHighest=max > 0 && period === highest;
         const detailId=`report-diesel-period-days-${index}`;
         return `<div class="diesel-period-row${isHighest ? " highest" : ""}">
           <div class="diesel-period-label">${escapeHtml(period.label)}${isHighest ? " · MAYOR" : ""}</div>
           <button type="button" class="diesel-period-track report-drill-toggle" data-drill-target="${detailId}" aria-expanded="false" aria-label="Ver consumo de diesel por día en ${escapeHtml(period.label)}"><div class="diesel-period-bar" style="width:${pct.toFixed(2)}%"></div></button>
-          <div class="diesel-period-value">${formatReportNumber(qty)}</div>
-        </div>${renderDailyProductBreakdown(rangeRows,"DIESEL",period.from,period.to,detailId)}`;
+          <div class="diesel-period-value diesel-period-metrics">
+            <strong>${formatReportNumber(qty)} GAL</strong>
+            <span class="diesel-period-hours">${hoursAvailable ? `${formatMachineHours(hours)} H MÁQ.` : "H MÁQ. —"}</span>
+            ${hoursAvailable && hours > 0 ? `<span class="diesel-period-rate">${formatMachineHours(rate)} GAL/H</span>` : ""}
+          </div>
+        </div>${renderDieselComparisonDailyDetail(rangeRows,period.from,period.to,detailId,hoursRows,hoursAvailable)}`;
       }).join("");
+
       if(max <= 0){
         return `<div class="report-no-data">No se registró consumo de DIESEL en el rango seleccionado.</div>`;
       }
-      return `<div class="diesel-comparison-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER LOS REGISTROS DE CADA DÍA</div></div>`;
+
+      let sourceMessage="";
+      if(hoursResult?.notApplicable){
+        sourceMessage=`<div class="diesel-hours-source warn">HORAS MÁQUINA: ${escapeHtml(hoursResult.error || "Este equipo no tiene equivalencia 840/841.")}</div>`;
+      }else if(!hoursAvailable){
+        sourceMessage=`<div class="diesel-hours-source warn">HORAS MÁQUINA ${mappedEquipment ? `· EQUIPO ${escapeHtml(mappedEquipment)}` : ""}: ${escapeHtml(hoursResult?.error || "No se pudieron consultar las horas.")}</div>`;
+      }else{
+        sourceMessage=`<div class="diesel-hours-source">HORAS MÁQUINA TOMADAS DE REGISTRO DE HORAS · EQUIPO ${escapeHtml(mappedEquipment)} · ${escapeHtml(formatDateDisplay(periods[0].from))} AL ${escapeHtml(formatDateDisplay(periods[periods.length-1].to))}</div>`;
+      }
+
+      const summary=`<div class="diesel-hours-summary">
+        <div class="diesel-hours-card"><span>DIESEL TOTAL</span><strong>${formatReportNumber(totalDiesel)} GAL</strong></div>
+        <div class="diesel-hours-card"><span>HORAS MÁQUINA</span><strong>${hoursAvailable ? `${formatMachineHours(totalHours)} H` : "—"}</strong></div>
+        <div class="diesel-hours-card rate"><span>CONSUMO POR HORA</span><strong>${hoursAvailable && totalHours > 0 ? `${formatMachineHours(totalRate)} GAL/H` : "—"}</strong></div>
+      </div>`;
+
+      return `${summary}${sourceMessage}<div class="diesel-comparison-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER EL DETALLE DE CADA DÍA · CONSUMO EN GALONES Y HORAS MÁQUINA</div></div>`;
     }
 
     function initializeReportDrilldowns(){
@@ -6423,11 +6998,38 @@
           row.classList.add("position-selected");
         });
       });
+
+      reportDetailPanel.querySelectorAll("[data-diesel-day-toggle]").forEach(toggle => {
+        toggle.addEventListener("click", event => {
+          event.stopPropagation();
+          const day=toggle.closest(".diesel-reference-day");
+          if(!day) return;
+          const willOpen=!day.classList.contains("open");
+          const group=day.closest(".diesel-reference-days");
+          if(willOpen && group){
+            group.querySelectorAll(".diesel-reference-day.open").forEach(openDay => {
+              if(openDay===day) return;
+              openDay.classList.remove("open");
+              const openToggle=openDay.querySelector("[data-diesel-day-toggle]");
+              const openDetail=openDay.querySelector(".diesel-reference-day-detail");
+              openToggle?.setAttribute("aria-expanded","false");
+              openDetail?.setAttribute("aria-hidden","true");
+            });
+          }
+          day.classList.toggle("open",willOpen);
+          toggle.setAttribute("aria-expanded",willOpen ? "true" : "false");
+          day.querySelector(".diesel-reference-day-detail")?.setAttribute("aria-hidden",willOpen ? "false" : "true");
+        });
+      });
+
+      if(window.lucide?.createIcons){
+        try{ window.lucide.createIcons({attrs:{"stroke-width":1.9}}); }catch(error){ console.warn("Lucide:",error); }
+      }
     }
 
-    function renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount,rangeRows}){
+    function renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount,rangeRows,hoursResult}){
       const split=splitReportConsumption(summary.consumos);
-      const fuelSummaryHtml=renderFuelSummary(split.combustibles,rangeRows,from,to);
+      const fuelSummaryHtml=renderFuelSummary(split.combustibles,rangeRows,from,to,hoursResult);
       const fuelSectionHtml = fuelSummaryHtml ? `<div class="report-section">
           <div class="report-section-title">
             ${productConsumptionIcon("GASOLINA",18)}
@@ -6437,7 +7039,7 @@
         </div>` : "";
       const lubricantChartHtml=renderConsumptionChart(split.lubricantes,"CANTIDAD ACUMULADA DE LUBRICANTES",rangeRows,from,to);
       const dieselComparison=buildDieselComparison(rangeRows,from,to);
-      const dieselComparisonHtml=renderDieselComparison(dieselComparison,rangeRows);
+      const dieselComparisonHtml=renderDieselComparison(dieselComparison,rangeRows,hoursResult);
       const oilHtml = oilChanges.length
         ? oilChanges.map(change => `<div class="oil-history-item">
             <div class="oil-history-top">
@@ -6576,18 +7178,19 @@
       reportEquipmentFilter.value = equipo;
       generateReportBtn.disabled = true;
       setReportsStatus("");
-      reportDetailPanel.innerHTML = `<div class="report-detail-empty"><div><strong>GENERANDO REPORTE...</strong><span>Consultando consumos e historial anual de cambios de aceite.</span></div></div>`;
+      reportDetailPanel.innerHTML = `<div class="report-detail-empty"><div><strong>GENERANDO REPORTE...</strong><span>Consultando consumo, horas máquina e historial anual de cambios de aceite.</span></div></div>`;
 
       try{
         const oilFrom = getOneYearBefore(to);
-        const [rangeRows, oilRows, tipo] = await Promise.all([
+        const [rangeRows, oilRows, tipo, hoursResult] = await Promise.all([
           fetchEquipmentMovementsRange(equipo, from, to),
           fetchEquipmentMovementsRange(equipo, oilFrom, to),
-          fetchReportEquipmentType(equipo)
+          fetchReportEquipmentType(equipo),
+          fetchMachineHoursRange(equipo, from, to)
         ]);
         const summary = summarizeReportConsumption(rangeRows);
         const oilChanges = extractOilChanges(oilRows);
-        renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount:rangeRows.length,rangeRows});
+        renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount:rangeRows.length,rangeRows,hoursResult});
         setReportsStatus("");
       }catch(error){
         console.error("Reporte Supabase:", error);
@@ -7548,6 +8151,7 @@
     });
     recordsEquipment?.addEventListener("change", loadRecordsFromSupabase);
     recordsProduct?.addEventListener("change", loadRecordsFromSupabase);
+    recordsMovementType?.addEventListener("change", loadRecordsFromSupabase);
 
     deleteFilteredInventoriesBtn.addEventListener("click", () => {
       const dateKey = normalizeDateKey(savedInventoryDate.value);
