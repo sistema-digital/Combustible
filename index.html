@@ -332,7 +332,7 @@
     .diesel-period-metrics strong{font-size:11px;color:#173f8f}
     .diesel-period-hours{font-size:10px;font-weight:950;color:#0e7490}
     .diesel-period-rate{font-size:9px;font-weight:850;color:#64748b}
-    .diesel-hours-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:2px}
+    .diesel-hours-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:2px}
     .diesel-hours-card{border:1px solid #cfe8ef;border-radius:11px;background:#fff;padding:9px 10px;min-width:0}
     .diesel-hours-card span{display:block;font-size:9px;font-weight:950;color:#64748b;letter-spacing:.04em;text-transform:uppercase}
     .diesel-hours-card strong{display:block;margin-top:4px;font-size:14px;font-weight:950;color:#0e7490;overflow-wrap:anywhere}
@@ -519,12 +519,13 @@
       color:#1f63d8;
       font-size:12px;
       font-weight:950;
-      white-space:nowrap;
+      white-space:normal;
+      text-align:center;
     }
     .diesel-reference-table{display:grid;gap:8px}
     .diesel-reference-table-head{
       display:grid;
-      grid-template-columns:64px minmax(96px,1fr) 44px 56px 48px;
+      grid-template-columns:64px minmax(86px,1fr) 40px 54px 54px 46px;
       align-items:center;
       gap:10px;
       min-height:46px;
@@ -539,7 +540,7 @@
     .diesel-reference-days{display:grid;gap:0}
     .diesel-reference-day{
       display:grid;
-      grid-template-columns:64px minmax(96px,1fr) 44px 56px 48px;
+      grid-template-columns:64px minmax(86px,1fr) 40px 54px 54px 46px;
       align-items:center;
       gap:10px;
       padding:12px 12px;
@@ -610,7 +611,7 @@
       .diesel-reference-stats{min-height:40px;padding:0 14px;font-size:11px}
       .diesel-reference-table-head,
       .diesel-reference-day{
-        grid-template-columns:54px minmax(70px,1fr) 36px 48px 42px;
+        grid-template-columns:50px minmax(56px,1fr) 32px 42px 42px 38px;
         gap:8px;
         padding-left:10px;
         padding-right:10px;
@@ -635,7 +636,7 @@
     @media(max-width:390px){
       .diesel-reference-table-head,
       .diesel-reference-day{
-        grid-template-columns:50px minmax(56px,1fr) 32px 42px 38px;
+        grid-template-columns:46px minmax(46px,1fr) 28px 36px 36px 34px;
         gap:6px;
         padding-left:8px;
         padding-right:8px;
@@ -3641,11 +3642,22 @@
     const SUPABASE_URL = "https://vlxlulekdkyguygjxmuo.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZseGx1bGVrZGt5Z3V5Z2p4bXVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2ODQ4NDgsImV4cCI6MjEwMzI2MDg0OH0.zGCCQb-CYUZ7pQkDOuoFYHSnv-Cr5v777SJeqLHmZxY";
 
+    // Conexión adicional a Supabase.
+    // El inicio de sesión es OPCIONAL: se intenta con el mismo correo y contraseña
+    // usados en el acceso principal, pero un fallo aquí NO bloquea la aplicación.
+    const OPTIONAL_SUPABASE_URL = "https://zabangygpfchxmxawict.supabase.co";
+    const OPTIONAL_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphYmFuZ3lncGZjaHhteGF3aWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NjQwOTQsImV4cCI6MjEwMjU0MDA5NH0.VjstRj0SOQeNzFRWOr1HoQm-Azx_KJ92fY86waE3ZdE";
+    const OPTIONAL_SUPABASE_SESSION_KEY = "combustible_optional_supabase_session_v1";
+    let optionalSupabaseSession = null;
+    let optionalSupabaseAuthenticated = false;
+    let optionalSupabaseLastError = "";
+
     // Base independiente de Registro de horas.
     // En combustible: 484091 -> en horas: 84091 (se elimina el primer 4).
     const HOURS_SUPABASE_URL = "https://resyxhjfpgdmaelmvxmo.supabase.co";
     const HOURS_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlc3l4aGpmcGdkbWFlbG12eG1vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDMxMTYsImV4cCI6MjEwMzc3OTExNn0.iHGdhCT3fcGt6bzoo4o8TRjF4XJzkp1lOM2o2186rSM";
-    const HOURS_SUPABASE_TABLE = "registros_horas";
+    const HOURS_SUPABASE_TABLE = "registros_horas"; // HORAS CAMPO (lógica anterior)
+    const HOURS_RPC_NAME = "rpc_horas_maquina_operador_diario"; // HORAS TALLER
     const supabaseStatus = document.getElementById("supabaseStatus");
     let supabaseConnected = false;
     let supabaseLastError = "";
@@ -3796,6 +3808,223 @@
       });
     }
 
+    function readOptionalSupabaseSession(){
+      try{
+        return JSON.parse(localStorage.getItem(OPTIONAL_SUPABASE_SESSION_KEY) || "null");
+      }catch{
+        return null;
+      }
+    }
+
+    function saveOptionalSupabaseSession(session){
+      if(!session?.access_token){
+        localStorage.removeItem(OPTIONAL_SUPABASE_SESSION_KEY);
+        optionalSupabaseSession = null;
+        optionalSupabaseAuthenticated = false;
+        return;
+      }
+      const expiresAt = Number(session.expires_at || 0) ||
+        Math.floor(Date.now()/1000) + Number(session.expires_in || 3600);
+      optionalSupabaseSession = {
+        access_token:String(session.access_token || ""),
+        refresh_token:String(session.refresh_token || ""),
+        token_type:String(session.token_type || "bearer"),
+        expires_at:expiresAt,
+        user:session.user ? {
+          id:session.user.id || null,
+          email:session.user.email || null
+        } : null
+      };
+      localStorage.setItem(OPTIONAL_SUPABASE_SESSION_KEY, JSON.stringify(optionalSupabaseSession));
+      optionalSupabaseAuthenticated = true;
+      optionalSupabaseLastError = "";
+    }
+
+    function clearOptionalSupabaseSession(){
+      localStorage.removeItem(OPTIONAL_SUPABASE_SESSION_KEY);
+      optionalSupabaseSession = null;
+      optionalSupabaseAuthenticated = false;
+    }
+
+    async function optionalSupabaseAuthFetch(path,{method="POST",body=null,token="",timeoutMs=10000}={}){
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      // GoTrue/Supabase Auth necesita la anon key como apikey y también como
+      // Authorization cuando todavía no existe una sesión de usuario.
+      // Si ya existe un access_token, ese JWT sustituye a la anon key.
+      const bearer = String(token || OPTIONAL_SUPABASE_ANON_KEY || "").trim();
+      const headers = {
+        "apikey":OPTIONAL_SUPABASE_ANON_KEY,
+        "Authorization":"Bearer " + bearer,
+        "Content-Type":"application/json",
+        "Accept":"application/json",
+        "X-Client-Info":"combustible-web/optional-supabase-auth"
+      };
+      try{
+        const response = await fetch(`${OPTIONAL_SUPABASE_URL}${path}`, {
+          method:String(method || "POST").toUpperCase(),
+          headers,
+          mode:"cors",
+          cache:"no-store",
+          credentials:"omit",
+          redirect:"follow",
+          signal:controller.signal,
+          body:body === null ? undefined : JSON.stringify(body)
+        });
+        const raw = await response.text();
+        let data = null;
+        if(raw){
+          try{ data = JSON.parse(raw); }catch{ data = raw; }
+        }
+        if(!response.ok){
+          const code = data?.code || data?.error_code || "";
+          const details = data?.msg || data?.message || data?.error_description || data?.error || String(data || response.statusText || "");
+          throw new Error(`HTTP ${response.status}${code ? ` [${code}]` : ""}: ${details}`);
+        }
+        return data;
+      }catch(error){
+        if(error?.name === "AbortError") throw new Error("La conexión opcional a Supabase agotó el tiempo de espera.");
+        throw error;
+      }finally{
+        clearTimeout(timer);
+      }
+    }
+
+    async function verifyOptionalSupabaseSession(accessToken){
+      const token=String(accessToken || "").trim();
+      if(!token) return null;
+      return optionalSupabaseAuthFetch("/auth/v1/user", {
+        method:"GET",
+        token,
+        timeoutMs:10000
+      });
+    }
+
+    async function loginOptionalSupabase(correo,password){
+      const email=String(correo || "").trim().toLowerCase();
+      const pass=String(password || "");
+      if(!email || !pass) return {authenticated:false,skipped:true};
+
+      // No reutiliza una sesión secundaria anterior para otro usuario.
+      const previous=readOptionalSupabaseSession();
+      const previousEmail=String(previous?.user?.email || "").trim().toLowerCase();
+      if(previousEmail && previousEmail !== email) clearOptionalSupabaseSession();
+
+      try{
+        const data = await optionalSupabaseAuthFetch("/auth/v1/token?grant_type=password", {
+          method:"POST",
+          body:{email,password:pass},
+          timeoutMs:12000
+        });
+        if(!data?.access_token){
+          throw new Error("Supabase Auth no devolvió access_token para la segunda conexión.");
+        }
+
+        // Verifica de inmediato que el JWT realmente pertenece a un usuario válido
+        // de la segunda base antes de guardarlo como sesión iniciada.
+        const authUser = await verifyOptionalSupabaseSession(data.access_token);
+        if(!authUser?.id){
+          throw new Error("La segunda base devolvió un token, pero no fue posible validar el usuario autenticado.");
+        }
+
+        saveOptionalSupabaseSession({...data,user:authUser});
+        optionalSupabaseAuthenticated = true;
+        optionalSupabaseLastError = "";
+        console.info("Supabase opcional: sesión iniciada correctamente para", authUser.email || email);
+        return {authenticated:true,user:authUser};
+      }catch(error){
+        optionalSupabaseLastError = error?.message || String(error);
+        clearOptionalSupabaseSession();
+        console.warn("Supabase opcional: no se pudo iniciar sesión; la app principal continuará normalmente.", optionalSupabaseLastError);
+        return {authenticated:false,error:optionalSupabaseLastError};
+      }
+    }
+
+    async function refreshOptionalSupabaseSession(){
+      const saved = optionalSupabaseSession || readOptionalSupabaseSession();
+      if(!saved?.refresh_token){
+        clearOptionalSupabaseSession();
+        return false;
+      }
+      try{
+        const data = await optionalSupabaseAuthFetch("/auth/v1/token?grant_type=refresh_token", {
+          method:"POST",
+          body:{refresh_token:saved.refresh_token},
+          timeoutMs:12000
+        });
+        if(!data?.access_token) throw new Error("La renovación de la segunda sesión no devolvió access_token.");
+        let authUser=data?.user || null;
+        if(!authUser?.id) authUser=await verifyOptionalSupabaseSession(data.access_token);
+        saveOptionalSupabaseSession({...data,user:authUser || saved.user || null});
+        return true;
+      }catch(error){
+        optionalSupabaseLastError = error?.message || String(error);
+        clearOptionalSupabaseSession();
+        return false;
+      }
+    }
+
+    async function restoreOptionalSupabaseSession(){
+      const saved = readOptionalSupabaseSession();
+      if(!saved?.access_token){
+        optionalSupabaseSession = null;
+        optionalSupabaseAuthenticated = false;
+        return false;
+      }
+      optionalSupabaseSession = saved;
+      const expiresAt = Number(saved.expires_at || 0);
+      const stillValid = expiresAt > Math.floor(Date.now()/1000) + 60;
+      if(stillValid){
+        optionalSupabaseAuthenticated = true;
+        return true;
+      }
+      return refreshOptionalSupabaseSession();
+    }
+
+    async function getOptionalSupabaseBearer(){
+      if(!optionalSupabaseSession) optionalSupabaseSession = readOptionalSupabaseSession();
+      if(optionalSupabaseSession?.access_token){
+        const expiresAt = Number(optionalSupabaseSession.expires_at || 0);
+        if(!expiresAt || expiresAt > Math.floor(Date.now()/1000) + 60){
+          optionalSupabaseAuthenticated = true;
+          return optionalSupabaseSession.access_token;
+        }
+        if(await refreshOptionalSupabaseSession()) return optionalSupabaseSession?.access_token || "";
+      }
+      return "";
+    }
+
+    // Peticiones REST para la nueva conexión. Si existe sesión usa el JWT del usuario;
+    // si no existe o el login opcional falla, usa la anon key y deja que RLS decida el acceso.
+    async function optionalSbRequest(table,{method="GET",query="",body=null,prefer="return=representation"}={}){
+      const normalizedMethod=String(method || "GET").toUpperCase();
+      const bearer=await getOptionalSupabaseBearer();
+      const headers={
+        "apikey":OPTIONAL_SUPABASE_ANON_KEY,
+        "Authorization":"Bearer " + (bearer || OPTIONAL_SUPABASE_ANON_KEY),
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      };
+      if(prefer) headers["Prefer"]=prefer;
+      const response=await fetch(`${OPTIONAL_SUPABASE_URL}/rest/v1/${table}${query}`,{
+        method:normalizedMethod,headers,mode:"cors",cache:"no-store",
+        body:body === null ? undefined : JSON.stringify(body)
+      });
+      const raw=await response.text();
+      let data=null;
+      if(raw){ try{data=JSON.parse(raw);}catch{data=raw;} }
+      if(!response.ok){
+        const code=data?.code ? ` [${data.code}]` : "";
+        const details=data?.message || data?.hint || data?.details || String(data || response.statusText || "");
+        throw new Error(`HTTP ${response.status}${code}: ${details}`);
+      }
+      return data;
+    }
+
+    async function optionalSbRpc(functionName,body={}){
+      return optionalSbRequest("rpc/" + functionName,{method:"POST",body,prefer:""});
+    }
+
     function setLoginMessage(message, isError=false){
       if(!loginMessage) return;
       loginMessage.textContent = message;
@@ -3863,6 +4092,9 @@
       document.body.classList.remove("auth-locked");
       applyRoleVisibility();
       showDashboard();
+      // Recupera la sesión de la conexión adicional si aún sigue vigente.
+      // Es opcional: cualquier fallo se ignora para no bloquear la aplicación principal.
+      try{ await restoreOptionalSupabaseSession(); }catch(error){ console.warn("Supabase opcional:",error); }
       await hydrateFromSupabase();
     }
 
@@ -6568,30 +6800,46 @@
       return "No se registró consumo de diésel durante este día.";
     }
 
-    function renderDieselComparisonDailyDetail(rows,from,to,detailId,hoursRows=[],hoursAvailable=false){
+    function renderDieselComparisonDailyDetail(rows,from,to,detailId,fieldHoursRows=[],fieldHoursAvailable=false,workshopHoursRows=[],workshopHoursAvailable=false){
       const days=buildDailyProductBreakdown(rows,"DIESEL",from,to);
-      const hoursByDate=new Map();
-      if(hoursAvailable){
-        (hoursRows || []).forEach(row => {
+      const fieldHoursByDate=new Map();
+      const workshopHoursByDate=new Map();
+
+      if(fieldHoursAvailable){
+        (fieldHoursRows || []).forEach(row => {
           const fecha=normalizeDateKey(row.fecha);
           const horas=Number(row.horas || 0);
           if(!fecha || !Number.isFinite(horas)) return;
-          hoursByDate.set(fecha,(hoursByDate.get(fecha) || 0)+horas);
+          fieldHoursByDate.set(fecha,(fieldHoursByDate.get(fecha) || 0)+horas);
+        });
+      }
+
+      if(workshopHoursAvailable){
+        (workshopHoursRows || []).forEach(row => {
+          const fecha=normalizeDateKey(row.fecha);
+          const horas=Number(row.horas || 0);
+          if(!fecha || !Number.isFinite(horas)) return;
+          workshopHoursByDate.set(fecha,(workshopHoursByDate.get(fecha) || 0)+horas);
         });
       }
 
       const total=days.reduce((sum,day)=>sum+Number(day.cantidad || 0),0);
-      const totalHours=hoursAvailable
-        ? days.reduce((sum,day)=>sum+Number(hoursByDate.get(day.fecha) || 0),0)
+      const totalFieldHours=fieldHoursAvailable
+        ? days.reduce((sum,day)=>sum+Number(fieldHoursByDate.get(day.fecha) || 0),0)
+        : 0;
+      const totalWorkshopHours=workshopHoursAvailable
+        ? days.reduce((sum,day)=>sum+Number(workshopHoursByDate.get(day.fecha) || 0),0)
         : 0;
       const maxQty=Math.max(...days.map(day=>Number(day.cantidad || 0)),0);
       const criticalDay=maxQty > 0 ? days.find(day=>Number(day.cantidad || 0)===maxQty) : null;
 
       const daysHtml=days.map(day=>{
         const qty=Number(day.cantidad || 0);
-        const dayHours=hoursAvailable ? Number(hoursByDate.get(day.fecha) || 0) : 0;
+        const fieldHours=fieldHoursAvailable ? Number(fieldHoursByDate.get(day.fecha) || 0) : 0;
+        const workshopHours=workshopHoursAvailable ? Number(workshopHoursByDate.get(day.fecha) || 0) : 0;
         const isCritical=Boolean(criticalDay && day.fecha===criticalDay.fecha);
-        const rate=hoursAvailable && dayHours > 0 ? qty / dayHours : 0;
+        // Se conserva el GAL/H original calculado con las horas de CAMPO.
+        const rate=fieldHoursAvailable && fieldHours > 0 ? qty / fieldHours : 0;
         const iso=isoDateParts(day.fecha);
         const dateObj=localDateFromIso(day.fecha);
         const dayNameRaw=dateObj ? dateObj.toLocaleDateString("es-PA",{weekday:"short"}).replace(/\./g,"") : "Día";
@@ -6607,8 +6855,9 @@
             <span class="diesel-reference-bar-fill" style="width:${pct.toFixed(2)}%"></span>
           </div>
           <div class="diesel-reference-value">${formatReportNumber(qty)}</div>
-          <div class="diesel-reference-value">${hoursAvailable ? formatMachineHours(dayHours) : "—"}</div>
-          <div class="diesel-reference-value">${hoursAvailable ? formatMachineHours(rate) : "—"}</div>
+          <div class="diesel-reference-value">${fieldHoursAvailable ? formatMachineHours(fieldHours) : "—"}</div>
+          <div class="diesel-reference-value">${workshopHoursAvailable ? formatMachineHours(workshopHours) : "—"}</div>
+          <div class="diesel-reference-value">${fieldHoursAvailable ? formatMachineHours(rate) : "—"}</div>
         </div>`;
       }).join("");
 
@@ -6620,14 +6869,15 @@
                 <span class="diesel-reference-title-icon" aria-hidden="true"><i data-lucide="fuel"></i></span>
                 <div><h4>Diesel · Detalle por día</h4></div>
               </div>
-              <div class="diesel-reference-stats">${formatReportNumber(total)} gal · ${hoursAvailable ? `${formatMachineHours(totalHours)} h máq.` : "— h máq."}</div>
+              <div class="diesel-reference-stats">${formatReportNumber(total)} gal · ${fieldHoursAvailable ? `${formatMachineHours(totalFieldHours)} h campo` : "— h campo"} · ${workshopHoursAvailable ? `${formatMachineHours(totalWorkshopHours)} h taller` : "— h taller"}</div>
             </div>
             <div class="diesel-reference-table">
               <div class="diesel-reference-table-head">
                 <div>Día</div>
                 <div class="diesel-reference-head-spacer"></div>
                 <div>Gal</div>
-                <div>H máq.</div>
+                <div>H campo</div>
+                <div>H taller</div>
                 <div>Gal/h</div>
               </div>
               <div class="diesel-reference-days">${daysHtml || '<div class="report-no-data">No hay días disponibles en este período.</div>'}</div>
@@ -6706,31 +6956,48 @@
       return {combustibles,lubricantes};
     }
 
-    function fuelEquipmentToHoursEquipment(equipo){
+    function fuelEquipmentToFieldHoursEquipment(equipo){
       const code=sanitizeEquipmentCode(equipo);
       if(!code) return "";
-      // Regla solicitada: 484091 -> 84091, 484101 -> 84101.
+      // HORAS CAMPO: conserva la equivalencia anterior 484091 -> 84091 / 484101 -> 84101.
       if(/^4(?:840|841)\d+$/.test(code)) return code.slice(1);
-      // Permite consultar directamente un código 840/841 si ya llega en ese formato.
       if(/^(?:840|841)\d+$/.test(code)) return code;
       return "";
     }
 
-    function machineHoursFriendlyError(error){
+    function fuelEquipmentToWorkshopHoursEquipment(equipo){
+      const code=sanitizeEquipmentCode(equipo);
+      if(!code) return "";
+      // HORAS TALLER: el RPC trabaja directamente con el 484xxx.
+      return /^484\d{3}$/.test(code) ? code : "";
+    }
+
+    function fieldHoursFriendlyError(error){
       const raw=String(error?.message || error || "Error desconocido");
       if(/401|403|42501|row-level security|permission denied/i.test(raw)){
-        return "La base de horas bloqueó la consulta por permisos/RLS para la clave anon.";
+        return "La base de horas de campo bloqueó la consulta por permisos/RLS para la clave anon.";
       }
       if(/42P01|relation .* does not exist/i.test(raw)){
-        return "No se encontró la tabla registros_horas en la base de horas.";
+        return "No se encontró la tabla registros_horas de horas de campo.";
       }
       if(/42703|column .* does not exist/i.test(raw)){
-        return "La tabla de horas no tiene alguno de los campos requeridos: equipo_numero, fecha o cantidad.";
+        return "La tabla de horas de campo no tiene alguno de los campos requeridos: equipo_numero, fecha o cantidad.";
       }
       return raw;
     }
 
-    async function hoursSbRequest(query=""){
+    function workshopHoursFriendlyError(error){
+      const raw=String(error?.message || error || "Error desconocido");
+      if(/401|403|42501|row-level security|permission denied/i.test(raw)){
+        return "La segunda base de datos bloqueó la consulta de horas de taller por permisos/RLS. Verifique que el usuario tenga acceso o que el RPC permita ejecución.";
+      }
+      if(/404|PGRST202|function .* does not exist|could not find the function/i.test(raw)){
+        return `No se encontró el RPC ${HOURS_RPC_NAME} en la segunda base de datos.`;
+      }
+      return raw;
+    }
+
+    async function fieldHoursSbRequest(query=""){
       const headers={
         "apikey":HOURS_SUPABASE_ANON_KEY,
         "Authorization":"Bearer " + HOURS_SUPABASE_ANON_KEY,
@@ -6742,7 +7009,7 @@
           method:"GET",headers,mode:"cors",cache:"no-store"
         });
       }catch(networkError){
-        throw new Error("No se pudo alcanzar la base de horas máquina. " + (networkError?.message || networkError));
+        throw new Error("No se pudo alcanzar la base de horas de campo. " + (networkError?.message || networkError));
       }
       const raw=await response.text();
       let data=[];
@@ -6757,10 +7024,10 @@
       return Array.isArray(data) ? data : [];
     }
 
-    async function fetchMachineHoursRange(equipo,from,to){
-      const hoursEquipment=fuelEquipmentToHoursEquipment(equipo);
+    async function fetchFieldMachineHoursRange(equipo,from,to){
+      const hoursEquipment=fuelEquipmentToFieldHoursEquipment(equipo);
       if(!hoursEquipment){
-        return {connected:false,notApplicable:true,equipoHoras:"",rows:[],error:"El equipo no tiene equivalencia 840/841 para consultar horas máquina."};
+        return {connected:false,notApplicable:true,equipoHoras:"",rows:[],error:"El equipo no tiene equivalencia 840/841 para consultar horas de campo."};
       }
 
       const all=[];
@@ -6769,7 +7036,7 @@
         for(let offset=0;offset<50000;offset+=pageSize){
           const equipmentFilter=`or=(equipo_numero.eq.${encodeURIComponent(hoursEquipment)},equipo_numero.eq.${encodeURIComponent(hoursEquipment + ".0")})`;
           const query=`?select=fecha,equipo_numero,cantidad&${equipmentFilter}&fecha=gte.${encodeURIComponent(from)}&fecha=lte.${encodeURIComponent(to)}&order=fecha.asc&limit=${pageSize}&offset=${offset}`;
-          const page=await hoursSbRequest(query);
+          const page=await fieldHoursSbRequest(query);
           all.push(...page);
           if(page.length < pageSize) break;
         }
@@ -6780,8 +7047,66 @@
         })).filter(row=>row.fecha && Number.isFinite(row.horas));
         return {connected:true,notApplicable:false,equipoHoras:hoursEquipment,rows,error:""};
       }catch(error){
-        console.error("Horas máquina Supabase:",error);
-        return {connected:false,notApplicable:false,equipoHoras:hoursEquipment,rows:[],error:machineHoursFriendlyError(error)};
+        console.error("Horas campo Supabase:",error);
+        return {connected:false,notApplicable:false,equipoHoras:hoursEquipment,rows:[],error:fieldHoursFriendlyError(error)};
+      }
+    }
+
+    async function workshopHoursRpcRequest(payload){
+      // HORAS TALLER: este RPC pertenece a la SEGUNDA conexión Supabase
+      // (zabangygpfchxmxawict). Si el usuario logró autenticarse allí, optionalSbRpc
+      // usa su access_token; si no, intenta con la anon key porque el login es opcional.
+      try{
+        const data=await optionalSbRpc(HOURS_RPC_NAME,payload || {});
+        return Array.isArray(data) ? data : [];
+      }catch(error){
+        throw new Error("No se pudo consultar las horas de taller en la segunda base de datos. " + (error?.message || error));
+      }
+    }
+
+    function workshopHoursToDecimal(value){
+      if(value === null || value === undefined || value === "") return 0;
+      if(typeof value === "number") return Number.isFinite(value) ? value : 0;
+
+      const raw=String(value).trim();
+      if(!raw) return 0;
+
+      // El RPC ahora puede devolver HH:MM o HH:MM:SS, por ejemplo "06:34".
+      const timeMatch=raw.match(/^(\d+):(\d{1,2})(?::(\d{1,2}(?:\.\d+)?))?$/);
+      if(timeMatch){
+        const hours=Number(timeMatch[1] || 0);
+        const minutes=Number(timeMatch[2] || 0);
+        const seconds=Number(timeMatch[3] || 0);
+        if(!Number.isFinite(hours) || !Number.isFinite(minutes) || !Number.isFinite(seconds)) return 0;
+        return hours + (minutes / 60) + (seconds / 3600);
+      }
+
+      // Compatibilidad con la respuesta anterior en horas decimales.
+      const numeric=Number(raw.replace(",","."));
+      return Number.isFinite(numeric) ? numeric : 0;
+    }
+
+    async function fetchWorkshopMachineHoursRange(equipo,from,to){
+      const hoursEquipment=fuelEquipmentToWorkshopHoursEquipment(equipo);
+      if(!hoursEquipment){
+        return {connected:false,notApplicable:true,equipoHoras:"",rows:[],error:"Las horas de taller solo aplican a equipos del grupo 484xxx."};
+      }
+      try{
+        const data=await workshopHoursRpcRequest({
+          p_desde:normalizeDateKey(from),
+          p_hasta:normalizeDateKey(to),
+          p_equipos:[hoursEquipment]
+        });
+        const rows=(data || []).map(row=>({
+          fecha:normalizeDateKey(row.fecha_jornada),
+          equipo:sanitizeEquipmentCode(row.equipo || hoursEquipment),
+          semana:Number(row.semana || 0),
+          horas:workshopHoursToDecimal(row.horas_maquina)
+        })).filter(row=>row.fecha && Number.isFinite(row.horas));
+        return {connected:true,notApplicable:false,equipoHoras:hoursEquipment,rows,error:""};
+      }catch(error){
+        console.error("Horas taller RPC:",error);
+        return {connected:false,notApplicable:false,equipoHoras:hoursEquipment,rows:[],error:workshopHoursFriendlyError(error)};
       }
     }
 
@@ -6918,28 +7243,34 @@
       return {mode:"month",periods:buildMonthlyDieselComparison(rows,from,to),fullMonth:false};
     }
 
-    function renderDieselComparison(comparison,rangeRows=[],hoursResult=null){
+    function renderDieselComparison(comparison,rangeRows=[],fieldHoursResult=null,workshopHoursResult=null){
       const periods=(comparison?.periods || []);
       if(!periods.length){
         return `<div class="report-no-data">No hay periodos disponibles para comparar el consumo de DIESEL.</div>`;
       }
-      const hoursRows=Array.isArray(hoursResult?.rows) ? hoursResult.rows : [];
+      const hoursRows=Array.isArray(fieldHoursResult?.rows) ? fieldHoursResult.rows : [];
+      const workshopRows=Array.isArray(workshopHoursResult?.rows) ? workshopHoursResult.rows : [];
       periods.forEach(period => {
         period.horasMaquina=sumMachineHours(hoursRows,period.from,period.to);
+        period.horasTaller=sumMachineHours(workshopRows,period.from,period.to);
       });
 
       const max=Math.max(...periods.map(p=>Number(p.cantidad || 0)),0);
       const highest=periods.reduce((best,p)=>Number(p.cantidad||0)>Number(best?.cantidad||-1)?p:best,null);
       const totalDiesel=periods.reduce((sum,p)=>sum+Number(p.cantidad || 0),0);
-      const totalHours=periods.reduce((sum,p)=>sum+Number(p.horasMaquina || 0),0);
-      const totalRate=totalHours > 0 ? totalDiesel / totalHours : 0;
-      const hoursAvailable=Boolean(hoursResult?.connected);
-      const mappedEquipment=String(hoursResult?.equipoHoras || "");
+      const totalFieldHours=periods.reduce((sum,p)=>sum+Number(p.horasMaquina || 0),0);
+      const totalWorkshopHours=periods.reduce((sum,p)=>sum+Number(p.horasTaller || 0),0);
+      const totalRate=totalFieldHours > 0 ? totalDiesel / totalFieldHours : 0;
+      const hoursAvailable=Boolean(fieldHoursResult?.connected);
+      const mappedEquipment=String(fieldHoursResult?.equipoHoras || "");
+      const workshopAvailable=Boolean(workshopHoursResult?.connected);
+      const workshopEquipment=String(workshopHoursResult?.equipoHoras || workshopHoursResult?.equipo || "");
 
       const rows=periods.map((period,index) => {
         const qty=Number(period.cantidad || 0);
-        const hours=Number(period.horasMaquina || 0);
-        const rate=hours > 0 ? qty / hours : 0;
+        const fieldHours=Number(period.horasMaquina || 0);
+        const workshopHours=Number(period.horasTaller || 0);
+        const rate=fieldHours > 0 ? qty / fieldHours : 0;
         const pct=max > 0 ? Math.max(qty > 0 ? 1 : 0, Math.min(100,(qty/max)*100)) : 0;
         const isHighest=max > 0 && period === highest;
         const detailId=`report-diesel-period-days-${index}`;
@@ -6948,32 +7279,40 @@
           <button type="button" class="diesel-period-track report-drill-toggle" data-drill-target="${detailId}" aria-expanded="false" aria-label="Ver consumo de diesel por día en ${escapeHtml(period.label)}"><div class="diesel-period-bar" style="width:${pct.toFixed(2)}%"></div></button>
           <div class="diesel-period-value diesel-period-metrics">
             <strong>${formatReportNumber(qty)} GAL</strong>
-            <span class="diesel-period-hours">${hoursAvailable ? `${formatMachineHours(hours)} H MÁQ.` : "H MÁQ. —"}</span>
-            ${hoursAvailable && hours > 0 ? `<span class="diesel-period-rate">${formatMachineHours(rate)} GAL/H</span>` : ""}
+            <span class="diesel-period-hours">${hoursAvailable ? `${formatMachineHours(fieldHours)} H CAMPO` : "H CAMPO —"}</span>
+            <span class="diesel-period-hours">${workshopAvailable ? `${formatMachineHours(workshopHours)} H TALLER` : "H TALLER —"}</span>
+            ${hoursAvailable && fieldHours > 0 ? `<span class="diesel-period-rate">${formatMachineHours(rate)} GAL/H</span>` : ""}
           </div>
-        </div>${renderDieselComparisonDailyDetail(rangeRows,period.from,period.to,detailId,hoursRows,hoursAvailable)}`;
+        </div>${renderDieselComparisonDailyDetail(rangeRows,period.from,period.to,detailId,hoursRows,hoursAvailable,workshopRows,workshopAvailable)}`;
       }).join("");
 
       if(max <= 0){
         return `<div class="report-no-data">No se registró consumo de DIESEL en el rango seleccionado.</div>`;
       }
 
-      let sourceMessage="";
-      if(hoursResult?.notApplicable){
-        sourceMessage=`<div class="diesel-hours-source warn">HORAS MÁQUINA: ${escapeHtml(hoursResult.error || "Este equipo no tiene equivalencia 840/841.")}</div>`;
+      const sourceParts=[];
+      if(fieldHoursResult?.notApplicable){
+        sourceParts.push(`<div class="diesel-hours-source warn">HORAS CAMPO: ${escapeHtml(fieldHoursResult.error || "Este equipo no tiene equivalencia 840/841.")}</div>`);
       }else if(!hoursAvailable){
-        sourceMessage=`<div class="diesel-hours-source warn">HORAS MÁQUINA ${mappedEquipment ? `· EQUIPO ${escapeHtml(mappedEquipment)}` : ""}: ${escapeHtml(hoursResult?.error || "No se pudieron consultar las horas.")}</div>`;
+        sourceParts.push(`<div class="diesel-hours-source warn">HORAS CAMPO ${mappedEquipment ? `· EQUIPO ${escapeHtml(mappedEquipment)}` : ""}: ${escapeHtml(fieldHoursResult?.error || "No se pudieron consultar las horas de campo.")}</div>`);
       }else{
-        sourceMessage=`<div class="diesel-hours-source">HORAS MÁQUINA TOMADAS DE REGISTRO DE HORAS · EQUIPO ${escapeHtml(mappedEquipment)} · ${escapeHtml(formatDateDisplay(periods[0].from))} AL ${escapeHtml(formatDateDisplay(periods[periods.length-1].to))}</div>`;
+        sourceParts.push(`<div class="diesel-hours-source">HORAS CAMPO · EQUIPO ${escapeHtml(mappedEquipment)} · ${escapeHtml(formatDateDisplay(periods[0].from))} AL ${escapeHtml(formatDateDisplay(periods[periods.length-1].to))}</div>`);
+      }
+
+      if(!workshopAvailable){
+        sourceParts.push(`<div class="diesel-hours-source warn">HORAS TALLER${workshopEquipment ? ` · EQUIPO ${escapeHtml(workshopEquipment)}` : ""}: ${escapeHtml(workshopHoursResult?.error || "No se pudieron consultar las horas de taller.")}</div>`);
+      }else{
+        sourceParts.push(`<div class="diesel-hours-source">HORAS TALLER${workshopEquipment ? ` · EQUIPO ${escapeHtml(workshopEquipment)}` : ""} · ${escapeHtml(formatDateDisplay(periods[0].from))} AL ${escapeHtml(formatDateDisplay(periods[periods.length-1].to))}</div>`);
       }
 
       const summary=`<div class="diesel-hours-summary">
         <div class="diesel-hours-card"><span>DIESEL TOTAL</span><strong>${formatReportNumber(totalDiesel)} GAL</strong></div>
-        <div class="diesel-hours-card"><span>HORAS MÁQUINA</span><strong>${hoursAvailable ? `${formatMachineHours(totalHours)} H` : "—"}</strong></div>
-        <div class="diesel-hours-card rate"><span>CONSUMO POR HORA</span><strong>${hoursAvailable && totalHours > 0 ? `${formatMachineHours(totalRate)} GAL/H` : "—"}</strong></div>
+        <div class="diesel-hours-card"><span>HORAS CAMPO</span><strong>${hoursAvailable ? `${formatMachineHours(totalFieldHours)} H` : "—"}</strong></div>
+        <div class="diesel-hours-card"><span>HORAS TALLER</span><strong>${workshopAvailable ? `${formatMachineHours(totalWorkshopHours)} H` : "—"}</strong></div>
+        <div class="diesel-hours-card rate"><span>CONSUMO POR HORA</span><strong>${hoursAvailable && totalFieldHours > 0 ? `${formatMachineHours(totalRate)} GAL/H` : "—"}</strong></div>
       </div>`;
 
-      return `${summary}${sourceMessage}<div class="diesel-comparison-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER EL DETALLE DE CADA DÍA · CONSUMO EN GALONES Y HORAS MÁQUINA</div></div>`;
+      return `${summary}${sourceParts.join("")}<div class="diesel-comparison-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER EL DETALLE DE CADA DÍA · CONSUMO EN GALONES Y HORAS DE CAMPO Y TALLER</div></div>`;
     }
 
     function initializeReportDrilldowns(){
@@ -7027,9 +7366,9 @@
       }
     }
 
-    function renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount,rangeRows,hoursResult}){
+    function renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount,rangeRows,fieldHoursResult,workshopHoursResult}){
       const split=splitReportConsumption(summary.consumos);
-      const fuelSummaryHtml=renderFuelSummary(split.combustibles,rangeRows,from,to,hoursResult);
+      const fuelSummaryHtml=renderFuelSummary(split.combustibles,rangeRows,from,to,fieldHoursResult);
       const fuelSectionHtml = fuelSummaryHtml ? `<div class="report-section">
           <div class="report-section-title">
             ${productConsumptionIcon("GASOLINA",18)}
@@ -7039,7 +7378,7 @@
         </div>` : "";
       const lubricantChartHtml=renderConsumptionChart(split.lubricantes,"CANTIDAD ACUMULADA DE LUBRICANTES",rangeRows,from,to);
       const dieselComparison=buildDieselComparison(rangeRows,from,to);
-      const dieselComparisonHtml=renderDieselComparison(dieselComparison,rangeRows,hoursResult);
+      const dieselComparisonHtml=renderDieselComparison(dieselComparison,rangeRows,fieldHoursResult,workshopHoursResult);
       const oilHtml = oilChanges.length
         ? oilChanges.map(change => `<div class="oil-history-item">
             <div class="oil-history-top">
@@ -7182,15 +7521,23 @@
 
       try{
         const oilFrom = getOneYearBefore(to);
-        const [rangeRows, oilRows, tipo, hoursResult] = await Promise.all([
+        const [rangeRows, oilRows, tipo] = await Promise.all([
           fetchEquipmentMovementsRange(equipo, from, to),
           fetchEquipmentMovementsRange(equipo, oilFrom, to),
-          fetchReportEquipmentType(equipo),
-          fetchMachineHoursRange(equipo, from, to)
+          fetchReportEquipmentType(equipo)
         ]);
         const summary = summarizeReportConsumption(rangeRows);
+        const dieselTotal=Number(summary?.consumos?.find(item => String(item?.producto || "").toUpperCase() === "DIESEL")?.cantidad || 0);
+        let fieldHoursResult={connected:false,notApplicable:false,equipoHoras:"",rows:[],error:""};
+        let workshopHoursResult={connected:false,notApplicable:false,equipoHoras:"",rows:[],error:""};
+        if(dieselTotal > 0){
+          [fieldHoursResult,workshopHoursResult]=await Promise.all([
+            fetchFieldMachineHoursRange(equipo,from,to),
+            fetchWorkshopMachineHoursRange(equipo,from,to)
+          ]);
+        }
         const oilChanges = extractOilChanges(oilRows);
-        renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount:rangeRows.length,rangeRows,hoursResult});
+        renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount:rangeRows.length,rangeRows,fieldHoursResult,workshopHoursResult});
         setReportsStatus("");
       }catch(error){
         console.error("Reporte Supabase:", error);
@@ -8206,6 +8553,16 @@
           p_password:password
         });
         if(!data?.token) throw new Error("Supabase no devolvió una sesión válida.");
+
+        // Segunda conexión: intenta iniciar sesión con el MISMO correo y contraseña.
+        // Esta autenticación es opcional y nunca impide el acceso a la aplicación principal.
+        const optionalLoginResult = await loginOptionalSupabase(correo,password);
+        if(optionalLoginResult?.authenticated){
+          console.info("Segunda BD conectada con sesión de usuario. Las horas de taller se consultarán desde esa conexión.");
+        }else if(!optionalLoginResult?.skipped){
+          console.warn("Segunda BD sin sesión autenticada; se intentarán las consultas permitidas con anon key:", optionalLoginResult?.error || "Error desconocido");
+        }
+
         loginPassword.value = "";
         await enterAuthenticatedApp(data);
       }catch(error){
@@ -8219,10 +8576,15 @@
 
     logoutBtn.addEventListener("click", async () => {
       const token = currentSessionToken;
+      const optionalToken = optionalSupabaseSession?.access_token || readOptionalSupabaseSession()?.access_token || "";
       clearAuthSession();
+      clearOptionalSupabaseSession();
       showLogin();
       if(token){
         try{ await sbRpc("cerrar_sesion", {p_token:token}); }catch{}
+      }
+      if(optionalToken){
+        try{ await optionalSupabaseAuthFetch("/auth/v1/logout", {method:"POST",token:optionalToken,timeoutMs:4000}); }catch{}
       }
     });
 
