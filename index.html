@@ -332,7 +332,7 @@
     .diesel-period-metrics strong{font-size:11px;color:#173f8f}
     .diesel-period-hours{font-size:10px;font-weight:950;color:#0e7490}
     .diesel-period-rate{font-size:9px;font-weight:850;color:#64748b}
-    .diesel-hours-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:2px}
+    .diesel-hours-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:2px}
     .diesel-hours-card{border:1px solid #cfe8ef;border-radius:11px;background:#fff;padding:9px 10px;min-width:0}
     .diesel-hours-card span{display:block;font-size:9px;font-weight:950;color:#64748b;letter-spacing:.04em;text-transform:uppercase}
     .diesel-hours-card strong{display:block;margin-top:4px;font-size:14px;font-weight:950;color:#0e7490;overflow-wrap:anywhere}
@@ -525,7 +525,7 @@
     .diesel-reference-table{display:grid;gap:8px}
     .diesel-reference-table-head{
       display:grid;
-      grid-template-columns:64px minmax(86px,1fr) 40px 54px 54px 46px;
+      grid-template-columns:58px minmax(70px,1fr) 36px 48px 48px 48px 42px;
       align-items:center;
       gap:10px;
       min-height:46px;
@@ -540,7 +540,7 @@
     .diesel-reference-days{display:grid;gap:0}
     .diesel-reference-day{
       display:grid;
-      grid-template-columns:64px minmax(86px,1fr) 40px 54px 54px 46px;
+      grid-template-columns:58px minmax(70px,1fr) 36px 48px 48px 48px 42px;
       align-items:center;
       gap:10px;
       padding:12px 12px;
@@ -611,7 +611,7 @@
       .diesel-reference-stats{min-height:40px;padding:0 14px;font-size:11px}
       .diesel-reference-table-head,
       .diesel-reference-day{
-        grid-template-columns:50px minmax(56px,1fr) 32px 42px 42px 38px;
+        grid-template-columns:44px minmax(44px,1fr) 28px 34px 34px 34px 32px;
         gap:8px;
         padding-left:10px;
         padding-right:10px;
@@ -636,7 +636,7 @@
     @media(max-width:390px){
       .diesel-reference-table-head,
       .diesel-reference-day{
-        grid-template-columns:46px minmax(46px,1fr) 28px 36px 36px 34px;
+        grid-template-columns:40px minmax(38px,1fr) 24px 30px 30px 30px 28px;
         gap:6px;
         padding-left:8px;
         padding-right:8px;
@@ -2493,6 +2493,85 @@
       .quota-donut::after{inset:12px}
     }
 
+
+    /* ===== CONTROL DE CAMBIO DE ACEITE ===== */
+    .oil-control-view{overflow:hidden}
+    .oil-control-body{padding:0 20px 22px;display:grid;gap:14px}
+    .oil-control-toolbar{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+      border:1px solid #dbe6f3;border-radius:15px;background:#f8fbff;padding:13px 14px;
+    }
+    .oil-control-source-wrap{display:grid;gap:7px;min-width:0}
+    .oil-control-source-label{font-size:10px;font-weight:950;color:#52647f;letter-spacing:.04em;text-transform:uppercase}
+    .oil-control-switches{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+    .oil-control-source-btn{
+      min-height:36px;border:1px solid #d7e2ef;border-radius:999px;background:#fff;color:#52647f;padding:0 12px;
+      display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:950;cursor:pointer;transition:.18s ease;
+    }
+    .oil-control-source-btn::before{
+      content:"";width:10px;height:10px;border-radius:50%;background:#cbd5e1;box-shadow:0 0 0 3px #eef2f7;transition:.18s ease;
+    }
+    .oil-control-source-btn.active{border-color:#9dc1ff;background:#eef5ff;color:#173f8f;box-shadow:0 3px 10px rgba(49,95,178,.08)}
+    .oil-control-source-btn.active::before{background:#2f6fe5;box-shadow:0 0 0 3px #dce9ff}
+    .oil-control-refresh{
+      min-height:38px;border:1px solid #cbd8ef;border-radius:10px;background:#fff;color:#173f8f;padding:0 13px;
+      display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:10px;font-weight:950;cursor:pointer;
+    }
+    .oil-control-refresh:disabled{opacity:.55;cursor:wait}
+    .oil-control-status{
+      min-height:38px;border:1px solid #dbe6f3;border-radius:11px;background:#fff;padding:9px 11px;
+      display:flex;align-items:center;color:#64748b;font-size:10px;font-weight:850;line-height:1.35;text-transform:uppercase;
+    }
+    .oil-control-status.error{border-color:#fecaca;background:#fff7f7;color:#b91c1c}
+    .oil-control-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+    .oil-control-summary-card{border:1px solid #dce6f2;border-radius:13px;background:#fff;padding:11px 12px;min-width:0}
+    .oil-control-summary-card span{display:block;font-size:9px;font-weight:950;color:#64748b;letter-spacing:.035em;text-transform:uppercase}
+    .oil-control-summary-card strong{display:block;margin-top:4px;font-size:17px;font-weight:950;color:#173f8f}
+    .oil-control-summary-card.green strong{color:#15803d}
+    .oil-control-summary-card.orange strong{color:#c26808}
+    .oil-control-summary-card.red strong{color:#dc2626}
+    .oil-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+    .oil-control-card{
+      border:1px solid #dfe7ef;border-left-width:5px;border-radius:15px;background:#fff;padding:13px 14px;
+      display:grid;gap:11px;box-shadow:0 5px 14px rgba(30,64,120,.04);
+    }
+    .oil-control-card.green{border-left-color:#22c55e;background:linear-gradient(180deg,#fff,#f8fff9)}
+    .oil-control-card.orange{border-left-color:#f59e0b;background:linear-gradient(180deg,#fff,#fffaf1)}
+    .oil-control-card.red{border-left-color:#ef4444;background:linear-gradient(180deg,#fff,#fff7f7)}
+    .oil-control-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .oil-control-equipment{min-width:0}
+    .oil-control-equipment strong{display:block;font-size:17px;font-weight:950;color:#14264a;line-height:1.05}
+    .oil-control-equipment span{display:block;margin-top:4px;font-size:9px;font-weight:850;color:#718096;text-transform:uppercase}
+    .oil-control-badge{flex:0 0 auto;border-radius:999px;padding:6px 9px;font-size:8.5px;font-weight:950;white-space:nowrap;text-transform:uppercase}
+    .oil-control-card.green .oil-control-badge{background:#eafbf0;color:#15803d}
+    .oil-control-card.orange .oil-control-badge{background:#fff2d8;color:#b45309}
+    .oil-control-card.red .oil-control-badge{background:#feecec;color:#dc2626}
+    .oil-control-hours-row{display:flex;align-items:end;justify-content:space-between;gap:12px}
+    .oil-control-hours span,.oil-control-remaining span{display:block;font-size:9px;font-weight:900;color:#718096;text-transform:uppercase}
+    .oil-control-hours strong{display:block;margin-top:3px;font-size:25px;font-weight:950;color:#173f8f;line-height:1}
+    .oil-control-card.orange .oil-control-hours strong{color:#c26808}
+    .oil-control-card.red .oil-control-hours strong{color:#dc2626}
+    .oil-control-remaining{text-align:right}
+    .oil-control-remaining strong{display:block;margin-top:3px;font-size:12px;font-weight:950;color:#52647f}
+    .oil-control-progress{height:11px;border-radius:999px;background:#e8eef5;overflow:hidden}
+    .oil-control-progress > span{display:block;height:100%;border-radius:999px;background:#22c55e}
+    .oil-control-card.orange .oil-control-progress > span{background:#f59e0b}
+    .oil-control-card.red .oil-control-progress > span{background:#ef4444}
+    .oil-control-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .oil-control-meta-item{border-radius:10px;background:#f7f9fc;padding:8px 9px;min-width:0}
+    .oil-control-meta-item span{display:block;font-size:8.5px;font-weight:900;color:#718096;text-transform:uppercase}
+    .oil-control-meta-item strong{display:block;margin-top:3px;font-size:10px;font-weight:950;color:#30415f;overflow-wrap:anywhere}
+    .oil-control-note{font-size:9px;font-weight:800;color:#718096;line-height:1.35;text-transform:uppercase}
+    .oil-control-note.partial{color:#b45309}
+    .oil-control-empty{grid-column:1/-1;border:1px dashed #cbd5e1;border-radius:14px;padding:24px;text-align:center;color:#64748b;font-size:11px;font-weight:850;line-height:1.5}
+    @media(max-width:900px){.oil-control-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.oil-control-grid{grid-template-columns:1fr}}
+    @media(max-width:620px){
+      .oil-control-body{padding:0 12px 16px}.oil-control-toolbar{align-items:stretch}.oil-control-source-wrap{width:100%}
+      .oil-control-switches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.oil-control-source-btn{padding:0 8px;justify-content:center}
+      .oil-control-refresh{width:100%}.oil-control-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .oil-control-card{padding:12px}.oil-control-hours strong{font-size:22px}.oil-control-meta{grid-template-columns:1fr}
+    }
+
   </style>
 </head>
 <body class="auth-locked">
@@ -2658,6 +2737,18 @@
         </button>
 
 
+
+        <button type="button" class="menu-card" data-view="oil-control">
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3C9.2 7.1 7 10.2 7 13.6a5 5 0 0 0 10 0C17 10.2 14.8 7.1 12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M4 19h4m8 0h4M8 19a4 4 0 0 1 8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M12 15v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Control de cambio de aceite</h3>
+          <p>Controle las horas acumuladas desde el último cambio y valide el cálculo con Campo, Taller o GPS.</p>
+        </button>
 
         <button type="button" class="menu-card" data-view="cuotas">
           <span class="view-visibility-switch hidden active" data-view-toggle="cuotas" role="switch" aria-checked="true" tabindex="0" title="Visible para usuarios y supervisores" aria-label="Controlar visibilidad de Cuotas"></span>
@@ -3110,6 +3201,36 @@
 
 
 
+      <article id="oilControlView" class="card app-view-card oil-control-view view-hidden">
+        <div class="card-header">
+          <h2>CONTROL DE CAMBIO DE ACEITE</h2>
+          <p>Horas acumuladas desde el último cambio registrado. Solo se muestran equipos con 200 horas o más según la fuente seleccionada.</p>
+        </div>
+        <div class="oil-control-body">
+          <div class="oil-control-toolbar">
+            <div class="oil-control-source-wrap">
+              <span class="oil-control-source-label">FUENTE PARA EL CÁLCULO</span>
+              <div id="oilControlSourceSwitches" class="oil-control-switches" role="radiogroup" aria-label="Fuente de horas para cambio de aceite">
+                <button type="button" class="oil-control-source-btn active" data-oil-source="field" role="radio" aria-checked="true">CAMPO</button>
+                <button type="button" class="oil-control-source-btn" data-oil-source="workshop" role="radio" aria-checked="false">TALLER</button>
+                <button type="button" class="oil-control-source-btn" data-oil-source="gps" role="radio" aria-checked="false">GPS</button>
+              </div>
+            </div>
+            <button id="oilControlRefreshBtn" type="button" class="oil-control-refresh">↻ ACTUALIZAR</button>
+          </div>
+          <div id="oilControlStatus" class="oil-control-status" aria-live="polite">Seleccione una fuente para calcular las horas acumuladas.</div>
+          <div id="oilControlSummary" class="oil-control-summary">
+            <div class="oil-control-summary-card"><span>FUENTE ACTIVA</span><strong>CAMPO</strong></div>
+            <div class="oil-control-summary-card green"><span>DESDE 200 H</span><strong>0</strong></div>
+            <div class="oil-control-summary-card orange"><span>PRÓXIMOS</span><strong>0</strong></div>
+            <div class="oil-control-summary-card red"><span>CAMBIO DE ACEITE</span><strong>0</strong></div>
+          </div>
+          <div id="oilControlGrid" class="oil-control-grid">
+            <div class="oil-control-empty">Abra esta vista para calcular el control de cambio de aceite.</div>
+          </div>
+        </div>
+      </article>
+
       <article id="quotasView" class="card app-view-card quotas-view view-hidden">
         <div class="card-header">
           <div class="quotas-header-row">
@@ -3457,6 +3578,12 @@
     const dashboardDieselRows = document.getElementById("dashboardDieselRows");
     const historyView = document.getElementById("historyView");
     const reportsView = document.getElementById("reportsView");
+    const oilControlView = document.getElementById("oilControlView");
+    const oilControlSourceSwitches = document.getElementById("oilControlSourceSwitches");
+    const oilControlRefreshBtn = document.getElementById("oilControlRefreshBtn");
+    const oilControlStatus = document.getElementById("oilControlStatus");
+    const oilControlSummary = document.getElementById("oilControlSummary");
+    const oilControlGrid = document.getElementById("oilControlGrid");
     const quotasView = document.getElementById("quotasView");
     const quotasGrid = document.getElementById("quotasGrid");
     const quotasStatus = document.getElementById("quotasStatus");
@@ -3652,6 +3779,16 @@
     let optionalSupabaseAuthenticated = false;
     let optionalSupabaseLastError = "";
 
+    // Tercera conexión: HORAS GPS / Navixy.
+    // Este RPC REQUIERE una sesión de usuario autenticada; no usa fallback con anon key.
+    const GPS_SUPABASE_URL = "https://xzywyxuumnykgqpcvpii.supabase.co";
+    const GPS_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6eXd5eHV1bW55a2dxcGN2cGlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2OTIwNjYsImV4cCI6MjA5OTI2ODA2Nn0.o0y6rRoxhYQ5whU_ZAQ2yGATqGnH7Km2d5E4uzloqfQ";
+    const GPS_SUPABASE_SESSION_KEY = "combustible_gps_supabase_session_v1";
+    const GPS_HOURS_RPC_NAME = "rpc_horas_maquina_gps_diario";
+    let gpsSupabaseSession = null;
+    let gpsSupabaseAuthenticated = false;
+    let gpsSupabaseLastError = "";
+
     // Base independiente de Registro de horas.
     // En combustible: 484091 -> en horas: 84091 (se elimina el primer 4).
     const HOURS_SUPABASE_URL = "https://resyxhjfpgdmaelmvxmo.supabase.co";
@@ -3714,13 +3851,14 @@
       history:true,
       all:true,
       reports:true,
+      "oil-control":true,
       cuotas:true,
       "equipment-admin":true,
       users:true
     });
     const ADMIN_ONLY_VIEWS = new Set(["users"]);
     const SUPERVISOR_ALLOWED_VIEWS = new Set(["equipment-admin"]);
-    const USER_ALLOWED_VIEWS = new Set(["reports"]);
+    const USER_ALLOWED_VIEWS = new Set(["reports","oil-control"]);
     let viewVisibilityConfig = {...VIEW_VISIBILITY_DEFAULTS};
     let viewVisibilityLoaded = false;
 
@@ -3744,7 +3882,7 @@
         toggle.classList.toggle("active", enabled);
         toggle.classList.toggle("hidden", !isAdmin);
         toggle.setAttribute("aria-checked", enabled ? "true" : "false");
-        const audience = view === "reports" ? "USUARIO y SUPERVISOR" : "SUPERVISOR";
+        const audience = ["reports","oil-control"].includes(view) ? "USUARIO y SUPERVISOR" : "SUPERVISOR";
         toggle.title = enabled
           ? `ACTIVO · Visible para ${audience} cuando el rol lo permita`
           : `INACTIVO · Oculto para ${audience}`;
@@ -4025,6 +4163,169 @@
       return optionalSbRequest("rpc/" + functionName,{method:"POST",body,prefer:""});
     }
 
+    function readGpsSupabaseSession(){
+      try{return JSON.parse(localStorage.getItem(GPS_SUPABASE_SESSION_KEY) || "null");}
+      catch{return null;}
+    }
+
+    function saveGpsSupabaseSession(session){
+      if(!session?.access_token){
+        localStorage.removeItem(GPS_SUPABASE_SESSION_KEY);
+        gpsSupabaseSession=null;
+        gpsSupabaseAuthenticated=false;
+        return;
+      }
+      const expiresAt=Number(session.expires_at || 0) || Math.floor(Date.now()/1000)+Number(session.expires_in || 3600);
+      gpsSupabaseSession={
+        access_token:String(session.access_token || ""),
+        refresh_token:String(session.refresh_token || ""),
+        expires_at:expiresAt,
+        user:session.user ? {id:session.user.id || null,email:session.user.email || null} : null
+      };
+      localStorage.setItem(GPS_SUPABASE_SESSION_KEY,JSON.stringify(gpsSupabaseSession));
+      gpsSupabaseAuthenticated=true;
+      gpsSupabaseLastError="";
+    }
+
+    function clearGpsSupabaseSession(){
+      localStorage.removeItem(GPS_SUPABASE_SESSION_KEY);
+      gpsSupabaseSession=null;
+      gpsSupabaseAuthenticated=false;
+    }
+
+    async function gpsSupabaseAuthFetch(path,{method="POST",body=null,token="",timeoutMs=10000}={}){
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),timeoutMs);
+      const bearer=String(token || GPS_SUPABASE_ANON_KEY || "").trim();
+      try{
+        const response=await fetch(`${GPS_SUPABASE_URL}${path}`,{
+          method:String(method || "POST").toUpperCase(),
+          headers:{
+            "apikey":GPS_SUPABASE_ANON_KEY,
+            "Authorization":"Bearer " + bearer,
+            "Content-Type":"application/json",
+            "Accept":"application/json",
+            "X-Client-Info":"combustible-web/gps-supabase-auth"
+          },
+          mode:"cors",
+          cache:"no-store",
+          signal:controller.signal,
+          body:body === null ? undefined : JSON.stringify(body)
+        });
+        const raw=await response.text();
+        let data=null;
+        if(raw){try{data=JSON.parse(raw);}catch{data=raw;}}
+        if(!response.ok){
+          const code=data?.code || data?.error_code || "";
+          const details=data?.msg || data?.message || data?.error_description || data?.error || String(data || response.statusText || "");
+          throw new Error(`HTTP ${response.status}${code ? ` [${code}]` : ""}: ${details}`);
+        }
+        return data;
+      }catch(error){
+        if(error?.name === "AbortError") throw new Error("La conexión GPS a Supabase agotó el tiempo de espera.");
+        throw error;
+      }finally{clearTimeout(timer);}
+    }
+
+    async function verifyGpsSupabaseSession(accessToken){
+      const token=String(accessToken || "").trim();
+      if(!token) return null;
+      return gpsSupabaseAuthFetch("/auth/v1/user",{method:"GET",token,timeoutMs:10000});
+    }
+
+    async function loginGpsSupabase(correo,password){
+      const email=String(correo || "").trim().toLowerCase();
+      const pass=String(password || "");
+      if(!email || !pass) return {authenticated:false,skipped:true};
+      const previous=readGpsSupabaseSession();
+      const previousEmail=String(previous?.user?.email || "").trim().toLowerCase();
+      if(previousEmail && previousEmail !== email) clearGpsSupabaseSession();
+      try{
+        const data=await gpsSupabaseAuthFetch("/auth/v1/token?grant_type=password",{
+          method:"POST",body:{email,password:pass},timeoutMs:12000
+        });
+        if(!data?.access_token) throw new Error("Supabase GPS no devolvió access_token.");
+        const authUser=await verifyGpsSupabaseSession(data.access_token);
+        if(!authUser?.id) throw new Error("No fue posible validar el usuario en la base GPS.");
+        saveGpsSupabaseSession({...data,user:authUser});
+        return {authenticated:true,user:authUser};
+      }catch(error){
+        gpsSupabaseLastError=error?.message || String(error);
+        clearGpsSupabaseSession();
+        console.warn("Supabase GPS: no se pudo iniciar sesión.",gpsSupabaseLastError);
+        return {authenticated:false,error:gpsSupabaseLastError};
+      }
+    }
+
+    async function refreshGpsSupabaseSession(){
+      const saved=gpsSupabaseSession || readGpsSupabaseSession();
+      if(!saved?.refresh_token){clearGpsSupabaseSession();return false;}
+      try{
+        const data=await gpsSupabaseAuthFetch("/auth/v1/token?grant_type=refresh_token",{
+          method:"POST",body:{refresh_token:saved.refresh_token},timeoutMs:12000
+        });
+        if(!data?.access_token) throw new Error("La renovación GPS no devolvió access_token.");
+        let authUser=data?.user || null;
+        if(!authUser?.id) authUser=await verifyGpsSupabaseSession(data.access_token);
+        saveGpsSupabaseSession({...data,user:authUser || saved.user || null});
+        return true;
+      }catch(error){
+        gpsSupabaseLastError=error?.message || String(error);
+        clearGpsSupabaseSession();
+        return false;
+      }
+    }
+
+    async function restoreGpsSupabaseSession(){
+      const saved=readGpsSupabaseSession();
+      if(!saved?.access_token){gpsSupabaseSession=null;gpsSupabaseAuthenticated=false;return false;}
+      gpsSupabaseSession=saved;
+      const expiresAt=Number(saved.expires_at || 0);
+      if(expiresAt > Math.floor(Date.now()/1000)+60){
+        try{
+          const user=await verifyGpsSupabaseSession(saved.access_token);
+          if(user?.id){gpsSupabaseAuthenticated=true;return true;}
+        }catch{}
+      }
+      return refreshGpsSupabaseSession();
+    }
+
+    async function getGpsSupabaseBearer(){
+      if(!gpsSupabaseSession) gpsSupabaseSession=readGpsSupabaseSession();
+      if(!gpsSupabaseSession?.access_token) return "";
+      const expiresAt=Number(gpsSupabaseSession.expires_at || 0);
+      if(!expiresAt || expiresAt > Math.floor(Date.now()/1000)+60){
+        gpsSupabaseAuthenticated=true;
+        return gpsSupabaseSession.access_token;
+      }
+      if(await refreshGpsSupabaseSession()) return gpsSupabaseSession?.access_token || "";
+      return "";
+    }
+
+    async function gpsSbRpc(functionName,body={}){
+      const bearer=await getGpsSupabaseBearer();
+      if(!bearer) throw new Error("Usuario no autenticado en la conexión GPS.");
+      const response=await fetch(`${GPS_SUPABASE_URL}/rest/v1/rpc/${functionName}`,{
+        method:"POST",
+        headers:{
+          "apikey":GPS_SUPABASE_ANON_KEY,
+          "Authorization":"Bearer " + bearer,
+          "Content-Type":"application/json",
+          "Accept":"application/json"
+        },
+        mode:"cors",cache:"no-store",body:JSON.stringify(body || {})
+      });
+      const raw=await response.text();
+      let data=null;
+      if(raw){try{data=JSON.parse(raw);}catch{data=raw;}}
+      if(!response.ok){
+        const code=data?.code ? ` [${data.code}]` : "";
+        const details=data?.message || data?.hint || data?.details || String(data || response.statusText || "");
+        throw new Error(`HTTP ${response.status}${code}: ${details}`);
+      }
+      return data;
+    }
+
     function setLoginMessage(message, isError=false){
       if(!loginMessage) return;
       loginMessage.textContent = message;
@@ -4095,6 +4396,7 @@
       // Recupera la sesión de la conexión adicional si aún sigue vigente.
       // Es opcional: cualquier fallo se ignora para no bloquear la aplicación principal.
       try{ await restoreOptionalSupabaseSession(); }catch(error){ console.warn("Supabase opcional:",error); }
+      try{ await restoreGpsSupabaseSession(); }catch(error){ console.warn("Supabase GPS:",error); }
       await hydrateFromSupabase();
     }
 
@@ -6726,7 +7028,7 @@
         const dayRate=dayHours > 0 ? qty / dayHours : 0;
         const detailContent=includeMachineHours
           ? `<div class="report-daily-diesel-metrics${hoursAvailable ? "" : " unavailable"}">
-              <span class="report-daily-diesel-hours">${hoursAvailable ? `${formatMachineHours(dayHours)} H MÁQ.` : "H MÁQ. —"}</span>
+              <span class="report-daily-diesel-hours">${hoursAvailable ? `${formatHoursMinutes(dayHours)} H MÁQ.` : "H MÁQ. —"}</span>
               <span class="report-daily-diesel-rate">${hoursAvailable && dayHours > 0 ? `${formatMachineHours(dayRate)} GAL/H` : "GAL/H —"}</span>
             </div>`
           : showLubricantExtras
@@ -6761,7 +7063,7 @@
       return `<div id="${escapeHtml(detailId)}" class="report-drill-detail" aria-hidden="true">
         <div class="report-drill-inner">
           <div class="report-drill-card">
-            <div class="report-drill-title"><span>${escapeHtml(product)} · DETALLE POR DÍA</span><span>TOTAL ${formatReportNumber(total)}${includeMachineHours ? ` GAL${hoursAvailable ? ` · ${formatMachineHours(totalHours)} H MÁQ.` : ""}` : ""}</span></div>
+            <div class="report-drill-title"><span>${escapeHtml(product)} · DETALLE POR DÍA</span><span>TOTAL ${formatReportNumber(total)}${includeMachineHours ? ` GAL${hoursAvailable ? ` · ${formatHoursMinutes(totalHours)} H MÁQ.` : ""}` : ""}</span></div>
             <div class="report-daily-list">${content}</div>
             ${totalsSection}
           </div>
@@ -6800,10 +7102,11 @@
       return "No se registró consumo de diésel durante este día.";
     }
 
-    function renderDieselComparisonDailyDetail(rows,from,to,detailId,fieldHoursRows=[],fieldHoursAvailable=false,workshopHoursRows=[],workshopHoursAvailable=false){
+    function renderDieselComparisonDailyDetail(rows,from,to,detailId,fieldHoursRows=[],fieldHoursAvailable=false,workshopHoursRows=[],workshopHoursAvailable=false,gpsHoursRows=[],gpsHoursAvailable=false){
       const days=buildDailyProductBreakdown(rows,"DIESEL",from,to);
       const fieldHoursByDate=new Map();
       const workshopHoursByDate=new Map();
+      const gpsHoursByDate=new Map();
 
       if(fieldHoursAvailable){
         (fieldHoursRows || []).forEach(row => {
@@ -6822,6 +7125,20 @@
           workshopHoursByDate.set(fecha,(workshopHoursByDate.get(fecha) || 0)+horas);
         });
       }
+      if(gpsHoursAvailable){
+        (gpsHoursRows || []).forEach(row => {
+          const fecha=normalizeDateKey(row.fecha);
+          if(!fecha) return;
+          if(row.horas === null || row.horas === undefined){
+            if(!gpsHoursByDate.has(fecha)) gpsHoursByDate.set(fecha,null);
+            return;
+          }
+          const horas=Number(row.horas);
+          if(!Number.isFinite(horas)) return;
+          const previous=gpsHoursByDate.get(fecha);
+          gpsHoursByDate.set(fecha,(Number.isFinite(Number(previous)) ? Number(previous) : 0)+horas);
+        });
+      }
 
       const total=days.reduce((sum,day)=>sum+Number(day.cantidad || 0),0);
       const totalFieldHours=fieldHoursAvailable
@@ -6830,6 +7147,12 @@
       const totalWorkshopHours=workshopHoursAvailable
         ? days.reduce((sum,day)=>sum+Number(workshopHoursByDate.get(day.fecha) || 0),0)
         : 0;
+      const totalGpsHours=gpsHoursAvailable
+        ? days.reduce((sum,day)=>{
+            const value=gpsHoursByDate.get(day.fecha);
+            return sum + (value === null || value === undefined ? 0 : Number(value || 0));
+          },0)
+        : 0;
       const maxQty=Math.max(...days.map(day=>Number(day.cantidad || 0)),0);
       const criticalDay=maxQty > 0 ? days.find(day=>Number(day.cantidad || 0)===maxQty) : null;
 
@@ -6837,6 +7160,8 @@
         const qty=Number(day.cantidad || 0);
         const fieldHours=fieldHoursAvailable ? Number(fieldHoursByDate.get(day.fecha) || 0) : 0;
         const workshopHours=workshopHoursAvailable ? Number(workshopHoursByDate.get(day.fecha) || 0) : 0;
+        const gpsRaw=gpsHoursAvailable ? gpsHoursByDate.get(day.fecha) : undefined;
+        const gpsHours=gpsRaw === null || gpsRaw === undefined ? null : Number(gpsRaw);
         const isCritical=Boolean(criticalDay && day.fecha===criticalDay.fecha);
         // Se conserva el GAL/H original calculado con las horas de CAMPO.
         const rate=fieldHoursAvailable && fieldHours > 0 ? qty / fieldHours : 0;
@@ -6855,8 +7180,9 @@
             <span class="diesel-reference-bar-fill" style="width:${pct.toFixed(2)}%"></span>
           </div>
           <div class="diesel-reference-value">${formatReportNumber(qty)}</div>
-          <div class="diesel-reference-value">${fieldHoursAvailable ? formatMachineHours(fieldHours) : "—"}</div>
-          <div class="diesel-reference-value">${workshopHoursAvailable ? formatMachineHours(workshopHours) : "—"}</div>
+          <div class="diesel-reference-value">${fieldHoursAvailable ? formatHoursMinutes(fieldHours) : "—"}</div>
+          <div class="diesel-reference-value">${workshopHoursAvailable ? formatHoursMinutes(workshopHours) : "—"}</div>
+          <div class="diesel-reference-value">${gpsHoursAvailable && gpsHours !== null ? formatHoursMinutes(gpsHours) : "—"}</div>
           <div class="diesel-reference-value">${fieldHoursAvailable ? formatMachineHours(rate) : "—"}</div>
         </div>`;
       }).join("");
@@ -6869,7 +7195,7 @@
                 <span class="diesel-reference-title-icon" aria-hidden="true"><i data-lucide="fuel"></i></span>
                 <div><h4>Diesel · Detalle por día</h4></div>
               </div>
-              <div class="diesel-reference-stats">${formatReportNumber(total)} gal · ${fieldHoursAvailable ? `${formatMachineHours(totalFieldHours)} h campo` : "— h campo"} · ${workshopHoursAvailable ? `${formatMachineHours(totalWorkshopHours)} h taller` : "— h taller"}</div>
+              <div class="diesel-reference-stats">${formatReportNumber(total)} gal · ${fieldHoursAvailable ? `${formatHoursMinutes(totalFieldHours)} h campo` : "— h campo"} · ${workshopHoursAvailable ? `${formatHoursMinutes(totalWorkshopHours)} h taller` : "— h taller"} · ${gpsHoursAvailable ? `${formatHoursMinutes(totalGpsHours)} h GPS` : "— h GPS"}</div>
             </div>
             <div class="diesel-reference-table">
               <div class="diesel-reference-table-head">
@@ -6878,6 +7204,7 @@
                 <div>Gal</div>
                 <div>H campo</div>
                 <div>H taller</div>
+                <div>H GPS</div>
                 <div>Gal/h</div>
               </div>
               <div class="diesel-reference-days">${daysHtml || '<div class="report-no-data">No hay días disponibles en este período.</div>'}</div>
@@ -7110,6 +7437,63 @@
       }
     }
 
+    function gpsHoursFriendlyError(error){
+      const raw=String(error?.message || error || "Error desconocido");
+      if(/Usuario no autenticado|401|403|JWT|auth/i.test(raw)){
+        return "La base GPS requiere que el usuario haya iniciado sesión en esa conexión.";
+      }
+      if(/404|PGRST202|function .* does not exist|could not find the function/i.test(raw)){
+        return `No se encontró el RPC ${GPS_HOURS_RPC_NAME} en la base GPS.`;
+      }
+      return raw;
+    }
+
+    async function fetchGpsMachineHoursRange(equipo,from,to){
+      const gpsEquipment=sanitizeEquipmentCode(equipo);
+      if(!gpsEquipment){
+        return {connected:false,notApplicable:true,equipoHoras:"",rows:[],error:"No se pudo identificar el equipo para consultar GPS."};
+      }
+      try{
+        const data=await gpsSbRpc(GPS_HOURS_RPC_NAME,{
+          p_desde:normalizeDateKey(from),
+          p_hasta:normalizeDateKey(to),
+          p_equipos:[gpsEquipment]
+        });
+        const source=Array.isArray(data) ? data : [];
+        const rows=source.map(row=>{
+          const rawHours=row?.hrs_maquina;
+          const hasCompleteData=rawHours !== null && rawHours !== undefined && rawHours !== "";
+          return {
+            fecha:normalizeDateKey(row.fecha),
+            equipo:sanitizeEquipmentCode(row.numero_equipo || gpsEquipment),
+            semana:Number(row.semana || 0),
+            horas:hasCompleteData ? workshopHoursToDecimal(rawHours) : null,
+            completo:hasCompleteData
+          };
+        }).filter(row=>row.fecha);
+        return {connected:true,notApplicable:false,equipoHoras:gpsEquipment,rows,error:""};
+      }catch(error){
+        console.error("Horas GPS RPC:",error);
+        return {connected:false,notApplicable:false,equipoHoras:gpsEquipment,rows:[],error:gpsHoursFriendlyError(error)};
+      }
+    }
+
+    function sumGpsHours(hoursRows,from,to){
+      return (hoursRows || []).reduce((sum,row)=>{
+        const fecha=normalizeDateKey(row.fecha);
+        const horas=row.horas;
+        if(!fecha || fecha < from || fecha > to || horas === null || horas === undefined || !Number.isFinite(Number(horas))) return sum;
+        return sum + Number(horas);
+      },0);
+    }
+
+    function hasGpsCompleteHours(hoursRows,from,to){
+      return (hoursRows || []).some(row=>{
+        const fecha=normalizeDateKey(row.fecha);
+        return fecha && fecha >= from && fecha <= to && row.horas !== null && row.horas !== undefined && Number.isFinite(Number(row.horas));
+      });
+    }
+
     function sumMachineHours(hoursRows,from,to){
       return (hoursRows || []).reduce((sum,row)=>{
         const fecha=normalizeDateKey(row.fecha);
@@ -7122,6 +7506,15 @@
     function formatMachineHours(value){
       const num=Number(value || 0);
       return num.toLocaleString("es-PA",{minimumFractionDigits:0,maximumFractionDigits:2});
+    }
+
+    function formatHoursMinutes(value){
+      const num=Number(value);
+      if(!Number.isFinite(num) || num < 0) return "00:00";
+      const totalMinutes=Math.round(num * 60);
+      const hours=Math.floor(totalMinutes / 60);
+      const minutes=totalMinutes % 60;
+      return `${String(hours).padStart(2,"0")}:${String(minutes).padStart(2,"0")}`;
     }
 
     function isoDateParts(value){
@@ -7243,16 +7636,19 @@
       return {mode:"month",periods:buildMonthlyDieselComparison(rows,from,to),fullMonth:false};
     }
 
-    function renderDieselComparison(comparison,rangeRows=[],fieldHoursResult=null,workshopHoursResult=null){
+    function renderDieselComparison(comparison,rangeRows=[],fieldHoursResult=null,workshopHoursResult=null,gpsHoursResult=null){
       const periods=(comparison?.periods || []);
       if(!periods.length){
         return `<div class="report-no-data">No hay periodos disponibles para comparar el consumo de DIESEL.</div>`;
       }
       const hoursRows=Array.isArray(fieldHoursResult?.rows) ? fieldHoursResult.rows : [];
       const workshopRows=Array.isArray(workshopHoursResult?.rows) ? workshopHoursResult.rows : [];
+      const gpsRows=Array.isArray(gpsHoursResult?.rows) ? gpsHoursResult.rows : [];
       periods.forEach(period => {
         period.horasMaquina=sumMachineHours(hoursRows,period.from,period.to);
         period.horasTaller=sumMachineHours(workshopRows,period.from,period.to);
+        period.horasGps=sumGpsHours(gpsRows,period.from,period.to);
+        period.gpsTieneDato=hasGpsCompleteHours(gpsRows,period.from,period.to);
       });
 
       const max=Math.max(...periods.map(p=>Number(p.cantidad || 0)),0);
@@ -7260,16 +7656,20 @@
       const totalDiesel=periods.reduce((sum,p)=>sum+Number(p.cantidad || 0),0);
       const totalFieldHours=periods.reduce((sum,p)=>sum+Number(p.horasMaquina || 0),0);
       const totalWorkshopHours=periods.reduce((sum,p)=>sum+Number(p.horasTaller || 0),0);
+      const totalGpsHours=periods.reduce((sum,p)=>sum+Number(p.horasGps || 0),0);
       const totalRate=totalFieldHours > 0 ? totalDiesel / totalFieldHours : 0;
       const hoursAvailable=Boolean(fieldHoursResult?.connected);
       const mappedEquipment=String(fieldHoursResult?.equipoHoras || "");
       const workshopAvailable=Boolean(workshopHoursResult?.connected);
       const workshopEquipment=String(workshopHoursResult?.equipoHoras || workshopHoursResult?.equipo || "");
+      const gpsAvailable=Boolean(gpsHoursResult?.connected);
+      const gpsEquipment=String(gpsHoursResult?.equipoHoras || gpsHoursResult?.equipo || "");
 
       const rows=periods.map((period,index) => {
         const qty=Number(period.cantidad || 0);
         const fieldHours=Number(period.horasMaquina || 0);
         const workshopHours=Number(period.horasTaller || 0);
+        const gpsHours=Number(period.horasGps || 0);
         const rate=fieldHours > 0 ? qty / fieldHours : 0;
         const pct=max > 0 ? Math.max(qty > 0 ? 1 : 0, Math.min(100,(qty/max)*100)) : 0;
         const isHighest=max > 0 && period === highest;
@@ -7279,11 +7679,12 @@
           <button type="button" class="diesel-period-track report-drill-toggle" data-drill-target="${detailId}" aria-expanded="false" aria-label="Ver consumo de diesel por día en ${escapeHtml(period.label)}"><div class="diesel-period-bar" style="width:${pct.toFixed(2)}%"></div></button>
           <div class="diesel-period-value diesel-period-metrics">
             <strong>${formatReportNumber(qty)} GAL</strong>
-            <span class="diesel-period-hours">${hoursAvailable ? `${formatMachineHours(fieldHours)} H CAMPO` : "H CAMPO —"}</span>
-            <span class="diesel-period-hours">${workshopAvailable ? `${formatMachineHours(workshopHours)} H TALLER` : "H TALLER —"}</span>
+            <span class="diesel-period-hours">${hoursAvailable ? `${formatHoursMinutes(fieldHours)} H CAMPO` : "H CAMPO —"}</span>
+            <span class="diesel-period-hours">${workshopAvailable ? `${formatHoursMinutes(workshopHours)} H TALLER` : "H TALLER —"}</span>
+            <span class="diesel-period-hours">${gpsAvailable && period.gpsTieneDato ? `${formatHoursMinutes(gpsHours)} H GPS` : "H GPS —"}</span>
             ${hoursAvailable && fieldHours > 0 ? `<span class="diesel-period-rate">${formatMachineHours(rate)} GAL/H</span>` : ""}
           </div>
-        </div>${renderDieselComparisonDailyDetail(rangeRows,period.from,period.to,detailId,hoursRows,hoursAvailable,workshopRows,workshopAvailable)}`;
+        </div>${renderDieselComparisonDailyDetail(rangeRows,period.from,period.to,detailId,hoursRows,hoursAvailable,workshopRows,workshopAvailable,gpsRows,gpsAvailable)}`;
       }).join("");
 
       if(max <= 0){
@@ -7305,14 +7706,21 @@
         sourceParts.push(`<div class="diesel-hours-source">HORAS TALLER${workshopEquipment ? ` · EQUIPO ${escapeHtml(workshopEquipment)}` : ""} · ${escapeHtml(formatDateDisplay(periods[0].from))} AL ${escapeHtml(formatDateDisplay(periods[periods.length-1].to))}</div>`);
       }
 
+      if(!gpsAvailable){
+        sourceParts.push(`<div class="diesel-hours-source warn">HORAS GPS${gpsEquipment ? ` · EQUIPO ${escapeHtml(gpsEquipment)}` : ""}: ${escapeHtml(gpsHoursResult?.error || "No se pudieron consultar las horas GPS.")}</div>`);
+      }else{
+        sourceParts.push(`<div class="diesel-hours-source">HORAS GPS · EQUIPO ${escapeHtml(gpsEquipment)} · ${escapeHtml(formatDateDisplay(periods[0].from))} AL ${escapeHtml(formatDateDisplay(periods[periods.length-1].to))}</div>`);
+      }
+
       const summary=`<div class="diesel-hours-summary">
         <div class="diesel-hours-card"><span>DIESEL TOTAL</span><strong>${formatReportNumber(totalDiesel)} GAL</strong></div>
-        <div class="diesel-hours-card"><span>HORAS CAMPO</span><strong>${hoursAvailable ? `${formatMachineHours(totalFieldHours)} H` : "—"}</strong></div>
-        <div class="diesel-hours-card"><span>HORAS TALLER</span><strong>${workshopAvailable ? `${formatMachineHours(totalWorkshopHours)} H` : "—"}</strong></div>
+        <div class="diesel-hours-card"><span>HORAS CAMPO</span><strong>${hoursAvailable ? `${formatHoursMinutes(totalFieldHours)} H` : "—"}</strong></div>
+        <div class="diesel-hours-card"><span>HORAS TALLER</span><strong>${workshopAvailable ? `${formatHoursMinutes(totalWorkshopHours)} H` : "—"}</strong></div>
+        <div class="diesel-hours-card"><span>HORAS GPS</span><strong>${gpsAvailable ? `${formatHoursMinutes(totalGpsHours)} H` : "—"}</strong></div>
         <div class="diesel-hours-card rate"><span>CONSUMO POR HORA</span><strong>${hoursAvailable && totalFieldHours > 0 ? `${formatMachineHours(totalRate)} GAL/H` : "—"}</strong></div>
       </div>`;
 
-      return `${summary}${sourceParts.join("")}<div class="diesel-comparison-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER EL DETALLE DE CADA DÍA · CONSUMO EN GALONES Y HORAS DE CAMPO Y TALLER</div></div>`;
+      return `${summary}${sourceParts.join("")}<div class="diesel-comparison-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER EL DETALLE DE CADA DÍA · CONSUMO EN GALONES Y HORAS DE CAMPO, TALLER Y GPS</div></div>`;
     }
 
     function initializeReportDrilldowns(){
@@ -7366,7 +7774,7 @@
       }
     }
 
-    function renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount,rangeRows,fieldHoursResult,workshopHoursResult}){
+    function renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount,rangeRows,fieldHoursResult,workshopHoursResult,gpsHoursResult}){
       const split=splitReportConsumption(summary.consumos);
       const fuelSummaryHtml=renderFuelSummary(split.combustibles,rangeRows,from,to,fieldHoursResult);
       const fuelSectionHtml = fuelSummaryHtml ? `<div class="report-section">
@@ -7378,7 +7786,7 @@
         </div>` : "";
       const lubricantChartHtml=renderConsumptionChart(split.lubricantes,"CANTIDAD ACUMULADA DE LUBRICANTES",rangeRows,from,to);
       const dieselComparison=buildDieselComparison(rangeRows,from,to);
-      const dieselComparisonHtml=renderDieselComparison(dieselComparison,rangeRows,fieldHoursResult,workshopHoursResult);
+      const dieselComparisonHtml=renderDieselComparison(dieselComparison,rangeRows,fieldHoursResult,workshopHoursResult,gpsHoursResult);
       const oilHtml = oilChanges.length
         ? oilChanges.map(change => `<div class="oil-history-item">
             <div class="oil-history-top">
@@ -7530,14 +7938,16 @@
         const dieselTotal=Number(summary?.consumos?.find(item => String(item?.producto || "").toUpperCase() === "DIESEL")?.cantidad || 0);
         let fieldHoursResult={connected:false,notApplicable:false,equipoHoras:"",rows:[],error:""};
         let workshopHoursResult={connected:false,notApplicable:false,equipoHoras:"",rows:[],error:""};
+        let gpsHoursResult={connected:false,notApplicable:false,equipoHoras:"",rows:[],error:""};
         if(dieselTotal > 0){
-          [fieldHoursResult,workshopHoursResult]=await Promise.all([
+          [fieldHoursResult,workshopHoursResult,gpsHoursResult]=await Promise.all([
             fetchFieldMachineHoursRange(equipo,from,to),
-            fetchWorkshopMachineHoursRange(equipo,from,to)
+            fetchWorkshopMachineHoursRange(equipo,from,to),
+            fetchGpsMachineHoursRange(equipo,from,to)
           ]);
         }
         const oilChanges = extractOilChanges(oilRows);
-        renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount:rangeRows.length,rangeRows,fieldHoursResult,workshopHoursResult});
+        renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount:rangeRows.length,rangeRows,fieldHoursResult,workshopHoursResult,gpsHoursResult});
         setReportsStatus("");
       }catch(error){
         console.error("Reporte Supabase:", error);
@@ -8237,6 +8647,218 @@
       }
     }
 
+    let oilControlSelectedSource = "field";
+    let oilControlLoading = false;
+    let oilControlLastChangesCache = null;
+    let oilControlEquipmentCache = null;
+
+    function oilControlSourceLabel(source=oilControlSelectedSource){
+      return source === "workshop" ? "TALLER" : source === "gps" ? "GPS" : "CAMPO";
+    }
+
+    function oilControlState(hours){
+      const value=Number(hours || 0);
+      if(value >= 250) return {key:"red",label:"CAMBIO DE ACEITE",message:"CAMBIO REQUERIDO"};
+      if(value >= 230) return {key:"orange",label:value >= 240 ? "MUY PRÓXIMO" : "FALTA POCO",message:"PRÓXIMO A 250 H"};
+      return {key:"green",label:"EN SEGUIMIENTO",message:"CONTROL ACTIVO"};
+    }
+
+    function renderOilControlSummary(items=[]){
+      if(!oilControlSummary) return;
+      const green=items.filter(item=>item.state.key === "green").length;
+      const orange=items.filter(item=>item.state.key === "orange").length;
+      const red=items.filter(item=>item.state.key === "red").length;
+      oilControlSummary.innerHTML=`
+        <div class="oil-control-summary-card"><span>FUENTE ACTIVA</span><strong>${escapeHtml(oilControlSourceLabel())}</strong></div>
+        <div class="oil-control-summary-card green"><span>200–229 H</span><strong>${green}</strong></div>
+        <div class="oil-control-summary-card orange"><span>230–249 H</span><strong>${orange}</strong></div>
+        <div class="oil-control-summary-card red"><span>250 H O MÁS</span><strong>${red}</strong></div>`;
+    }
+
+    function renderOilControlCards(items=[]){
+      if(!oilControlGrid) return;
+      if(!items.length){
+        oilControlGrid.innerHTML=`<div class="oil-control-empty">NO HAY EQUIPOS CON 200 HORAS O MÁS USANDO HORAS ${escapeHtml(oilControlSourceLabel())}.<br>LOS EQUIPOS SIN FECHA DE ÚLTIMO CAMBIO NO SE PUEDEN CALCULAR.</div>`;
+        return;
+      }
+      oilControlGrid.innerHTML=items.map(item=>{
+        const progress=Math.max(0,Math.min(100,(Number(item.hours || 0)/250)*100));
+        const remaining=Math.max(0,250-Number(item.hours || 0));
+        const sourceText=`HORAS ${oilControlSourceLabel(item.source)}`;
+        const partialNote=item.partial ? `<div class="oil-control-note partial">ADVERTENCIA: LA FUENTE GPS CONTIENE UNO O MÁS DÍAS SIN REPORTE COMPLETO; EL ACUMULADO PUEDE SER PARCIAL.</div>` : "";
+        return `<article class="oil-control-card ${item.state.key}">
+          <div class="oil-control-card-head">
+            <div class="oil-control-equipment"><strong>${escapeHtml(item.codigo)}</strong><span>${escapeHtml(item.tipo || "SIN TIPO")}</span></div>
+            <span class="oil-control-badge">${escapeHtml(item.state.label)}</span>
+          </div>
+          <div class="oil-control-hours-row">
+            <div class="oil-control-hours"><span>HORAS ACUMULADAS</span><strong>${formatHoursMinutes(item.hours)}</strong></div>
+            <div class="oil-control-remaining"><span>${item.hours >= 250 ? "EXCESO" : "FALTAN PARA 250 H"}</span><strong>${item.hours >= 250 ? `+${formatHoursMinutes(item.hours-250)}` : formatHoursMinutes(remaining)}</strong></div>
+          </div>
+          <div class="oil-control-progress" aria-label="${Math.round(progress)}% del intervalo de 250 horas"><span style="width:${progress.toFixed(2)}%"></span></div>
+          <div class="oil-control-meta">
+            <div class="oil-control-meta-item"><span>ÚLTIMO CAMBIO</span><strong>${escapeHtml(formatDateLongDisplay(item.lastChange.fechaKey))}</strong></div>
+            <div class="oil-control-meta-item"><span>FUENTE DE VALIDACIÓN</span><strong>${escapeHtml(sourceText)}</strong></div>
+          </div>
+          <div class="oil-control-note">CÁLCULO DESDE ${escapeHtml(formatDateDisplay(item.lastChange.fechaKey))} HASTA ${escapeHtml(formatDateDisplay(item.to))} · ${escapeHtml(item.state.message)}</div>
+          ${partialNote}
+        </article>`;
+      }).join("");
+    }
+
+    async function fetchOilControlEquipmentCatalog(){
+      if(Array.isArray(oilControlEquipmentCache)) return oilControlEquipmentCache;
+      const rows=await sbRequest("combustible_equipos",{query:"?select=codigo,tipo&activo=eq.true&order=codigo.asc",prefer:""});
+      oilControlEquipmentCache=(Array.isArray(rows)?rows:[]).map(row=>({
+        codigo:sanitizeEquipmentCode(row.codigo),
+        tipo:String(row.tipo || "SIN TIPO").trim().toUpperCase() || "SIN TIPO"
+      })).filter(row=>row.codigo);
+      return oilControlEquipmentCache;
+    }
+
+    async function fetchOilControlOilMovements(){
+      const all=[];
+      const seen=new Set();
+      const pageSize=1000;
+      async function collect(queryBase){
+        for(let offset=0;offset<50000;offset+=pageSize){
+          const page=await sbRequest("combustible_movimientos",{
+            query:`${queryBase}&limit=${pageSize}&offset=${offset}`,
+            prefer:""
+          });
+          const rows=Array.isArray(page)?page:[];
+          rows.forEach(row=>{
+            const key=String(row.id || `${row.equipo}-${row.fecha}-${row.created_at || ""}`);
+            if(seen.has(key)) return;
+            seen.add(key); all.push(row);
+          });
+          if(rows.length < pageSize) break;
+        }
+      }
+      const select="?select=id,fecha,equipo,planta,created_at,combustible_movimiento_detalle!inner(id,producto,cantidad,tipo_movimiento,comentario,cambio_aceite,created_at)&order=fecha.desc,created_at.desc";
+      await collect(select+"&combustible_movimiento_detalle.cambio_aceite=eq.true");
+      try{
+        await collect(select+"&combustible_movimiento_detalle.tipo_movimiento=ilike.CAMBIO%20DE%20ACEITE*");
+      }catch(error){
+        console.warn("Control aceite: filtro alterno por tipo no disponible; se usa el indicador cambio_aceite.",error);
+      }
+      return all;
+    }
+
+    async function fetchOilControlLastChanges(force=false){
+      if(oilControlLastChangesCache && !force) return oilControlLastChangesCache;
+      const rows=await fetchOilControlOilMovements();
+      const map=new Map();
+      rows.forEach(movement=>{
+        const codigo=sanitizeEquipmentCode(movement.equipo);
+        const fechaKey=normalizeDateKey(movement.fecha);
+        if(!codigo || !fechaKey) return;
+        const details=(movement.combustible_movimiento_detalle || []).filter(item=>{
+          const tipo=String(item.tipo_movimiento || "").trim().toUpperCase();
+          return Boolean(item.cambio_aceite) || tipo.startsWith("CAMBIO DE ACEITE");
+        });
+        if(!details.length) return;
+        const current=map.get(codigo);
+        if(!current || fechaKey > current.fechaKey){
+          const detail=details[0] || {};
+          map.set(codigo,{
+            fechaKey,
+            producto:String(detail.producto || "").trim().toUpperCase(),
+            tipo:String(detail.tipo_movimiento || "CAMBIO DE ACEITE").trim().toUpperCase()
+          });
+        }
+      });
+      oilControlLastChangesCache=map;
+      return map;
+    }
+
+    async function fetchOilControlHoursForEquipment(equipo,from,to,source){
+      if(source === "workshop") return fetchWorkshopMachineHoursRange(equipo,from,to);
+      if(source === "gps") return fetchGpsMachineHoursRange(equipo,from,to);
+      return fetchFieldMachineHoursRange(equipo,from,to);
+    }
+
+    async function oilControlMapConcurrent(items,limit,worker){
+      const results=new Array(items.length);
+      let cursor=0;
+      const runners=Array.from({length:Math.min(limit,items.length)},async()=>{
+        while(true){
+          const index=cursor++;
+          if(index>=items.length) break;
+          try{results[index]=await worker(items[index],index);}catch(error){results[index]={error};}
+        }
+      });
+      await Promise.all(runners);
+      return results;
+    }
+
+    async function loadOilControlView({force=false}={}){
+      if(oilControlLoading) return;
+      oilControlLoading=true;
+      if(oilControlRefreshBtn) oilControlRefreshBtn.disabled=true;
+      oilControlSourceSwitches?.querySelectorAll("[data-oil-source]").forEach(btn=>btn.disabled=true);
+      if(oilControlStatus){
+        oilControlStatus.className="oil-control-status";
+        oilControlStatus.textContent=`CALCULANDO HORAS ${oilControlSourceLabel()} DESDE EL ÚLTIMO CAMBIO DE ACEITE...`;
+      }
+      if(oilControlGrid) oilControlGrid.innerHTML='<div class="oil-control-empty">CONSULTANDO EQUIPOS, CAMBIOS DE ACEITE Y HORAS ACUMULADAS...</div>';
+      try{
+        if(force){oilControlLastChangesCache=null;oilControlEquipmentCache=null;}
+        const today=isoFromLocalDate(new Date());
+        const [equipment,lastChanges]=await Promise.all([
+          fetchOilControlEquipmentCatalog(),
+          fetchOilControlLastChanges(force)
+        ]);
+        const candidates=equipment.filter(item=>lastChanges.has(item.codigo)).map(item=>({...item,lastChange:lastChanges.get(item.codigo)}));
+        const source=oilControlSelectedSource;
+        const results=await oilControlMapConcurrent(candidates,5,async item=>{
+          const from=item.lastChange.fechaKey;
+          const result=await fetchOilControlHoursForEquipment(item.codigo,from,today,source);
+          if(!result?.connected || result?.notApplicable) return {...item,source,to:today,available:false,error:result?.error || "Fuente no disponible"};
+          let hours=0, partial=false;
+          if(source === "gps"){
+            hours=sumGpsHours(result.rows,from,today);
+            partial=(result.rows || []).some(row=>row.completo === false);
+          }else{
+            hours=sumMachineHours(result.rows,from,today);
+          }
+          return {...item,source,to:today,available:true,hours,partial,state:oilControlState(hours)};
+        });
+        const valid=results.filter(item=>item && !item.error && item.available);
+        const visible=valid.filter(item=>Number(item.hours || 0)>=200)
+          .sort((a,b)=>Number(b.hours||0)-Number(a.hours||0) || a.codigo.localeCompare(b.codigo,"es",{numeric:true}));
+        const unavailable=results.filter(item=>item && (item.error || !item.available)).length;
+        const noChange=Math.max(0,equipment.length-candidates.length);
+        renderOilControlSummary(visible);
+        renderOilControlCards(visible);
+        if(oilControlStatus){
+          oilControlStatus.textContent=`FUENTE ${oilControlSourceLabel()} · ${visible.length} EQUIPOS CON 200 H O MÁS · ${noChange} SIN FECHA DE CAMBIO${unavailable ? ` · ${unavailable} SIN DATOS EN ESTA FUENTE` : ""} · CORTE ${formatDateDisplay(today)}`;
+        }
+      }catch(error){
+        console.error("Control de cambio de aceite:",error);
+        renderOilControlSummary([]);
+        if(oilControlGrid) oilControlGrid.innerHTML='<div class="oil-control-empty">NO SE PUDO GENERAR EL CONTROL DE CAMBIO DE ACEITE.</div>';
+        if(oilControlStatus){oilControlStatus.className="oil-control-status error";oilControlStatus.textContent=error?.message || String(error);}
+      }finally{
+        oilControlLoading=false;
+        if(oilControlRefreshBtn) oilControlRefreshBtn.disabled=false;
+        oilControlSourceSwitches?.querySelectorAll("[data-oil-source]").forEach(btn=>btn.disabled=false);
+      }
+    }
+
+    function setOilControlSource(source){
+      const normalized=["field","workshop","gps"].includes(source)?source:"field";
+      if(oilControlSelectedSource===normalized && oilControlGrid?.dataset.loaded === "true") return;
+      oilControlSelectedSource=normalized;
+      oilControlSourceSwitches?.querySelectorAll("[data-oil-source]").forEach(btn=>{
+        const active=btn.dataset.oilSource===normalized;
+        btn.classList.toggle("active",active);
+        btn.setAttribute("aria-checked",active?"true":"false");
+      });
+      if(oilControlGrid) oilControlGrid.dataset.loaded="true";
+      loadOilControlView();
+    }
+
     function showDashboard(){
       currentAppView = "dashboard";
       dashboardMenu.classList.remove("hidden-view");
@@ -8247,6 +8869,7 @@
       inventoryView.classList.remove("view-hidden");
       historyView.classList.add("view-hidden");
       reportsView.classList.add("view-hidden");
+      oilControlView?.classList.add("view-hidden");
       quotasView.classList.add("view-hidden");
       equipmentAdminView.classList.add("view-hidden");
       userAdminView.classList.add("view-hidden");
@@ -8258,7 +8881,7 @@
 
     function openAppView(view){
       if(currentUser?.rol === "usuario" && !USER_ALLOWED_VIEWS.has(view)){
-        showToast("El rol USUARIO solo tiene acceso a Reportes.", true);
+        showToast("El rol USUARIO solo tiene acceso a Reportes y Control de cambio de aceite.", true);
         showDashboard();
         return;
       }
@@ -8277,6 +8900,7 @@
       inventoryView.classList.remove("view-hidden");
       historyView.classList.add("view-hidden");
       reportsView.classList.add("view-hidden");
+      oilControlView?.classList.add("view-hidden");
       quotasView.classList.add("view-hidden");
       equipmentAdminView.classList.add("view-hidden");
       userAdminView.classList.add("view-hidden");
@@ -8313,6 +8937,18 @@
         currentViewLabel.textContent = "REPORTES";
         // No se consulta Supabase al abrir la vista. Solo al pulsar GENERAR REPORTE.
         updateReportGenerateState();
+      }else if(view === "oil-control"){
+        movementView.classList.add("view-hidden");
+        inventoryView.classList.add("view-hidden");
+        historyView.classList.add("view-hidden");
+        reportsView.classList.add("view-hidden");
+        quotasView.classList.add("view-hidden");
+        equipmentAdminView.classList.add("view-hidden");
+        userAdminView.classList.add("view-hidden");
+        oilControlView?.classList.remove("view-hidden");
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent = "CONTROL DE CAMBIO DE ACEITE";
+        loadOilControlView();
       }else if(view === "cuotas"){
         movementView.classList.add("view-hidden");
         inventoryView.classList.add("view-hidden");
@@ -8409,6 +9045,8 @@
         }else if(currentAppView === "history"){
           if(recordsView?.classList.contains("active")) await loadRecordsFromSupabase();
           else await loadSavedInventoriesFromSupabase();
+        }else if(currentAppView === "oil-control"){
+          await loadOilControlView({force:true});
         }else if(currentAppView === "cuotas"){
           await loadQuotasView();
         }else if(isMovementEntryContextActive() && plantaInput?.value && fechaPicker?.value){
@@ -8428,6 +9066,10 @@
     }
 
     appRefreshBtn?.addEventListener("click", refreshApplicationData);
+    oilControlRefreshBtn?.addEventListener("click",()=>loadOilControlView({force:true}));
+    oilControlSourceSwitches?.querySelectorAll("[data-oil-source]").forEach(btn=>{
+      btn.addEventListener("click",()=>setOilControlSource(btn.dataset.oilSource));
+    });
 
     entryMovementTab.addEventListener("click", () => setEntryTab("movement"));
     entryInventoryTab.addEventListener("click", () => setEntryTab("inventory"));
@@ -8563,6 +9205,15 @@
           console.warn("Segunda BD sin sesión autenticada; se intentarán las consultas permitidas con anon key:", optionalLoginResult?.error || "Error desconocido");
         }
 
+        // Tercera conexión GPS: usa el mismo correo y contraseña del login principal.
+        // El RPC GPS exige usuario autenticado, por eso aquí sí se requiere un access_token válido para consultar.
+        const gpsLoginResult = await loginGpsSupabase(correo,password);
+        if(gpsLoginResult?.authenticated){
+          console.info("Base GPS conectada con sesión de usuario.");
+        }else if(!gpsLoginResult?.skipped){
+          console.warn("Base GPS sin sesión; Horas GPS no estarán disponibles:",gpsLoginResult?.error || "Error desconocido");
+        }
+
         loginPassword.value = "";
         await enterAuthenticatedApp(data);
       }catch(error){
@@ -8577,14 +9228,19 @@
     logoutBtn.addEventListener("click", async () => {
       const token = currentSessionToken;
       const optionalToken = optionalSupabaseSession?.access_token || readOptionalSupabaseSession()?.access_token || "";
+      const gpsToken = gpsSupabaseSession?.access_token || readGpsSupabaseSession()?.access_token || "";
       clearAuthSession();
       clearOptionalSupabaseSession();
+      clearGpsSupabaseSession();
       showLogin();
       if(token){
         try{ await sbRpc("cerrar_sesion", {p_token:token}); }catch{}
       }
       if(optionalToken){
         try{ await optionalSupabaseAuthFetch("/auth/v1/logout", {method:"POST",token:optionalToken,timeoutMs:4000}); }catch{}
+      }
+      if(gpsToken){
+        try{ await gpsSupabaseAuthFetch("/auth/v1/logout", {method:"POST",token:gpsToken,timeoutMs:4000}); }catch{}
       }
     });
 
