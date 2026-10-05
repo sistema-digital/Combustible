@@ -2572,6 +2572,73 @@
       .oil-control-card{padding:12px}.oil-control-hours strong{font-size:22px}.oil-control-meta{grid-template-columns:1fr}
     }
 
+
+    /* ===== CONTROL SEMANAL DE HORAS Y CONSUMO ===== */
+    .weekly-hours-view{grid-column:1/-1;min-width:0;overflow:hidden}
+    .weekly-hours-heading{display:flex;align-items:center;gap:13px;padding:20px 20px 12px}
+    .weekly-hours-heading-icon{width:42px;height:42px;border-radius:11px;background:#eef4ff;color:#1769d1;display:grid;place-items:center;flex:0 0 auto}
+    .weekly-hours-heading-icon svg{width:25px;height:25px}
+    .weekly-hours-heading h2{margin:0;color:#102d69;font-size:24px;font-weight:950;letter-spacing:.01em}
+    .weekly-hours-controls{display:grid;grid-template-columns:48px minmax(245px,.95fr) 48px minmax(260px,1fr) auto;gap:10px;align-items:end;padding:10px 20px 16px}
+    .weekly-hours-nav-btn{height:44px;border:1.5px solid #bfd3f3;border-radius:10px;background:#fff;color:#1769d1;display:grid;place-items:center;cursor:pointer;font-size:26px;font-weight:700;line-height:1}
+    .weekly-hours-nav-btn:hover{background:#eef5ff;border-color:#8eb5ef}
+    .weekly-hours-week-chip{height:44px;border:1.5px solid #bfd3f3;border-radius:10px;background:#eef5ff;color:#1769d1;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 14px;font-size:12px;font-weight:950;white-space:nowrap}
+    .weekly-hours-week-chip svg{width:18px;height:18px;flex:0 0 auto}
+    .weekly-hours-filter{display:grid;gap:5px;min-width:0}
+    .weekly-hours-filter label{margin:0;font-size:10px;font-weight:950;color:#4c6382;letter-spacing:.03em;text-transform:uppercase}
+    .weekly-hours-search-wrap{position:relative}
+    .weekly-hours-search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:#5d7697;pointer-events:none}
+    .weekly-hours-search-wrap input{height:44px;width:100%;border:1.5px solid #d2deee;border-radius:10px;padding:0 52px 0 40px;font-size:12px;font-weight:800;color:#324c70;background:#fff;text-transform:uppercase}
+    .weekly-hours-search-wrap input:focus{border-color:#7ea9e8;box-shadow:0 0 0 3px rgba(23,105,209,.10);outline:none}
+    .weekly-hours-add-selection-btn{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;border-radius:8px;background:#e9f2ff;color:#1769d1;font-size:22px;font-weight:900;line-height:1;display:grid;place-items:center;cursor:pointer}
+    .weekly-hours-add-selection-btn:hover{background:#dcebff}
+    .weekly-hours-selected{display:flex;flex-wrap:wrap;gap:6px;min-height:0;margin-top:7px}
+    .weekly-hours-selected-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 8px 6px 10px;border-radius:999px;background:#eef5ff;border:1px solid #cfe0fa;color:#214b84;font-size:11px;font-weight:900;line-height:1}
+    .weekly-hours-selected-chip button{border:0;background:transparent;color:#55739f;font-size:15px;line-height:1;cursor:pointer;padding:0 0 0 1px}
+    .weekly-hours-selected-chip button:hover{color:#174ea6}
+    .weekly-hours-filter-hint{font-size:10px;font-weight:800;color:#7a8ea9;line-height:1.25}
+    .weekly-hours-load-btn{height:44px;border:0;border-radius:10px;background:#0f6fe8;color:#fff;padding:0 20px;display:inline-flex;align-items:center;justify-content:center;gap:9px;font-size:11px;font-weight:950;letter-spacing:.02em;cursor:pointer;white-space:nowrap;box-shadow:0 6px 14px rgba(15,111,232,.18)}
+    .weekly-hours-load-btn:hover{background:#0b63d2}
+    .weekly-hours-load-btn:disabled,.weekly-hours-nav-btn:disabled{opacity:.55;cursor:wait}
+    .weekly-hours-status{display:none;margin:0 20px 12px;padding:9px 11px;border-radius:9px;background:#f8fafc;border:1px solid #e2e8f0;color:#64748b;font-size:10px;font-weight:850;text-transform:uppercase;line-height:1.35}
+    .weekly-hours-status.show{display:block}
+    .weekly-hours-status.error{display:block;background:#fff7f7;border-color:#fecaca;color:#b91c1c}
+    .weekly-hours-table-wrap{margin:0 20px 20px;border:1px solid #dce5f0;border-radius:13px;overflow:auto;background:#fff;min-height:260px}
+    .weekly-hours-table{width:100%;min-width:860px;border-collapse:collapse;table-layout:auto}
+    .weekly-hours-table thead th{position:sticky;top:0;z-index:5;background:#eef6ff;color:#17376d;padding:11px 10px;text-align:center;font-size:10px;font-weight:950;letter-spacing:.025em;border-bottom:1px solid #d7e2ef;white-space:nowrap}
+    .weekly-hours-table td{padding:9px 10px;border-bottom:1px solid #e8eef5;color:#415a7a;font-size:11px;text-align:center;vertical-align:middle;background:#fff}
+    .weekly-hours-table tbody tr:nth-child(even) td{background:#fbfdff}
+    .weekly-hours-table tbody tr.weekly-hours-group-start td{border-top:2px solid #cfdceb}
+    .weekly-hours-table tbody tr.weekly-hours-group-start:first-child td{border-top:0}
+    .weekly-hours-table tfoot td{padding:11px 10px;border-top:2px solid #b6cae7;background:#f1f7ff;color:#133a72;font-size:11px;font-weight:950;text-align:center;white-space:nowrap}
+    .weekly-hours-total-label{text-align:right!important;text-transform:uppercase;letter-spacing:.02em}
+    .weekly-hours-equipment-cell{min-width:145px;text-align:left!important;font-weight:950;color:#0b347a!important;background:#fff!important}
+    .weekly-hours-type-cell{min-width:145px;text-align:left!important;color:#6480a7!important;font-weight:850;text-transform:uppercase;background:#fff!important}
+    .weekly-hours-equipment{display:flex;align-items:center;gap:9px;min-width:0}
+    .weekly-hours-equipment-icon{width:34px;height:34px;border-radius:9px;background:#eef4ff;color:#1f5fb5;display:grid;place-items:center;flex:0 0 auto}
+    .weekly-hours-equipment-icon svg{width:22px;height:22px}
+    .weekly-hours-equipment strong{display:block;color:#0b347a;font-size:13px;font-weight:950}
+    .weekly-hours-day-cell{font-weight:950;color:#17376d!important;white-space:nowrap}
+    .weekly-hours-date-cell{color:#6b7f99!important;font-weight:800;white-space:nowrap}
+    .weekly-hours-value{font-variant-numeric:tabular-nums;font-weight:950;white-space:nowrap}
+    .weekly-hours-value.field{color:#15803d}.weekly-hours-value.workshop{color:#c36a00}.weekly-hours-value.gps{color:#6d42e8}.weekly-hours-value.consumption{color:#d93636}
+    .weekly-hours-zero{color:#94a3b8!important;font-weight:800}
+    .weekly-hours-empty{padding:44px 18px;text-align:center;color:#718096;font-size:12px;font-weight:800}
+    .weekly-hours-empty strong{display:block;margin-bottom:5px;color:#42536d;font-size:14px}
+    @media(max-width:980px){
+      .weekly-hours-controls{grid-template-columns:44px minmax(220px,1fr) 44px minmax(220px,1fr);padding:10px 14px 14px}
+      .weekly-hours-load-btn{grid-column:1/-1;width:100%}
+      .weekly-hours-table-wrap{margin:0 14px 16px}
+      .weekly-hours-heading{padding:18px 14px 10px}.weekly-hours-heading h2{font-size:20px}
+    }
+    @media(max-width:650px){
+      .weekly-hours-controls{grid-template-columns:42px 1fr 42px;gap:8px}
+      .weekly-hours-filter{grid-column:1/-1}.weekly-hours-load-btn{grid-column:1/-1;width:100%}
+      .weekly-hours-week-chip{font-size:11px;padding:0 7px}
+      .weekly-hours-table{min-width:760px}
+      .weekly-hours-heading h2{font-size:18px}
+    }
+
   </style>
 </head>
 <body class="auth-locked">
@@ -2737,6 +2804,19 @@
         </button>
 
 
+
+
+
+        <button type="button" class="menu-card" data-view="weekly-hours">
+          <span class="menu-card-icon" aria-hidden="true">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M8 3v4M16 3v4M3 10h18M8 14h2M12 14h2M16 14h2M8 18h2M12 18h2M16 18h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <h3>Horas y consumo semanal</h3>
+          <p>Compare por día las horas de Campo, Taller y GPS junto al consumo de combustible de cada equipo.</p>
+        </button>
 
         <button type="button" class="menu-card" data-view="oil-control">
           <span class="menu-card-icon" aria-hidden="true">
@@ -3201,6 +3281,62 @@
 
 
 
+
+
+      <article id="weeklyHoursView" class="card app-view-card weekly-hours-view view-hidden">
+        <div class="weekly-hours-heading">
+          <span class="weekly-hours-heading-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 3v4M16 3v4M3 10h18M8 14h2M12 14h2M16 14h2M8 18h2M12 18h2M16 18h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <h2>CONTROL SEMANAL DE HORAS Y CONSUMO</h2>
+        </div>
+
+        <div class="weekly-hours-controls">
+          <button id="weeklyHoursPrevBtn" type="button" class="weekly-hours-nav-btn" aria-label="Semana anterior">‹</button>
+          <div id="weeklyHoursWeekChip" class="weekly-hours-week-chip">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span>SEMANA</span>
+          </div>
+          <button id="weeklyHoursNextBtn" type="button" class="weekly-hours-nav-btn" aria-label="Semana siguiente">›</button>
+          <div class="weekly-hours-filter equipment-filter">
+            <label for="weeklyHoursEquipment">EQUIPOS</label>
+            <div class="weekly-hours-search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.9"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+              <input id="weeklyHoursEquipment" type="search" list="weeklyHoursEquipmentOptions" autocomplete="off" placeholder="BUSQUE Y PRESIONE ENTER PARA AGREGAR">
+              <button id="weeklyHoursEquipmentAddBtn" type="button" class="weekly-hours-add-selection-btn" aria-label="Agregar equipo">+</button>
+              <datalist id="weeklyHoursEquipmentOptions"></datalist>
+            </div>
+            <div id="weeklyHoursSelected" class="weekly-hours-selected"></div>
+            <div class="weekly-hours-filter-hint">Puede seleccionar varios equipos. También puede seguir buscando mientras escribe.</div>
+          </div>
+          <button id="weeklyHoursLoadBtn" type="button" class="weekly-hours-load-btn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.9"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+            CARGAR SEMANA
+          </button>
+        </div>
+
+        <div id="weeklyHoursStatus" class="weekly-hours-status" aria-live="polite"></div>
+        <div class="weekly-hours-table-wrap">
+          <table id="weeklyHoursTable" class="weekly-hours-table">
+            <thead>
+              <tr>
+                <th>EQUIPO</th>
+                <th>TIPO</th>
+                <th>DÍA</th>
+                <th>FECHA</th>
+                <th>CAMPO</th>
+                <th>TALLER</th>
+                <th>GPS</th>
+                <th>CONSUMO</th>
+              </tr>
+            </thead>
+            <tbody id="weeklyHoursBody"></tbody>
+            <tfoot id="weeklyHoursFoot"></tfoot>
+          </table>
+          <div id="weeklyHoursEmpty" class="weekly-hours-empty"><strong>Seleccione la semana</strong><span>Pulse CARGAR SEMANA para consultar los equipos con registros de horas.</span></div>
+        </div>
+      </article>
+
       <article id="oilControlView" class="card app-view-card oil-control-view view-hidden">
         <div class="card-header">
           <h2>CONTROL DE CAMBIO DE ACEITE</h2>
@@ -3579,6 +3715,19 @@
     const historyView = document.getElementById("historyView");
     const reportsView = document.getElementById("reportsView");
     const oilControlView = document.getElementById("oilControlView");
+    const weeklyHoursView = document.getElementById("weeklyHoursView");
+    const weeklyHoursPrevBtn = document.getElementById("weeklyHoursPrevBtn");
+    const weeklyHoursNextBtn = document.getElementById("weeklyHoursNextBtn");
+    const weeklyHoursWeekChip = document.getElementById("weeklyHoursWeekChip");
+    const weeklyHoursEquipment = document.getElementById("weeklyHoursEquipment");
+    const weeklyHoursEquipmentOptions = document.getElementById("weeklyHoursEquipmentOptions");
+    const weeklyHoursEquipmentAddBtn = document.getElementById("weeklyHoursEquipmentAddBtn");
+    const weeklyHoursSelected = document.getElementById("weeklyHoursSelected");
+    const weeklyHoursLoadBtn = document.getElementById("weeklyHoursLoadBtn");
+    const weeklyHoursStatus = document.getElementById("weeklyHoursStatus");
+    const weeklyHoursBody = document.getElementById("weeklyHoursBody");
+    const weeklyHoursFoot = document.getElementById("weeklyHoursFoot");
+    const weeklyHoursEmpty = document.getElementById("weeklyHoursEmpty");
     const oilControlSourceSwitches = document.getElementById("oilControlSourceSwitches");
     const oilControlRefreshBtn = document.getElementById("oilControlRefreshBtn");
     const oilControlStatus = document.getElementById("oilControlStatus");
@@ -3858,7 +4007,7 @@
     });
     const ADMIN_ONLY_VIEWS = new Set(["users"]);
     const SUPERVISOR_ALLOWED_VIEWS = new Set(["equipment-admin"]);
-    const USER_ALLOWED_VIEWS = new Set(["reports","oil-control"]);
+    const USER_ALLOWED_VIEWS = new Set(["reports","weekly-hours","oil-control"]);
     let viewVisibilityConfig = {...VIEW_VISIBILITY_DEFAULTS};
     let viewVisibilityLoaded = false;
 
@@ -3882,7 +4031,7 @@
         toggle.classList.toggle("active", enabled);
         toggle.classList.toggle("hidden", !isAdmin);
         toggle.setAttribute("aria-checked", enabled ? "true" : "false");
-        const audience = ["reports","oil-control"].includes(view) ? "USUARIO y SUPERVISOR" : "SUPERVISOR";
+        const audience = ["reports","weekly-hours","oil-control"].includes(view) ? "USUARIO y SUPERVISOR" : "SUPERVISOR";
         toggle.title = enabled
           ? `ACTIVO · Visible para ${audience} cuando el rol lo permita`
           : `INACTIVO · Oculto para ${audience}`;
@@ -7687,9 +7836,9 @@
         </div>${renderDieselComparisonDailyDetail(rangeRows,period.from,period.to,detailId,hoursRows,hoursAvailable,workshopRows,workshopAvailable,gpsRows,gpsAvailable)}`;
       }).join("");
 
-      if(max <= 0){
-        return `<div class="report-no-data">No se registró consumo de DIESEL en el rango seleccionado.</div>`;
-      }
+      const noDieselNotice=max <= 0
+        ? `<div class="report-no-data">No se registró consumo de DIESEL en el rango seleccionado. Se muestran las horas registradas para el equipo.</div>`
+        : "";
 
       const sourceParts=[];
       if(fieldHoursResult?.notApplicable){
@@ -7720,7 +7869,7 @@
         <div class="diesel-hours-card rate"><span>CONSUMO POR HORA</span><strong>${hoursAvailable && totalFieldHours > 0 ? `${formatMachineHours(totalRate)} GAL/H` : "—"}</strong></div>
       </div>`;
 
-      return `${summary}${sourceParts.join("")}<div class="diesel-comparison-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER EL DETALLE DE CADA DÍA · CONSUMO EN GALONES Y HORAS DE CAMPO, TALLER Y GPS</div></div>`;
+      return `${summary}${sourceParts.join("")}${noDieselNotice}<div class="diesel-comparison-chart">${rows}<div class="chart-footer">TOQUE UNA BARRA PARA VER EL DETALLE DE CADA DÍA · CONSUMO EN GALONES Y HORAS DE CAMPO, TALLER Y GPS</div></div>`;
     }
 
     function initializeReportDrilldowns(){
@@ -7935,17 +8084,14 @@
           fetchReportEquipmentType(equipo)
         ]);
         const summary = summarizeReportConsumption(rangeRows);
-        const dieselTotal=Number(summary?.consumos?.find(item => String(item?.producto || "").toUpperCase() === "DIESEL")?.cantidad || 0);
-        let fieldHoursResult={connected:false,notApplicable:false,equipoHoras:"",rows:[],error:""};
-        let workshopHoursResult={connected:false,notApplicable:false,equipoHoras:"",rows:[],error:""};
-        let gpsHoursResult={connected:false,notApplicable:false,equipoHoras:"",rows:[],error:""};
-        if(dieselTotal > 0){
-          [fieldHoursResult,workshopHoursResult,gpsHoursResult]=await Promise.all([
-            fetchFieldMachineHoursRange(equipo,from,to),
-            fetchWorkshopMachineHoursRange(equipo,from,to),
-            fetchGpsMachineHoursRange(equipo,from,to)
-          ]);
-        }
+        // Las horas se consultan siempre, aunque el rango no tenga consumo de DIESEL.
+        // De esta forma el reporte conserva las horas CAMPO / TALLER / GPS como datos
+        // independientes del consumo registrado en combustible.
+        const [fieldHoursResult,workshopHoursResult,gpsHoursResult]=await Promise.all([
+          fetchFieldMachineHoursRange(equipo,from,to),
+          fetchWorkshopMachineHoursRange(equipo,from,to),
+          fetchGpsMachineHoursRange(equipo,from,to)
+        ]);
         const oilChanges = extractOilChanges(oilRows);
         renderGeneratedReport({equipo,tipo,from,to,summary,oilFrom,oilChanges,movementCount:rangeRows.length,rangeRows,fieldHoursResult,workshopHoursResult,gpsHoursResult});
         setReportsStatus("");
@@ -8706,6 +8852,398 @@
       }).join("");
     }
 
+
+
+    /* ===== CONTROL SEMANAL DE HORAS Y CONSUMO ===== */
+    let weeklyHoursWeek = null;
+    let weeklyHoursLoading = false;
+    let weeklyHoursCatalogLoaded = false;
+    let weeklyHoursLastData = null;
+    let weeklyHoursEquipmentCatalog = [];
+    let weeklyHoursSelectedCodes = [];
+
+    function weeklyHoursMonthName(monthIndex){
+      return ["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"][monthIndex] || "";
+    }
+
+    function weeklyHoursDateShort(iso){
+      const m=String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(!m) return "—";
+      return `${m[3]} ${weeklyHoursMonthName(Number(m[2])-1)}`;
+    }
+
+    function setWeeklyHoursWeek(start){
+      const normalized=normalizeDateKey(start) || getCurrentWeekRange().start;
+      const range=getWeekRangeForDate(normalized);
+      weeklyHoursWeek=range;
+      if(weeklyHoursWeekChip){
+        const span=weeklyHoursWeekChip.querySelector("span");
+        if(span) span.textContent=`SEMANA  ${weeklyHoursDateShort(range.start)} – ${weeklyHoursDateShort(range.end)} ${range.end.slice(0,4)}`;
+      }
+    }
+
+    function setWeeklyHoursStatus(message="",isError=false){
+      if(!weeklyHoursStatus) return;
+      weeklyHoursStatus.textContent=message || "";
+      weeklyHoursStatus.className="weekly-hours-status" + (message ? " show" : "") + (isError ? " error" : "");
+    }
+
+    function setWeeklyHoursLoadingState(loading){
+      weeklyHoursLoading=Boolean(loading);
+      [weeklyHoursPrevBtn,weeklyHoursNextBtn,weeklyHoursLoadBtn,weeklyHoursEquipment,weeklyHoursEquipmentAddBtn].forEach(el=>{if(el) el.disabled=weeklyHoursLoading;});
+      if(weeklyHoursLoadBtn){
+        weeklyHoursLoadBtn.innerHTML=weeklyHoursLoading
+          ? `<span class="spinner" aria-hidden="true"></span> CARGANDO...`
+          : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.9"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg> CARGAR SEMANA`;
+      }
+    }
+
+    async function populateWeeklyHoursFilters(){
+      if(weeklyHoursCatalogLoaded || !weeklyHoursEquipmentOptions) return;
+      try{
+        const catalog=await fetchOilControlEquipmentCatalog();
+        weeklyHoursEquipmentCatalog=(catalog || []).map(item=>({
+          codigo:sanitizeEquipmentCode(item.codigo),
+          tipo:String(item.tipo || "SIN TIPO").trim().toUpperCase() || "SIN TIPO"
+        })).filter(item=>item.codigo);
+        weeklyHoursEquipmentOptions.innerHTML="";
+        weeklyHoursEquipmentCatalog.forEach(item=>{
+          const option=document.createElement("option");
+          option.value=item.codigo;
+          option.label=`${item.codigo} · ${item.tipo || "SIN TIPO"}`;
+          weeklyHoursEquipmentOptions.appendChild(option);
+        });
+        weeklyHoursCatalogLoaded=true;
+      }catch(error){
+        console.warn("Control semanal: no se pudo actualizar el catálogo de equipos; se usa el catálogo local.",error);
+        weeklyHoursEquipmentCatalog=EQUIPOS_BASE.slice().sort((a,b)=>a.codigo.localeCompare(b.codigo,"es",{numeric:true})).map(item=>({
+          codigo:sanitizeEquipmentCode(item.codigo),
+          tipo:String(item.tipo || "SIN TIPO").trim().toUpperCase() || "SIN TIPO"
+        })).filter(item=>item.codigo);
+        weeklyHoursEquipmentOptions.innerHTML="";
+        weeklyHoursEquipmentCatalog.forEach(item=>{
+          const option=document.createElement("option");
+          option.value=item.codigo;
+          option.label=`${item.codigo} · ${item.tipo || "SIN TIPO"}`;
+          weeklyHoursEquipmentOptions.appendChild(option);
+        });
+        weeklyHoursCatalogLoaded=true;
+      }
+    }
+
+    function weeklyFieldCodeToFuelEquipment(value){
+      let code=String(value ?? "").trim().replace(/\.0+$/,'').replace(/[^0-9A-Za-z]/g,'').toUpperCase();
+      if(/^(?:840|841)\d+$/.test(code)) code=`4${code}`;
+      return sanitizeEquipmentCode(code);
+    }
+
+    async function fetchWeeklyFieldHours(from,to,equipment=""){
+      const selected=sanitizeEquipmentCode(equipment);
+      const mapped=selected ? fuelEquipmentToFieldHoursEquipment(selected) : "";
+      if(selected && !mapped) return {available:true,connected:true,rows:[],error:""};
+      const all=[]; const pageSize=1000;
+      try{
+        for(let offset=0;offset<50000;offset+=pageSize){
+          const filters=[`fecha=gte.${encodeURIComponent(from)}`,`fecha=lte.${encodeURIComponent(to)}`];
+          if(mapped) filters.push(`or=(equipo_numero.eq.${encodeURIComponent(mapped)},equipo_numero.eq.${encodeURIComponent(mapped + ".0")})`);
+          const query=`?select=fecha,equipo_numero,cantidad&${filters.join("&")}&order=fecha.asc&limit=${pageSize}&offset=${offset}`;
+          const page=await fieldHoursSbRequest(query);
+          all.push(...page);
+          if(page.length<pageSize) break;
+        }
+        const rows=all.map(row=>({
+          fecha:normalizeDateKey(row.fecha),
+          equipo:weeklyFieldCodeToFuelEquipment(row.equipo_numero),
+          horas:Number(row.cantidad || 0)
+        })).filter(row=>row.fecha && row.equipo && Number.isFinite(row.horas));
+        return {available:true,connected:true,rows,error:""};
+      }catch(error){
+        console.error("Control semanal · Campo:",error);
+        return {available:false,connected:false,rows:[],error:fieldHoursFriendlyError(error)};
+      }
+    }
+
+    function weeklyChunk(items,size=80){
+      const out=[]; for(let i=0;i<items.length;i+=size) out.push(items.slice(i,i+size)); return out;
+    }
+
+    async function fetchWeeklyWorkshopHours(from,to,equipmentCodes){
+      const codes=(equipmentCodes || []).map(sanitizeEquipmentCode).filter(code=>/^484\d{3}$/.test(code));
+      if(!codes.length) return {available:true,connected:true,rows:[],error:""};
+      const rows=[]; const errors=[]; let successes=0;
+      for(const chunk of weeklyChunk(codes,80)){
+        try{
+          const data=await workshopHoursRpcRequest({p_desde:normalizeDateKey(from),p_hasta:normalizeDateKey(to),p_equipos:chunk});
+          successes++;
+          (data || []).forEach(row=>{
+            const fecha=normalizeDateKey(row.fecha_jornada);
+            const equipo=sanitizeEquipmentCode(row.equipo);
+            const horas=workshopHoursToDecimal(row.horas_maquina);
+            if(fecha && equipo && Number.isFinite(horas)) rows.push({fecha,equipo,horas});
+          });
+        }catch(error){errors.push(workshopHoursFriendlyError(error));}
+      }
+      return {available:successes>0,connected:errors.length===0,rows,error:[...new Set(errors)].join(" · ")};
+    }
+
+    async function fetchWeeklyGpsHours(from,to,equipmentCodes){
+      const codes=(equipmentCodes || []).map(sanitizeEquipmentCode).filter(Boolean);
+      if(!codes.length) return {available:true,connected:true,rows:[],error:""};
+      const rows=[]; const errors=[]; let successes=0;
+      for(const chunk of weeklyChunk(codes,80)){
+        try{
+          const data=await gpsSbRpc(GPS_HOURS_RPC_NAME,{p_desde:normalizeDateKey(from),p_hasta:normalizeDateKey(to),p_equipos:chunk});
+          successes++;
+          (Array.isArray(data)?data:[]).forEach(row=>{
+            const fecha=normalizeDateKey(row.fecha);
+            const equipo=sanitizeEquipmentCode(row.numero_equipo);
+            const raw=row?.hrs_maquina;
+            if(raw === null || raw === undefined || raw === "") return;
+            const horas=workshopHoursToDecimal(raw);
+            if(fecha && equipo && Number.isFinite(horas)) rows.push({fecha,equipo,horas});
+          });
+        }catch(error){errors.push(gpsHoursFriendlyError(error));}
+      }
+      return {available:successes>0,connected:errors.length===0,rows,error:[...new Set(errors)].join(" · ")};
+    }
+
+    async function fetchWeeklyConsumption(from,to){
+      const all=[]; const pageSize=1000;
+      for(let offset=0;offset<50000;offset+=pageSize){
+        let query=`?select=id,fecha,planta,equipo,combustible_movimiento_detalle(producto,cantidad,tipo_movimiento)&fecha=gte.${encodeURIComponent(from)}&fecha=lte.${encodeURIComponent(to)}`;
+        query+=`&order=fecha.asc&limit=${pageSize}&offset=${offset}`;
+        const page=await sbRequest("combustible_movimientos",{query,prefer:""});
+        const rows=Array.isArray(page)?page:[];
+        all.push(...rows);
+        if(rows.length<pageSize) break;
+      }
+      const out=[];
+      all.forEach(movement=>{
+        const fecha=normalizeDateKey(movement.fecha);
+        const equipo=sanitizeEquipmentCode(movement.equipo);
+        if(!fecha || !equipo) return;
+        (movement.combustible_movimiento_detalle || []).forEach(detail=>{
+          const product=String(detail.producto || "").trim().toUpperCase();
+          const movementType=String(detail.tipo_movimiento || "CONSUMO").trim().toUpperCase();
+          const qty=Number(detail.cantidad || 0);
+          if(!["DIESEL","GASOLINA"].includes(product) || movementType !== "CONSUMO" || !Number.isFinite(qty) || qty<=0) return;
+          out.push({fecha,equipo,cantidad:qty});
+        });
+      });
+      return out;
+    }
+
+    function weeklyMetricIcon(kind){
+      if(kind === "field") return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="7" cy="17" r="2.5" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="17" r="2.5" stroke="currentColor" stroke-width="2"/><path d="M5 14h12l2 3M8 14l2-6h5l2 6M11 8V5h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      if(kind === "workshop") return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.2 5.2L4 17l3 3 5.3-5.3a4 4 0 0 0 5.2-5.2l-2.6 2.6-2.8-2.8 2.4-2.8Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      if(kind === "gps") return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" stroke="currentColor" stroke-width="1.9"/><circle cx="12" cy="10" r="2" fill="currentColor"/></svg>`;
+      return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3h8a2 2 0 0 1 2 2v16H4V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8"/><path d="M7 6h6v5H7zM16 8h2l2 2v7a2 2 0 0 1-4 0v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    }
+
+    function weeklyEquipmentIcon(){
+      return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 15h2l2-6h7l3 6h3v3h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9V6h5v3M7 15h10" stroke="currentColor" stroke-width="1.8"/><circle cx="7" cy="18" r="2" stroke="currentColor" stroke-width="1.8"/><circle cx="17" cy="18" r="2" stroke="currentColor" stroke-width="1.8"/></svg>`;
+    }
+
+    function weeklyHoursCellKey(equipo,fecha){return `${sanitizeEquipmentCode(equipo)}|${normalizeDateKey(fecha)}`;}
+
+    function getWeeklyHoursCatalog(){
+      if(Array.isArray(weeklyHoursEquipmentCatalog) && weeklyHoursEquipmentCatalog.length) return weeklyHoursEquipmentCatalog;
+      if(Array.isArray(oilControlEquipmentCache) && oilControlEquipmentCache.length){
+        return oilControlEquipmentCache.map(item=>({
+          codigo:sanitizeEquipmentCode(item.codigo),
+          tipo:String(item.tipo || "SIN TIPO").trim().toUpperCase() || "SIN TIPO"
+        })).filter(item=>item.codigo);
+      }
+      return (EQUIPOS_BASE || []).map(item=>({
+        codigo:sanitizeEquipmentCode(item.codigo),
+        tipo:String(item.tipo || "SIN TIPO").trim().toUpperCase() || "SIN TIPO"
+      })).filter(item=>item.codigo);
+    }
+
+    function resolveWeeklyHoursSelectionCodes(rawValue){
+      const catalog=getWeeklyHoursCatalog();
+      const tokens=String(rawValue || "").split(/[;,\n]+/).map(token=>token.trim()).filter(Boolean);
+      const found=[];
+      tokens.forEach(token=>{
+        const upper=token.toUpperCase();
+        const sanitized=sanitizeEquipmentCode(token);
+        let matches=catalog.filter(item=>item.codigo === sanitized);
+        if(!matches.length){
+          matches=catalog.filter(item=>item.codigo.includes(sanitized || upper) || item.tipo.includes(upper));
+        }
+        matches.forEach(item=>{ if(item.codigo) found.push(item.codigo); });
+      });
+      return [...new Set(found)];
+    }
+
+    function renderWeeklyHoursSelected(){
+      if(!weeklyHoursSelected) return;
+      const catalogMap=new Map(getWeeklyHoursCatalog().map(item=>[item.codigo,item.tipo]));
+      weeklyHoursSelected.innerHTML=weeklyHoursSelectedCodes.map(code=>{
+        const type=catalogMap.get(code) || "SIN TIPO";
+        return `<span class="weekly-hours-selected-chip"><span>${escapeHtml(code)} · ${escapeHtml(type)}</span><button type="button" data-weekly-remove="${escapeHtml(code)}" aria-label="Quitar ${escapeHtml(code)}">×</button></span>`;
+      }).join("");
+    }
+
+    function addWeeklyHoursEquipmentSelection(){
+      const raw=weeklyHoursEquipment?.value || "";
+      const codes=resolveWeeklyHoursSelectionCodes(raw);
+      if(!codes.length){
+        if(raw.trim()) setWeeklyHoursStatus("No se encontraron equipos que coincidan con la selección.",true);
+        return;
+      }
+      const set=new Set(weeklyHoursSelectedCodes);
+      codes.forEach(code=>set.add(code));
+      weeklyHoursSelectedCodes=[...set].sort((a,b)=>a.localeCompare(b,"es",{numeric:true}));
+      if(weeklyHoursEquipment) weeklyHoursEquipment.value="";
+      renderWeeklyHoursSelected();
+      if(weeklyHoursLastData) filterWeeklyHoursTable();
+      if(!weeklyHoursLoading) setWeeklyHoursStatus(weeklyHoursSelectedCodes.length ? `${weeklyHoursSelectedCodes.length} equipo(s) seleccionado(s).` : "");
+    }
+
+    function removeWeeklyHoursEquipmentSelection(code){
+      const normalized=sanitizeEquipmentCode(code);
+      weeklyHoursSelectedCodes=weeklyHoursSelectedCodes.filter(item=>item !== normalized);
+      renderWeeklyHoursSelected();
+      if(weeklyHoursLastData) filterWeeklyHoursTable();
+      if(!weeklyHoursLoading && weeklyHoursSelectedCodes.length===0 && weeklyHoursStatus && !weeklyHoursStatus.classList.contains("error")) setWeeklyHoursStatus("");
+    }
+
+    function renderWeeklyHoursTable({catalog,fieldResult,workshopResult,gpsResult,consumptionRows,equipmentSearch="",selectedCodes=[]}){
+      const map=new Map();
+      const eligible=new Set();
+      function cell(eq,date){
+        const key=weeklyHoursCellKey(eq,date);
+        if(!map.has(key)) map.set(key,{field:0,workshop:0,gps:0,consumption:0});
+        return map.get(key);
+      }
+      (fieldResult.rows || []).forEach(row=>{const h=Number(row.horas || 0);if(h>0) eligible.add(row.equipo);cell(row.equipo,row.fecha).field+=h;});
+      (workshopResult.rows || []).forEach(row=>{const h=Number(row.horas || 0);if(h>0) eligible.add(row.equipo);cell(row.equipo,row.fecha).workshop+=h;});
+      (gpsResult.rows || []).forEach(row=>{const h=Number(row.horas || 0);if(h>0) eligible.add(row.equipo);cell(row.equipo,row.fecha).gps+=h;});
+      (consumptionRows || []).forEach(row=>{cell(row.equipo,row.fecha).consumption+=Number(row.cantidad || 0);});
+
+      const typeMap=new Map((catalog || []).map(item=>[sanitizeEquipmentCode(item.codigo),String(item.tipo || "SIN TIPO").trim().toUpperCase() || "SIN TIPO"]));
+      const search=String(equipmentSearch || "").trim().toUpperCase();
+      const searchCode=sanitizeEquipmentCode(search);
+      const selectedSet=new Set((selectedCodes || []).map(sanitizeEquipmentCode).filter(Boolean));
+      let codes=[...eligible].filter(Boolean);
+      if(selectedSet.size){
+        codes=codes.filter(code=>selectedSet.has(code));
+      }
+      if(search){
+        codes=codes.filter(code=>{
+          const type=typeMap.get(code) || "SIN TIPO";
+          return code.includes(searchCode || search) || type.includes(search);
+        });
+      }
+      codes.sort((a,b)=>a.localeCompare(b,"es",{numeric:true}));
+
+      if(!codes.length){
+        if(weeklyHoursBody) weeklyHoursBody.innerHTML="";
+        if(weeklyHoursFoot) weeklyHoursFoot.innerHTML="";
+        if(weeklyHoursEmpty){
+          weeklyHoursEmpty.classList.remove("hidden");
+          weeklyHoursEmpty.innerHTML=(search || selectedSet.size)
+            ? '<strong>SIN COINCIDENCIAS</strong><span>No hay equipos con horas en esta semana que coincidan con el filtro seleccionado.</span>'
+            : '<strong>SIN EQUIPOS CON HORAS</strong><span>No se encontraron equipos con horas mayores a 0 en Campo, Taller o GPS durante la semana seleccionada.</span>';
+        }
+        return 0;
+      }
+
+      if(weeklyHoursEmpty) weeklyHoursEmpty.classList.add("hidden");
+      const dayNames=["LUN","MAR","MIÉ","JUE","VIE","SÁB","DOM"];
+      const hourText=(value,available)=>available ? `${Number(value || 0).toFixed(1)} h` : "—";
+      const galText=value=>`${Number(value || 0).toFixed(1)} gal`;
+      const valueClass=(value,available=true)=>available && Number(value || 0)===0 ? " weekly-hours-zero" : "";
+      const rows=[];
+      const totals={field:0,workshop:0,gps:0,consumption:0};
+      codes.forEach(code=>{
+        const type=typeMap.get(code) || "SIN TIPO";
+        for(let i=0;i<7;i++){
+          const date=addDaysToISO(weeklyHoursWeek.start,i);
+          const c=map.get(weeklyHoursCellKey(code,date)) || {field:0,workshop:0,gps:0,consumption:0};
+          totals.field+=Number(c.field || 0);
+          totals.workshop+=Number(c.workshop || 0);
+          totals.gps+=Number(c.gps || 0);
+          totals.consumption+=Number(c.consumption || 0);
+          rows.push(`<tr class="${i===0 ? "weekly-hours-group-start" : ""}">
+            ${i===0 ? `<td class="weekly-hours-equipment-cell" rowspan="7"><div class="weekly-hours-equipment"><span class="weekly-hours-equipment-icon">${weeklyEquipmentIcon()}</span><strong>${escapeHtml(code)}</strong></div></td><td class="weekly-hours-type-cell" rowspan="7">${escapeHtml(type)}</td>` : ""}
+            <td class="weekly-hours-day-cell">${dayNames[i]}</td>
+            <td class="weekly-hours-date-cell">${escapeHtml(weeklyHoursDateShort(date))}</td>
+            <td><span class="weekly-hours-value field${valueClass(c.field,fieldResult.available)}">${hourText(c.field,fieldResult.available)}</span></td>
+            <td><span class="weekly-hours-value workshop${valueClass(c.workshop,workshopResult.available)}">${hourText(c.workshop,workshopResult.available)}</span></td>
+            <td><span class="weekly-hours-value gps${valueClass(c.gps,gpsResult.available)}">${hourText(c.gps,gpsResult.available)}</span></td>
+            <td><span class="weekly-hours-value consumption${valueClass(c.consumption,true)}">${galText(c.consumption)}</span></td>
+          </tr>`);
+        }
+      });
+      weeklyHoursBody.innerHTML=rows.join("");
+      if(weeklyHoursFoot){
+        weeklyHoursFoot.innerHTML=`<tr class="weekly-hours-total-row"><td colspan="4" class="weekly-hours-total-label">TOTALES</td><td>${hourText(totals.field,fieldResult.available)}</td><td>${hourText(totals.workshop,workshopResult.available)}</td><td>${hourText(totals.gps,gpsResult.available)}</td><td>${galText(totals.consumption)}</td></tr>`;
+      }
+      return codes.length;
+    }
+
+    function filterWeeklyHoursTable(){
+      if(!weeklyHoursLastData) return;
+      const count=renderWeeklyHoursTable({
+        ...weeklyHoursLastData,
+        equipmentSearch:weeklyHoursEquipment?.value || "",
+        selectedCodes:weeklyHoursSelectedCodes
+      });
+      if(!weeklyHoursLoading && weeklyHoursStatus && !weeklyHoursStatus.classList.contains("error")){
+        if(weeklyHoursSelectedCodes.length){
+          setWeeklyHoursStatus(`${weeklyHoursSelectedCodes.length} equipo(s) seleccionado(s).`);
+        }else{
+          weeklyHoursStatus.textContent="";
+          weeklyHoursStatus.className="weekly-hours-status";
+        }
+      }
+      return count;
+    }
+
+    async function loadWeeklyHoursView(){
+      if(weeklyHoursLoading) return;
+      if(!weeklyHoursWeek) setWeeklyHoursWeek(getCurrentWeekRange().start);
+      setWeeklyHoursLoadingState(true);
+      setWeeklyHoursStatus("");
+      if(weeklyHoursBody) weeklyHoursBody.innerHTML="";
+      if(weeklyHoursFoot) weeklyHoursFoot.innerHTML="";
+      if(weeklyHoursEmpty){weeklyHoursEmpty.classList.remove("hidden");weeklyHoursEmpty.innerHTML='<strong>CARGANDO SEMANA...</strong><span>Consultando horas de Campo, Taller, GPS y consumo diario.</span>';}
+      try{
+        const catalog=await fetchOilControlEquipmentCatalog();
+        const queryCodes=catalog.map(item=>sanitizeEquipmentCode(item.codigo)).filter(Boolean);
+        const [fieldResult,workshopResult,gpsResult,consumptionRows]=await Promise.all([
+          fetchWeeklyFieldHours(weeklyHoursWeek.start,weeklyHoursWeek.end,""),
+          fetchWeeklyWorkshopHours(weeklyHoursWeek.start,weeklyHoursWeek.end,queryCodes),
+          fetchWeeklyGpsHours(weeklyHoursWeek.start,weeklyHoursWeek.end,queryCodes),
+          fetchWeeklyConsumption(weeklyHoursWeek.start,weeklyHoursWeek.end)
+        ]);
+        weeklyHoursLastData={catalog,fieldResult,workshopResult,gpsResult,consumptionRows};
+        const count=renderWeeklyHoursTable({...weeklyHoursLastData,equipmentSearch:weeklyHoursEquipment?.value || "",selectedCodes:weeklyHoursSelectedCodes});
+        const warnings=[];
+        if(!fieldResult.available) warnings.push(`CAMPO: ${fieldResult.error || "NO DISPONIBLE"}`);
+        if(!workshopResult.available || !workshopResult.connected) warnings.push(`TALLER: ${workshopResult.error || "CONSULTA PARCIAL"}`);
+        if(!gpsResult.available || !gpsResult.connected) warnings.push(`GPS: ${gpsResult.error || "CONSULTA PARCIAL"}`);
+        if(warnings.length) setWeeklyHoursStatus(`SEMANA CARGADA CON ADVERTENCIAS · ${count} EQUIPOS · ${warnings.join(" · ")}`,false);
+        else setWeeklyHoursStatus("");
+      }catch(error){
+        console.error("Control semanal de horas:",error);
+        if(weeklyHoursBody) weeklyHoursBody.innerHTML="";
+        if(weeklyHoursFoot) weeklyHoursFoot.innerHTML="";
+        if(weeklyHoursEmpty){weeklyHoursEmpty.classList.remove("hidden");weeklyHoursEmpty.innerHTML='<strong>NO SE PUDO CARGAR LA SEMANA</strong><span>Revise la conexión e inténtelo nuevamente.</span>';}
+        setWeeklyHoursStatus(error?.message || String(error),true);
+      }finally{
+        setWeeklyHoursLoadingState(false);
+      }
+    }
+
+    async function initializeWeeklyHoursView(){
+      if(!weeklyHoursWeek) setWeeklyHoursWeek(getCurrentWeekRange().start);
+      await populateWeeklyHoursFilters();
+      renderWeeklyHoursSelected();
+    }
+
     async function fetchOilControlEquipmentCatalog(){
       if(Array.isArray(oilControlEquipmentCache)) return oilControlEquipmentCache;
       const rows=await sbRequest("combustible_equipos",{query:"?select=codigo,tipo&activo=eq.true&order=codigo.asc",prefer:""});
@@ -8869,6 +9407,7 @@
       inventoryView.classList.remove("view-hidden");
       historyView.classList.add("view-hidden");
       reportsView.classList.add("view-hidden");
+      weeklyHoursView?.classList.add("view-hidden");
       oilControlView?.classList.add("view-hidden");
       quotasView.classList.add("view-hidden");
       equipmentAdminView.classList.add("view-hidden");
@@ -8881,7 +9420,7 @@
 
     function openAppView(view){
       if(currentUser?.rol === "usuario" && !USER_ALLOWED_VIEWS.has(view)){
-        showToast("El rol USUARIO solo tiene acceso a Reportes y Control de cambio de aceite.", true);
+        showToast("El rol USUARIO solo tiene acceso a Reportes, Horas y consumo semanal y Control de cambio de aceite.", true);
         showDashboard();
         return;
       }
@@ -8900,6 +9439,7 @@
       inventoryView.classList.remove("view-hidden");
       historyView.classList.add("view-hidden");
       reportsView.classList.add("view-hidden");
+      weeklyHoursView?.classList.add("view-hidden");
       oilControlView?.classList.add("view-hidden");
       quotasView.classList.add("view-hidden");
       equipmentAdminView.classList.add("view-hidden");
@@ -8937,11 +9477,25 @@
         currentViewLabel.textContent = "REPORTES";
         // No se consulta Supabase al abrir la vista. Solo al pulsar GENERAR REPORTE.
         updateReportGenerateState();
+      }else if(view === "weekly-hours"){
+        movementView.classList.add("view-hidden");
+        inventoryView.classList.add("view-hidden");
+        historyView.classList.add("view-hidden");
+        reportsView.classList.add("view-hidden");
+        oilControlView?.classList.add("view-hidden");
+        quotasView.classList.add("view-hidden");
+        equipmentAdminView.classList.add("view-hidden");
+        userAdminView.classList.add("view-hidden");
+        weeklyHoursView?.classList.remove("view-hidden");
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent = "CONTROL SEMANAL DE HORAS Y CONSUMO";
+        initializeWeeklyHoursView();
       }else if(view === "oil-control"){
         movementView.classList.add("view-hidden");
         inventoryView.classList.add("view-hidden");
         historyView.classList.add("view-hidden");
         reportsView.classList.add("view-hidden");
+        weeklyHoursView?.classList.add("view-hidden");
         quotasView.classList.add("view-hidden");
         equipmentAdminView.classList.add("view-hidden");
         userAdminView.classList.add("view-hidden");
@@ -8954,6 +9508,7 @@
         inventoryView.classList.add("view-hidden");
         historyView.classList.add("view-hidden");
         reportsView.classList.add("view-hidden");
+        weeklyHoursView?.classList.add("view-hidden");
         quotasView.classList.add("view-hidden");
         equipmentAdminView.classList.add("view-hidden");
         userAdminView.classList.add("view-hidden");
@@ -8971,6 +9526,7 @@
         inventoryView.classList.add("view-hidden");
         historyView.classList.add("view-hidden");
         reportsView.classList.add("view-hidden");
+        weeklyHoursView?.classList.add("view-hidden");
         quotasView.classList.add("view-hidden");
         userAdminView.classList.add("view-hidden");
         equipmentAdminView.classList.remove("view-hidden");
@@ -8989,6 +9545,7 @@
         inventoryView.classList.add("view-hidden");
         historyView.classList.add("view-hidden");
         reportsView.classList.add("view-hidden");
+        weeklyHoursView?.classList.add("view-hidden");
         quotasView.classList.add("view-hidden");
         equipmentAdminView.classList.add("view-hidden");
         userAdminView.classList.remove("view-hidden");
@@ -8999,6 +9556,7 @@
       }else{
         historyView.classList.add("view-hidden");
         reportsView.classList.add("view-hidden");
+        weeklyHoursView?.classList.add("view-hidden");
         quotasView.classList.add("view-hidden");
         equipmentAdminView.classList.add("view-hidden");
         userAdminView.classList.add("view-hidden");
@@ -9045,6 +9603,8 @@
         }else if(currentAppView === "history"){
           if(recordsView?.classList.contains("active")) await loadRecordsFromSupabase();
           else await loadSavedInventoriesFromSupabase();
+        }else if(currentAppView === "weekly-hours"){
+          await loadWeeklyHoursView();
         }else if(currentAppView === "oil-control"){
           await loadOilControlView({force:true});
         }else if(currentAppView === "cuotas"){
@@ -9067,6 +9627,42 @@
 
     appRefreshBtn?.addEventListener("click", refreshApplicationData);
     oilControlRefreshBtn?.addEventListener("click",()=>loadOilControlView({force:true}));
+
+    weeklyHoursLoadBtn?.addEventListener("click",loadWeeklyHoursView);
+    weeklyHoursPrevBtn?.addEventListener("click",async()=>{
+      if(!weeklyHoursWeek) setWeeklyHoursWeek(getCurrentWeekRange().start);
+      setWeeklyHoursWeek(addDaysToISO(weeklyHoursWeek.start,-7));
+      await loadWeeklyHoursView();
+    });
+    weeklyHoursNextBtn?.addEventListener("click",async()=>{
+      if(!weeklyHoursWeek) setWeeklyHoursWeek(getCurrentWeekRange().start);
+      setWeeklyHoursWeek(addDaysToISO(weeklyHoursWeek.start,7));
+      await loadWeeklyHoursView();
+    });
+    weeklyHoursEquipmentAddBtn?.addEventListener("click",()=>addWeeklyHoursEquipmentSelection());
+    weeklyHoursSelected?.addEventListener("click",event=>{
+      const button=event.target.closest("button[data-weekly-remove]");
+      if(!button) return;
+      removeWeeklyHoursEquipmentSelection(button.getAttribute("data-weekly-remove") || "");
+    });
+    weeklyHoursEquipment?.addEventListener("input",filterWeeklyHoursTable);
+    weeklyHoursEquipment?.addEventListener("change",()=>{
+      const raw=String(weeklyHoursEquipment?.value || "").trim();
+      if(raw && resolveWeeklyHoursSelectionCodes(raw).length){
+        addWeeklyHoursEquipmentSelection();
+      }
+    });
+    weeklyHoursEquipment?.addEventListener("keydown",event=>{
+      if(event.key === "Enter" || event.key === ","){
+        event.preventDefault();
+        addWeeklyHoursEquipmentSelection();
+        if(!weeklyHoursLastData) loadWeeklyHoursView();
+        return;
+      }
+      if(event.key === "Backspace" && !(weeklyHoursEquipment?.value || "").trim() && weeklyHoursSelectedCodes.length){
+        removeWeeklyHoursEquipmentSelection(weeklyHoursSelectedCodes[weeklyHoursSelectedCodes.length-1]);
+      }
+    });
     oilControlSourceSwitches?.querySelectorAll("[data-oil-source]").forEach(btn=>{
       btn.addEventListener("click",()=>setOilControlSource(btn.dataset.oilSource));
     });
