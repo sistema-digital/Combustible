@@ -3928,6 +3928,20 @@
     let optionalSupabaseAuthenticated = false;
     let optionalSupabaseLastError = "";
 
+    // Segunda fuente adicional para HORAS TALLER.
+    // La columna TALLER combina:
+    // 1) captura de operador: zabangygpfchxmxawict
+    // 2) registro manual de taller: resyxhjfpgdmaelmvxmo
+    // El proyecto vultocxxccxzyinechkc fue verificado y no contiene tablas/RPC de horas.
+    const WORKSHOP_SECONDARY_SUPABASE_URL = "https://resyxhjfpgdmaelmvxmo.supabase.co";
+    const WORKSHOP_SECONDARY_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlc3l4aGpmcGdkbWFlbG12eG1vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDMxMTYsImV4cCI6MjEwMzc3OTExNn0.iHGdhCT3fcGt6bzoo4o8TRjF4XJzkp1lOM2o2186rSM";
+    const WORKSHOP_SECONDARY_RPC_NAME = "rpc_horas_taller_diario_tabla";
+    const WORKSHOP_SECONDARY_SESSION_KEY = "combustible_workshop_secondary_session_v2";
+    let workshopSecondarySession = null;
+    let workshopSecondaryAuthenticated = false;
+    let workshopSecondaryLastError = "";
+    let workshopSecondaryDiscoveryCache = null;
+
     // Tercera conexión: HORAS GPS / Navixy.
     // Este RPC REQUIERE una sesión de usuario autenticada; no usa fallback con anon key.
     const GPS_SUPABASE_URL = "https://xzywyxuumnykgqpcvpii.supabase.co";
@@ -4312,6 +4326,281 @@
       return optionalSbRequest("rpc/" + functionName,{method:"POST",body,prefer:""});
     }
 
+    function readWorkshopSecondarySession(){
+      try{return JSON.parse(localStorage.getItem(WORKSHOP_SECONDARY_SESSION_KEY) || "null");}
+      catch{return null;}
+    }
+
+    function saveWorkshopSecondarySession(session){
+      if(!session?.access_token){
+        localStorage.removeItem(WORKSHOP_SECONDARY_SESSION_KEY);
+        workshopSecondarySession=null;
+        workshopSecondaryAuthenticated=false;
+        return;
+      }
+      const expiresAt=Number(session.expires_at || 0) || Math.floor(Date.now()/1000)+Number(session.expires_in || 3600);
+      workshopSecondarySession={
+        access_token:String(session.access_token || ""),
+        refresh_token:String(session.refresh_token || ""),
+        expires_at:expiresAt,
+        user:session.user ? {id:session.user.id || null,email:session.user.email || null} : null
+      };
+      localStorage.setItem(WORKSHOP_SECONDARY_SESSION_KEY,JSON.stringify(workshopSecondarySession));
+      workshopSecondaryAuthenticated=true;
+      workshopSecondaryLastError="";
+    }
+
+    function clearWorkshopSecondarySession(){
+      localStorage.removeItem(WORKSHOP_SECONDARY_SESSION_KEY);
+      workshopSecondarySession=null;
+      workshopSecondaryAuthenticated=false;
+    }
+
+    async function workshopSecondaryAuthFetch(path,{method="POST",body=null,token="",timeoutMs=10000}={}){
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),timeoutMs);
+      const bearer=String(token || WORKSHOP_SECONDARY_SUPABASE_ANON_KEY || "").trim();
+      try{
+        const response=await fetch(`${WORKSHOP_SECONDARY_SUPABASE_URL}${path}`,{
+          method:String(method || "POST").toUpperCase(),
+          headers:{
+            "apikey":WORKSHOP_SECONDARY_SUPABASE_ANON_KEY,
+            "Authorization":"Bearer " + bearer,
+            "Content-Type":"application/json",
+            "Accept":"application/json",
+            "X-Client-Info":"combustible-web/workshop-secondary-auth"
+          },
+          mode:"cors",cache:"no-store",credentials:"omit",redirect:"follow",signal:controller.signal,
+          body:body === null ? undefined : JSON.stringify(body)
+        });
+        const raw=await response.text();
+        let data=null;
+        if(raw){try{data=JSON.parse(raw);}catch{data=raw;}}
+        if(!response.ok){
+          const code=data?.code || data?.error_code || "";
+          const details=data?.msg || data?.message || data?.error_description || data?.error || String(data || response.statusText || "");
+          throw new Error(`HTTP ${response.status}${code ? ` [${code}]` : ""}: ${details}`);
+        }
+        return data;
+      }catch(error){
+        if(error?.name === "AbortError") throw new Error("La segunda conexión de Taller agotó el tiempo de espera.");
+        throw error;
+      }finally{clearTimeout(timer);}
+    }
+
+    async function verifyWorkshopSecondarySession(accessToken){
+      const token=String(accessToken || "").trim();
+      if(!token) return null;
+      return workshopSecondaryAuthFetch("/auth/v1/user",{method:"GET",token,timeoutMs:10000});
+    }
+
+    async function loginWorkshopSecondarySupabase(correo,password){
+      const email=String(correo || "").trim().toLowerCase();
+      const pass=String(password || "");
+      if(!email || !pass) return {authenticated:false,skipped:true};
+      const previous=readWorkshopSecondarySession();
+      const previousEmail=String(previous?.user?.email || "").trim().toLowerCase();
+      if(previousEmail && previousEmail !== email) clearWorkshopSecondarySession();
+      try{
+        const data=await workshopSecondaryAuthFetch("/auth/v1/token?grant_type=password",{method:"POST",body:{email,password:pass},timeoutMs:12000});
+        if(!data?.access_token) throw new Error("La segunda fuente de Taller no devolvió access_token.");
+        const authUser=await verifyWorkshopSecondarySession(data.access_token);
+        if(!authUser?.id) throw new Error("No fue posible validar el usuario en la segunda fuente de Taller.");
+        saveWorkshopSecondarySession({...data,user:authUser});
+        return {authenticated:true,user:authUser};
+      }catch(error){
+        workshopSecondaryLastError=error?.message || String(error);
+        clearWorkshopSecondarySession();
+        console.warn("Segunda fuente de Taller: login no disponible; se intentará con anon key.",workshopSecondaryLastError);
+        return {authenticated:false,error:workshopSecondaryLastError};
+      }
+    }
+
+    async function refreshWorkshopSecondarySession(){
+      const saved=workshopSecondarySession || readWorkshopSecondarySession();
+      if(!saved?.refresh_token){clearWorkshopSecondarySession();return false;}
+      try{
+        const data=await workshopSecondaryAuthFetch("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:{refresh_token:saved.refresh_token},timeoutMs:12000});
+        if(!data?.access_token) throw new Error("La renovación de Taller 2 no devolvió access_token.");
+        let authUser=data?.user || null;
+        if(!authUser?.id) authUser=await verifyWorkshopSecondarySession(data.access_token);
+        saveWorkshopSecondarySession({...data,user:authUser || saved.user || null});
+        return true;
+      }catch(error){
+        workshopSecondaryLastError=error?.message || String(error);
+        clearWorkshopSecondarySession();
+        return false;
+      }
+    }
+
+    async function restoreWorkshopSecondarySession(){
+      const saved=readWorkshopSecondarySession();
+      if(!saved?.access_token){workshopSecondarySession=null;workshopSecondaryAuthenticated=false;return false;}
+      workshopSecondarySession=saved;
+      const expiresAt=Number(saved.expires_at || 0);
+      if(expiresAt > Math.floor(Date.now()/1000)+60){
+        try{const user=await verifyWorkshopSecondarySession(saved.access_token);if(user?.id){workshopSecondaryAuthenticated=true;return true;}}catch{}
+      }
+      return refreshWorkshopSecondarySession();
+    }
+
+    async function getWorkshopSecondaryBearer(){
+      if(!workshopSecondarySession) workshopSecondarySession=readWorkshopSecondarySession();
+      if(workshopSecondarySession?.access_token){
+        const expiresAt=Number(workshopSecondarySession.expires_at || 0);
+        if(!expiresAt || expiresAt > Math.floor(Date.now()/1000)+60){workshopSecondaryAuthenticated=true;return workshopSecondarySession.access_token;}
+        if(await refreshWorkshopSecondarySession()) return workshopSecondarySession?.access_token || "";
+      }
+      return "";
+    }
+
+    async function workshopSecondarySbRequest(table,{method="GET",query="",body=null,prefer="return=representation"}={}){
+      const bearer=await getWorkshopSecondaryBearer();
+      const headers={
+        "apikey":WORKSHOP_SECONDARY_SUPABASE_ANON_KEY,
+        "Authorization":"Bearer " + (bearer || WORKSHOP_SECONDARY_SUPABASE_ANON_KEY),
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      };
+      if(prefer) headers["Prefer"]=prefer;
+      const response=await fetch(`${WORKSHOP_SECONDARY_SUPABASE_URL}/rest/v1/${table}${query}`,{
+        method:String(method || "GET").toUpperCase(),headers,mode:"cors",cache:"no-store",
+        body:body === null ? undefined : JSON.stringify(body)
+      });
+      const raw=await response.text();
+      let data=null;
+      if(raw){try{data=JSON.parse(raw);}catch{data=raw;}}
+      if(!response.ok){
+        const code=data?.code ? ` [${data.code}]` : "";
+        const details=data?.message || data?.hint || data?.details || String(data || response.statusText || "");
+        throw new Error(`HTTP ${response.status}${code}: ${details}`);
+      }
+      return data;
+    }
+
+    async function workshopSecondarySbRpc(functionName,body={}){
+      return workshopSecondarySbRequest("rpc/" + functionName,{method:"POST",body,prefer:""});
+    }
+
+    function normalizeWorkshopSecondaryRow(row,fallbackEquipment=""){
+      const dateValue = row?.fecha_jornada ?? row?.fecha ?? row?.fecha_registro ?? row?.dia ?? row?.date ?? "";
+      const equipmentValue = row?.equipo ?? row?.numero_equipo ?? row?.equipo_numero ?? row?.codigo_equipo ?? row?.n_equipo ?? fallbackEquipment ?? "";
+      const hoursValue = row?.horas_maquina ?? row?.hrs_maquina ?? row?.hrs ?? row?.horas ?? row?.cantidad ?? row?.horas_trabajadas ?? "";
+      return {
+        fecha_jornada: normalizeDateKey(dateValue),
+        equipo: sanitizeEquipmentCode(equipmentValue),
+        horas_maquina: hoursValue,
+        __taller_fuente:"conexion_2"
+      };
+    }
+
+    async function fetchWorkshopSecondaryOpenApi(){
+      const bearer=await getWorkshopSecondaryBearer();
+      const headers={
+        "apikey":WORKSHOP_SECONDARY_SUPABASE_ANON_KEY,
+        "Authorization":"Bearer " + (bearer || WORKSHOP_SECONDARY_SUPABASE_ANON_KEY),
+        "Accept":"application/openapi+json"
+      };
+      const response=await fetch(`${WORKSHOP_SECONDARY_SUPABASE_URL}/rest/v1/`,{
+        method:"GET",headers,mode:"cors",cache:"no-store"
+      });
+      const raw=await response.text();
+      let data=null;
+      if(raw){ try{data=JSON.parse(raw);}catch{data=raw;} }
+      if(!response.ok){
+        const details=data?.message || data?.hint || data?.details || String(data || response.statusText || "");
+        throw new Error(`HTTP ${response.status}: ${details}`);
+      }
+      if(!data || typeof data !== "object") throw new Error("La segunda conexión de Taller no devolvió el esquema REST esperado.");
+      return data;
+    }
+
+    function findWorkshopSecondaryTableFromSpec(spec){
+      const definitions=spec?.definitions || spec?.components?.schemas || {};
+      const dateAliases=["fecha_jornada","fecha","fecha_registro","dia","date"];
+      const equipmentAliases=["equipo","numero_equipo","equipo_numero","codigo_equipo","n_equipo"];
+      const hourAliases=["horas_maquina","hrs_maquina","horas","cantidad","horas_trabajadas"];
+      const candidates=[];
+      for(const [name,definition] of Object.entries(definitions || {})){
+        const props=definition?.properties || {};
+        const keys=Object.keys(props);
+        const dateField=dateAliases.find(k=>keys.includes(k));
+        const equipmentField=equipmentAliases.find(k=>keys.includes(k));
+        const hoursField=hourAliases.find(k=>keys.includes(k));
+        if(!dateField || !equipmentField || !hoursField) continue;
+        let score=0;
+        const lower=String(name).toLowerCase();
+        if(/taller/.test(lower)) score+=8;
+        if(/hora/.test(lower)) score+=6;
+        if(/maquina|máquina/.test(lower)) score+=4;
+        if(/operador/.test(lower)) score+=3;
+        if(/registro/.test(lower)) score+=2;
+        if(hoursField === "horas_maquina") score+=5;
+        if(dateField === "fecha_jornada") score+=3;
+        if(equipmentField === "equipo") score+=2;
+        candidates.push({table:name,dateField,equipmentField,hoursField,score});
+      }
+      candidates.sort((a,b)=>b.score-a.score || String(a.table).localeCompare(String(b.table),"es"));
+      return candidates[0] || null;
+    }
+
+    async function discoverWorkshopSecondarySource(){
+      if(workshopSecondaryDiscoveryCache) return workshopSecondaryDiscoveryCache;
+      const spec=await fetchWorkshopSecondaryOpenApi();
+      const paths=spec?.paths || {};
+      const exactRpcPath=`/rpc/${HOURS_RPC_NAME}`;
+      if(paths[exactRpcPath]){
+        workshopSecondaryDiscoveryCache={kind:"rpc",name:HOURS_RPC_NAME};
+        return workshopSecondaryDiscoveryCache;
+      }
+      const table=findWorkshopSecondaryTableFromSpec(spec);
+      if(table){
+        workshopSecondaryDiscoveryCache={kind:"table",...table};
+        return workshopSecondaryDiscoveryCache;
+      }
+      const rpcNames=Object.keys(paths)
+        .filter(path=>path.startsWith("/rpc/"))
+        .map(path=>path.slice(5))
+        .filter(name=>/hora/i.test(name) && /(maquina|operador|taller)/i.test(name));
+      throw new Error(`No se encontró ${HOURS_RPC_NAME} ni una tabla compatible de horas de Taller en la segunda conexión${rpcNames.length ? `. RPC relacionados disponibles: ${rpcNames.slice(0,6).join(", ")}` : ""}.`);
+    }
+
+    async function fetchWorkshopSecondaryFromTable(source,payload){
+      const from=normalizeDateKey(payload?.p_desde);
+      const to=normalizeDateKey(payload?.p_hasta);
+      const codes=(payload?.p_equipos || []).map(sanitizeEquipmentCode).filter(Boolean);
+      if(!from || !to) throw new Error("La segunda fuente de Taller no recibió un rango de fechas válido.");
+      const rows=[];
+      const pageSize=1000;
+      for(let offset=0;offset<50000;offset+=pageSize){
+        let query=`?select=${encodeURIComponent(source.dateField)},${encodeURIComponent(source.equipmentField)},${encodeURIComponent(source.hoursField)}`;
+        query+=`&${encodeURIComponent(source.dateField)}=gte.${encodeURIComponent(from)}&${encodeURIComponent(source.dateField)}=lte.${encodeURIComponent(to)}`;
+        if(codes.length){
+          query+=`&${encodeURIComponent(source.equipmentField)}=in.(${codes.map(code=>encodeURIComponent(code)).join(",")})`;
+        }
+        query+=`&order=${encodeURIComponent(source.dateField)}.asc&limit=${pageSize}&offset=${offset}`;
+        const page=await workshopSecondarySbRequest(source.table,{query,prefer:""});
+        const data=Array.isArray(page) ? page : [];
+        data.forEach(row=>{
+          const normalized=normalizeWorkshopSecondaryRow({
+            fecha_jornada:row?.[source.dateField],
+            equipo:row?.[source.equipmentField],
+            horas_maquina:row?.[source.hoursField]
+          });
+          if(normalized.fecha_jornada && normalized.equipo) rows.push(normalized);
+        });
+        if(data.length < pageSize) break;
+      }
+      return rows;
+    }
+
+    async function workshopSecondaryHoursRequest(payload){
+      // Segunda fuente TALLER: RPC real de la base Horas maquinas.
+      // Devuelve: fecha, equipo, hrs. Se normaliza al mismo formato de la fuente 1.
+      const data=await workshopSecondarySbRpc(WORKSHOP_SECONDARY_RPC_NAME,payload || {});
+      return (Array.isArray(data) ? data : []).map(row=>normalizeWorkshopSecondaryRow(row));
+    }
+
     function readGpsSupabaseSession(){
       try{return JSON.parse(localStorage.getItem(GPS_SUPABASE_SESSION_KEY) || "null");}
       catch{return null;}
@@ -4545,6 +4834,7 @@
       // Recupera la sesión de la conexión adicional si aún sigue vigente.
       // Es opcional: cualquier fallo se ignora para no bloquear la aplicación principal.
       try{ await restoreOptionalSupabaseSession(); }catch(error){ console.warn("Supabase opcional:",error); }
+      try{ await restoreWorkshopSecondarySession(); }catch(error){ console.warn("Segunda fuente de Taller:",error); }
       try{ await restoreGpsSupabaseSession(); }catch(error){ console.warn("Supabase GPS:",error); }
       await hydrateFromSupabase();
     }
@@ -7444,8 +7734,8 @@
     function fuelEquipmentToWorkshopHoursEquipment(equipo){
       const code=sanitizeEquipmentCode(equipo);
       if(!code) return "";
-      // HORAS TALLER: el RPC trabaja directamente con el 484xxx.
-      return /^484\d{3}$/.test(code) ? code : "";
+      // HORAS TALLER: se consulta el mismo número en ambas bases, sin limitar prefijos.
+      return code;
     }
 
     function fieldHoursFriendlyError(error){
@@ -7468,7 +7758,7 @@
         return "La segunda base de datos bloqueó la consulta de horas de taller por permisos/RLS. Verifique que el usuario tenga acceso o que el RPC permita ejecución.";
       }
       if(/404|PGRST202|function .* does not exist|could not find the function/i.test(raw)){
-        return `No se encontró el RPC ${HOURS_RPC_NAME} en la segunda base de datos.`;
+        return `No se encontró el RPC ${HOURS_RPC_NAME} ni una fuente compatible de horas de Taller en una de las conexiones.`;
       }
       return raw;
     }
@@ -7529,15 +7819,32 @@
     }
 
     async function workshopHoursRpcRequest(payload){
-      // HORAS TALLER: este RPC pertenece a la SEGUNDA conexión Supabase
-      // (zabangygpfchxmxawict). Si el usuario logró autenticarse allí, optionalSbRpc
-      // usa su access_token; si no, intenta con la anon key porque el login es opcional.
-      try{
-        const data=await optionalSbRpc(HOURS_RPC_NAME,payload || {});
-        return Array.isArray(data) ? data : [];
-      }catch(error){
-        throw new Error("No se pudo consultar las horas de taller en la segunda base de datos. " + (error?.message || error));
+      // TALLER combina DOS Supabase reales:
+      // 1) zabangygpfchxmxawict -> rpc_horas_maquina_operador_diario
+      // 2) resyxhjfpgdmaelmvxmo -> rpc_horas_taller_diario_tabla
+      const requestPayload=payload || {};
+      const results=await Promise.allSettled([
+        optionalSbRpc(HOURS_RPC_NAME,requestPayload),
+        workshopSecondaryHoursRequest(requestPayload)
+      ]);
+      const rows=[];
+      const errors=[];
+      const status={primary:false,secondary:false};
+      results.forEach((result,index)=>{
+        const sourceName=index===0 ? "Taller operador" : "Taller manual";
+        if(result.status === "fulfilled"){
+          if(index===0) status.primary=true; else status.secondary=true;
+          const data=Array.isArray(result.value) ? result.value : [];
+          data.forEach(row=>rows.push(index===0 ? {...row,__taller_fuente:"conexion_1"} : normalizeWorkshopSecondaryRow(row)));
+        }else{
+          errors.push(`${sourceName}: ${result.reason?.message || result.reason || "Error desconocido"}`);
+        }
+      });
+      rows.__sourceStatus={...status,errors};
+      if(!status.primary && !status.secondary){
+        throw new Error("No se pudo consultar ninguna de las dos conexiones de Taller. " + errors.join(" · "));
       }
+      return rows;
     }
 
     function workshopHoursToDecimal(value){
@@ -7565,7 +7872,7 @@
     async function fetchWorkshopMachineHoursRange(equipo,from,to){
       const hoursEquipment=fuelEquipmentToWorkshopHoursEquipment(equipo);
       if(!hoursEquipment){
-        return {connected:false,notApplicable:true,equipoHoras:"",rows:[],error:"Las horas de taller solo aplican a equipos del grupo 484xxx."};
+        return {connected:false,notApplicable:true,equipoHoras:"",rows:[],error:"No se recibió un número de equipo válido para consultar horas de taller."};
       }
       try{
         const data=await workshopHoursRpcRequest({
@@ -8968,22 +9275,36 @@
     }
 
     async function fetchWeeklyWorkshopHours(from,to,equipmentCodes){
-      const codes=(equipmentCodes || []).map(sanitizeEquipmentCode).filter(code=>/^484\d{3}$/.test(code));
+      const codes=(equipmentCodes || []).map(sanitizeEquipmentCode).filter(Boolean);
       if(!codes.length) return {available:true,connected:true,rows:[],error:""};
-      const rows=[]; const errors=[]; let successes=0;
+      const rows=[]; const errors=[]; let successes=0; let partialFailure=false;
       for(const chunk of weeklyChunk(codes,80)){
         try{
           const data=await workshopHoursRpcRequest({p_desde:normalizeDateKey(from),p_hasta:normalizeDateKey(to),p_equipos:chunk});
           successes++;
+          if(Array.isArray(data?.__sourceStatus?.errors) && data.__sourceStatus.errors.length){
+            partialFailure=true;
+            errors.push(...data.__sourceStatus.errors);
+          }
           (data || []).forEach(row=>{
-            const fecha=normalizeDateKey(row.fecha_jornada);
-            const equipo=sanitizeEquipmentCode(row.equipo);
-            const horas=workshopHoursToDecimal(row.horas_maquina);
+            const normalized=row?.__taller_fuente === "conexion_2" ? normalizeWorkshopSecondaryRow(row) : {
+              fecha_jornada:normalizeDateKey(row?.fecha_jornada ?? row?.fecha),
+              equipo:sanitizeEquipmentCode(row?.equipo ?? row?.numero_equipo ?? row?.equipo_numero),
+              horas_maquina:row?.horas_maquina ?? row?.hrs_maquina ?? row?.horas ?? row?.cantidad
+            };
+            const fecha=normalizeDateKey(normalized.fecha_jornada);
+            const equipo=sanitizeEquipmentCode(normalized.equipo);
+            const horas=workshopHoursToDecimal(normalized.horas_maquina);
             if(fecha && equipo && Number.isFinite(horas)) rows.push({fecha,equipo,horas});
           });
         }catch(error){errors.push(workshopHoursFriendlyError(error));}
       }
-      return {available:successes>0,connected:errors.length===0,rows,error:[...new Set(errors)].join(" · ")};
+      return {
+        available:successes>0,
+        connected:successes>0 && !partialFailure && errors.length===0,
+        rows,
+        error:[...new Set(errors.filter(Boolean))].join(" · ")
+      };
     }
 
     async function fetchWeeklyGpsHours(from,to,equipmentCodes){
@@ -9796,10 +10117,15 @@
         // Esta autenticación es opcional y nunca impide el acceso a la aplicación principal.
         const optionalLoginResult = await loginOptionalSupabase(correo,password);
         if(optionalLoginResult?.authenticated){
-          console.info("Segunda BD conectada con sesión de usuario. Las horas de taller se consultarán desde esa conexión.");
+          console.info("Primera fuente de Taller conectada con sesión de usuario.");
         }else if(!optionalLoginResult?.skipped){
-          console.warn("Segunda BD sin sesión autenticada; se intentarán las consultas permitidas con anon key:", optionalLoginResult?.error || "Error desconocido");
+          console.warn("Primera fuente de Taller sin sesión; se intentará con anon key:", optionalLoginResult?.error || "Error desconocido");
         }
+
+        // La segunda fuente de Taller (registro manual) permite ejecutar su RPC con anon key.
+        // No requiere que el usuario exista también en esa base.
+        clearWorkshopSecondarySession();
+        workshopSecondaryLastError="";
 
         // Tercera conexión GPS: usa el mismo correo y contraseña del login principal.
         // El RPC GPS exige usuario autenticado, por eso aquí sí se requiere un access_token válido para consultar.
@@ -9824,9 +10150,11 @@
     logoutBtn.addEventListener("click", async () => {
       const token = currentSessionToken;
       const optionalToken = optionalSupabaseSession?.access_token || readOptionalSupabaseSession()?.access_token || "";
+      const workshopSecondaryToken = workshopSecondarySession?.access_token || readWorkshopSecondarySession()?.access_token || "";
       const gpsToken = gpsSupabaseSession?.access_token || readGpsSupabaseSession()?.access_token || "";
       clearAuthSession();
       clearOptionalSupabaseSession();
+      clearWorkshopSecondarySession();
       clearGpsSupabaseSession();
       showLogin();
       if(token){
@@ -9834,6 +10162,9 @@
       }
       if(optionalToken){
         try{ await optionalSupabaseAuthFetch("/auth/v1/logout", {method:"POST",token:optionalToken,timeoutMs:4000}); }catch{}
+      }
+      if(workshopSecondaryToken){
+        try{ await workshopSecondaryAuthFetch("/auth/v1/logout", {method:"POST",token:workshopSecondaryToken,timeoutMs:4000}); }catch{}
       }
       if(gpsToken){
         try{ await gpsSupabaseAuthFetch("/auth/v1/logout", {method:"POST",token:gpsToken,timeoutMs:4000}); }catch{}
