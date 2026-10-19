@@ -3974,16 +3974,22 @@
       const headers = {
         "apikey": SUPABASE_ANON_KEY,
         "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache, no-store, max-age=0",
+        "Pragma": "no-cache"
       };
       if(prefer) headers["Prefer"] = prefer;
+      const freshQuery = normalizedMethod === "GET"
+        ? `${query}${query.includes("?") ? "&" : "?"}_fresh=${Date.now()}`
+        : query;
 
       let response;
       try{
-        response = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
+        response = await fetch(`${SUPABASE_URL}/rest/v1/${table}${freshQuery}`, {
           method: normalizedMethod,
           headers,
           mode: "cors",
+          cache: "no-store",
           body: body === null ? undefined : JSON.stringify(body)
         });
       }catch(networkError){
@@ -7767,11 +7773,14 @@
       const headers={
         "apikey":HOURS_SUPABASE_ANON_KEY,
         "Authorization":"Bearer " + HOURS_SUPABASE_ANON_KEY,
-        "Accept":"application/json"
+        "Accept":"application/json",
+        "Cache-Control":"no-cache, no-store, max-age=0",
+        "Pragma":"no-cache"
       };
+      const freshQuery=`${query}${query.includes("?") ? "&" : "?"}_fresh=${Date.now()}`;
       let response;
       try{
-        response=await fetch(`${HOURS_SUPABASE_URL}/rest/v1/${HOURS_SUPABASE_TABLE}${query}`,{
+        response=await fetch(`${HOURS_SUPABASE_URL}/rest/v1/${HOURS_SUPABASE_TABLE}${freshQuery}`,{
           method:"GET",headers,mode:"cors",cache:"no-store"
         });
       }catch(networkError){
@@ -7810,7 +7819,13 @@
           fecha:normalizeDateKey(row.fecha),
           equipo:String(row.equipo_numero || "").trim(),
           horas:Number(row.cantidad || 0)
-        })).filter(row=>row.fecha && Number.isFinite(row.horas));
+        })).filter(row=>{
+          const valid=row.fecha && Number.isFinite(row.horas) && row.horas >= 0 && row.horas <= 24;
+          if(!valid && row.fecha && Number.isFinite(row.horas)){
+            console.warn("Horas Campo: se ignoró un registro imposible/corrupto.",row);
+          }
+          return valid;
+        });
         return {connected:true,notApplicable:false,equipoHoras:hoursEquipment,rows,error:""};
       }catch(error){
         console.error("Horas campo Supabase:",error);
@@ -9262,7 +9277,13 @@
           fecha:normalizeDateKey(row.fecha),
           equipo:weeklyFieldCodeToFuelEquipment(row.equipo_numero),
           horas:Number(row.cantidad || 0)
-        })).filter(row=>row.fecha && row.equipo && Number.isFinite(row.horas));
+        })).filter(row=>{
+          const valid=row.fecha && row.equipo && Number.isFinite(row.horas) && row.horas >= 0 && row.horas <= 24;
+          if(!valid && row.fecha && row.equipo && Number.isFinite(row.horas)){
+            console.warn("Control semanal · Campo: se ignoró un registro imposible/corrupto.",row);
+          }
+          return valid;
+        });
         return {available:true,connected:true,rows,error:""};
       }catch(error){
         console.error("Control semanal · Campo:",error);
@@ -9651,7 +9672,7 @@
       return results;
     }
 
-    async function loadOilControlView({force=false}={}){
+    async function loadOilControlView({force=true}={}){
       if(oilControlLoading) return;
       oilControlLoading=true;
       if(oilControlRefreshBtn) oilControlRefreshBtn.disabled=true;
@@ -9715,7 +9736,7 @@
         btn.setAttribute("aria-checked",active?"true":"false");
       });
       if(oilControlGrid) oilControlGrid.dataset.loaded="true";
-      loadOilControlView();
+      loadOilControlView({force:true});
     }
 
     function showDashboard(){
@@ -9823,7 +9844,7 @@
         oilControlView?.classList.remove("view-hidden");
         mainWorkspace.classList.add("single-view");
         currentViewLabel.textContent = "CONTROL DE CAMBIO DE ACEITE";
-        loadOilControlView();
+        loadOilControlView({force:true});
       }else if(view === "cuotas"){
         movementView.classList.add("view-hidden");
         inventoryView.classList.add("view-hidden");
