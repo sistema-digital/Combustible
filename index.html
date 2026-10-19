@@ -3979,13 +3979,13 @@
         "Pragma": "no-cache"
       };
       if(prefer) headers["Prefer"] = prefer;
-      const freshQuery = normalizedMethod === "GET"
-        ? `${query}${query.includes("?") ? "&" : "?"}_fresh=${Date.now()}`
-        : query;
-
+      // IMPORTANTE: no agregue parámetros ficticios a la URL para evitar caché.
+      // PostgREST interpreta cada parámetro de consulta como un filtro/columna y
+      // un parámetro como _fresh=... provoca PGRST100. El bypass de caché se
+      // realiza únicamente con fetch(cache: "no-store") y los encabezados.
       let response;
       try{
-        response = await fetch(`${SUPABASE_URL}/rest/v1/${table}${freshQuery}`, {
+        response = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
           method: normalizedMethod,
           headers,
           mode: "cors",
@@ -7777,10 +7777,10 @@
         "Cache-Control":"no-cache, no-store, max-age=0",
         "Pragma":"no-cache"
       };
-      const freshQuery=`${query}${query.includes("?") ? "&" : "?"}_fresh=${Date.now()}`;
+      // No añadir parámetros de cache-busting a PostgREST: serían tratados como filtros.
       let response;
       try{
-        response=await fetch(`${HOURS_SUPABASE_URL}/rest/v1/${HOURS_SUPABASE_TABLE}${freshQuery}`,{
+        response=await fetch(`${HOURS_SUPABASE_URL}/rest/v1/${HOURS_SUPABASE_TABLE}${query}`,{
           method:"GET",headers,mode:"cors",cache:"no-store"
         });
       }catch(networkError){
