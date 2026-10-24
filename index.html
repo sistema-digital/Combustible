@@ -2934,6 +2934,16 @@
             <div id="equipmentStatus" class="equipment-status">Ingrese el código del equipo para comprobarlo.</div>
           </div>
 
+          <div class="field">
+            <label for="kilometraje">KILOMETRAJE <span style="font-weight:600;color:#6b7280">(OPCIONAL)</span></label>
+            <input id="kilometraje" class="movement-meter-input" type="text" inputmode="decimal" autocomplete="off" placeholder="Ingrese el kilometraje">
+          </div>
+
+          <div class="field">
+            <label for="odometro">ODÓMETRO <span style="font-weight:600;color:#6b7280">(OPCIONAL)</span></label>
+            <input id="odometro" class="movement-meter-input" type="text" inputmode="decimal" autocomplete="off" placeholder="Ingrese el odómetro">
+          </div>
+
           <div id="areaConsumeField" class="field hidden">
             <label for="areaConsume">AREA QUE CONSUME <span style="font-weight:600;color:#6b7280">(OPCIONAL)</span></label>
             <select id="areaConsume">
@@ -3673,6 +3683,8 @@
     const appRefreshBtn = document.getElementById("appRefreshBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const equipoInput = document.getElementById("equipo");
+    const kilometrajeInput = document.getElementById("kilometraje");
+    const odometroInput = document.getElementById("odometro");
     const equipmentStatus = document.getElementById("equipmentStatus");
     const movementEquipmentSuggestions = document.getElementById("movementEquipmentSuggestions");
     const equipmentAdminView = document.getElementById("equipmentAdminView");
@@ -4958,7 +4970,7 @@
       }
     }
 
-    async function saveMovementToSupabase({fecha, planta, equipo, area_que_consume, items}){
+    async function saveMovementToSupabase({fecha, planta, equipo, kilometraje=null, odometro=null, area_que_consume, items}){
       let movementId = null;
       const normalizedEquipment = sanitizeEquipmentCode(equipo);
       try{
@@ -4968,6 +4980,8 @@
             fecha: normalizeDateKey(fecha),
             planta,
             equipo: normalizedEquipment,
+            kilometraje: kilometraje === null || kilometraje === "" ? null : Number(kilometraje),
+            odometro: odometro === null || odometro === "" ? null : Number(odometro),
             area_que_consume: String(area_que_consume || "").trim() || null
           }
         });
@@ -4994,6 +5008,8 @@
           fecha,
           planta,
           equipo: normalizedEquipment,
+          kilometraje: kilometraje === null || kilometraje === "" ? null : Number(kilometraje),
+          odometro: odometro === null || odometro === "" ? null : Number(odometro),
           area_que_consume: String(area_que_consume || "").trim() || null,
           tipo_movimiento:"CONSUMO",
           created_at: header.created_at || new Date().toISOString(),
@@ -5702,6 +5718,8 @@
 
     function clearMovementFormAfterSave(){
       equipoInput.value = "";
+      if(kilometrajeInput) kilometrajeInput.value = "";
+      if(odometroInput) odometroInput.value = "";
       equipoAceptado = false;
       hideMovementEquipmentSuggestions();
       setEquipmentStatus("Ingrese el código del equipo para comprobarlo.");
@@ -10537,7 +10555,7 @@
 
     // Cantidades: bloquear letras, e, signos y otros caracteres.
     document.addEventListener("input", (e) => {
-      if(e.target.matches(".combustible-qty, .inventory-input")){
+      if(e.target.matches(".combustible-qty, .inventory-input, .movement-meter-input")){
         const cleaned = sanitizeNumericText(e.target.value, true);
         if(e.target.value !== cleaned) e.target.value = cleaned;
       }
@@ -10567,6 +10585,8 @@
       const planta = plantaInput.value.trim();
       const equipo = sanitizeEquipmentCode(equipoInput.value);
       equipoInput.value = equipo;
+      const kilometraje = String(kilometrajeInput?.value || "").trim();
+      const odometro = String(odometroInput?.value || "").trim();
       const items = collectMovementItems();
 
       if(!fechaPicker.value){
@@ -10582,6 +10602,16 @@
       if(!equipo){
         showToast("Ingrese el equipo.", true);
         equipoInput.focus();
+        return;
+      }
+      if(kilometraje && (!Number.isFinite(Number(kilometraje)) || Number(kilometraje) < 0)){
+        showToast("El kilometraje debe ser un número válido o dejarse vacío.", true);
+        kilometrajeInput?.focus();
+        return;
+      }
+      if(odometro && (!Number.isFinite(Number(odometro)) || Number(odometro) < 0)){
+        showToast("El odómetro debe ser un número válido o dejarse vacío.", true);
+        odometroInput?.focus();
         return;
       }
       if(!(await validateEquipmentFromSupabase())){
@@ -10651,6 +10681,8 @@
           fecha:fechaInput.value,
           planta,
           equipo,
+          kilometraje: kilometraje || null,
+          odometro: odometro || null,
           area_que_consume: isPlant200() ? String(areaConsumeInput?.value || "").trim() || null : null,
           items
         });
