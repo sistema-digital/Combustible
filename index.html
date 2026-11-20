@@ -2639,6 +2639,41 @@
       .weekly-hours-heading h2{font-size:18px}
     }
 
+
+    /* Módulo independiente de facturas electrónicas */
+    .invoices-view{grid-column:1/-1;min-width:0}
+    .invoice-body{padding:6px 20px 24px;display:grid;gap:16px}
+    .invoice-tabs{display:flex;gap:8px;border-bottom:1px solid #dfe5ee;padding-bottom:12px}
+    .invoice-tab{height:40px;padding:0 16px;border:1px solid #cbd8ef;background:#fff;color:#173f8f;border-radius:10px;font-weight:850;cursor:pointer}
+    .invoice-tab.active{background:#173f8f;color:#fff}
+    .invoice-panel{display:none}.invoice-panel.active{display:grid;gap:15px}
+    .invoice-capture-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .invoice-action{height:44px;padding:0 15px;border:1px solid #bdd0ed;border-radius:10px;background:#eef4ff;color:#173f8f;font-weight:850;cursor:pointer}
+    .invoice-action.primary{background:#173f8f;color:#fff;border-color:#173f8f}
+    .invoice-action:disabled{opacity:.55;cursor:wait}
+    .invoice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .invoice-field{display:grid;gap:5px;min-width:0}
+    .invoice-field label{font-size:11px;font-weight:900;color:#52647f;margin:0}
+    .invoice-field input,.invoice-field select{height:43px;width:100%;font-size:13px;border:1.5px solid #cbd8ef;border-radius:9px;padding:0 11px;min-width:0}
+    .invoice-field.wide{grid-column:span 2}.invoice-field.full{grid-column:1/-1}
+    .invoice-note{font-size:11px;color:#64748b;line-height:1.5;margin:0}
+    .invoice-message{min-height:25px;padding:9px 11px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;font-size:12px;color:#52647f}
+    .invoice-message.error{color:#b91c1c;background:#fff7f7;border-color:#fecaca}
+    .invoice-table-scroll{overflow:auto;border:1px solid #dfe5ee;border-radius:12px}
+    .invoice-table{min-width:650px;width:100%;border-collapse:collapse;table-layout:auto}
+    .invoice-table th{font-size:11px;background:#f1f5f9;text-align:left;padding:11px;color:#475569}
+    .invoice-table td{padding:8px;font-size:12px;border-top:1px solid #e2e8f0;text-align:left}
+    .invoice-table input{height:37px;min-width:70px;font-size:12px;border:1px solid #cbd5e1;padding:0 8px;width:100%;border-radius:7px}
+    .invoice-table input[data-detail-field=descripcion]{min-width:180px}
+    .invoice-summary{display:flex;align-items:center;justify-content:flex-end;gap:20px;padding:12px;background:#f4f7fc;border-radius:10px;font-size:15px;font-weight:900}
+    .invoice-qr-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .invoice-qr-tools input{flex:1;min-width:240px;height:43px;border:1px solid #cbd8ef;font-size:12px}
+    .invoice-video-wrap{display:none;max-width:540px;background:#111827;border-radius:12px;overflow:hidden}
+    .invoice-video-wrap.show{display:block}.invoice-video-wrap video{width:100%;display:block;max-height:360px}
+    .invoice-history-tools{display:flex;gap:10px}.invoice-history-tools input{flex:1;height:44px}
+    .invoice-hidden{display:none!important}
+    @media(max-width:800px){.invoice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:520px){.invoice-body{padding:6px 12px 16px}.invoice-grid{grid-template-columns:1fr}.invoice-field.wide{grid-column:auto}.invoice-history-tools{flex-direction:column}.invoice-capture-actions .invoice-action{flex:1}}
   </style>
 </head>
 <body class="auth-locked">
@@ -2842,6 +2877,13 @@
           </span>
           <h3>Cuotas</h3>
           <p>Vea la cuota de cada área y cuánto lleva consumido durante la semana actual.</p>
+        </button>
+
+
+        <button type="button" class="menu-card" data-view="invoices">
+          <span class="menu-card-icon" aria-hidden="true"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="M6 3h9l4 4v14H6V3Zm9 0v4h4M9 11h7M9 15h7M9 19h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h3>Gestión de facturas</h3>
+          <p>Capture facturas electrónicas desde PDF o QR y consulte las guardadas en Supabase.</p>
         </button>
 
         <button id="installAppMenuCard" type="button" class="menu-card" aria-label="Instalar aplicación en este dispositivo">
@@ -3479,6 +3521,43 @@
         </div>
       </article>
 
+
+      <article id="invoicesView" class="card app-view-card invoices-view view-hidden">
+        <div class="card-header"><h2>GESTIÓN DE FACTURAS</h2><p>Importe un PDF, escanee un QR o complete los datos manualmente. Revise los valores antes de guardar.</p></div>
+        <div class="invoice-body">
+          <div class="invoice-tabs"><button type="button" class="invoice-tab active" data-invoice-tab="capture">CAPTURAR FACTURA</button><button type="button" class="invoice-tab" data-invoice-tab="history">FACTURAS GUARDADAS</button></div>
+          <section id="invoiceCapture" class="invoice-panel active">
+            <div class="invoice-capture-actions"><button type="button" class="invoice-action primary" id="invoicePdfButton">IMPORTAR PDF</button><input id="invoicePdfFile" class="invoice-hidden" type="file" accept="application/pdf,.pdf"><button type="button" class="invoice-action" id="invoiceImageButton">LEER QR DE IMAGEN</button><input id="invoiceImageFile" class="invoice-hidden" type="file" accept="image/png,image/jpeg,image/webp,image/*"><button type="button" class="invoice-action" id="invoiceCameraButton">ABRIR CÁMARA QR</button><button type="button" class="invoice-action" id="invoiceClearButton">LIMPIAR</button></div>
+            <div id="invoiceCameraWrap" class="invoice-video-wrap"><video id="invoiceVideo" autoplay muted playsinline></video><button type="button" class="invoice-action" id="invoiceStopCamera">CERRAR CÁMARA</button></div>
+            <div class="invoice-qr-tools"><input id="invoiceQrUrl" type="url" placeholder="Pegue aquí el enlace del QR de la DGI (opcional)"><button class="invoice-action" id="invoiceReadUrl" type="button">LEER ENLACE</button></div>
+            <p class="invoice-note">El QR permite recuperar el CUFE y el enlace de validación, pero no los artículos ni el total. Para extraer esos datos utilice el PDF. La captura automática del PDF se optimizó para el formato de la factura suministrada; confirme siempre el resultado.</p>
+            <div id="invoiceStatus" class="invoice-message" role="status" aria-live="polite">Seleccione un PDF o lea un QR para comenzar.</div>
+            <div class="invoice-grid">
+              <div class="invoice-field"><label for="invoiceNumber">NÚMERO DE FACTURA *</label><input id="invoiceNumber" maxlength="100" placeholder="0000056179"></div>
+              <div class="invoice-field"><label for="invoiceDate">FECHA DE EMISIÓN *</label><input id="invoiceDate" type="date"></div>
+              <div class="invoice-field"><label for="invoiceTotal">TOTAL (B/.) *</label><input id="invoiceTotal" type="number" min="0" step="0.01"></div>
+              <div class="invoice-field wide"><label for="invoiceIssuer">PROVEEDOR *</label><input id="invoiceIssuer" maxlength="300"></div>
+              <div class="invoice-field"><label for="invoiceRuc">RUC DEL PROVEEDOR</label><input id="invoiceRuc" maxlength="100"></div>
+              <div class="invoice-field wide"><label for="invoiceReceiver">CLIENTE / RECEPTOR</label><input id="invoiceReceiver" maxlength="300"></div>
+              <div class="invoice-field"><label for="invoiceReceiverRuc">RUC DEL CLIENTE</label><input id="invoiceReceiverRuc" maxlength="100"></div>
+              <div class="invoice-field full"><label for="invoiceCufe">CUFE *</label><input id="invoiceCufe" maxlength="200" style="font-size:12px" placeholder="Identificador fiscal único"></div>
+              <div class="invoice-field"><label for="invoiceAuthorization">AUTORIZACIÓN</label><input id="invoiceAuthorization" maxlength="150"></div>
+              <div class="invoice-field"><label for="invoiceTax">ITBMS (B/.)</label><input id="invoiceTax" type="number" min="0" step="0.01" value="0"></div>
+              <div class="invoice-field"><label for="invoicePayment">FORMA DE PAGO</label><input id="invoicePayment" maxlength="100"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><strong>PRODUCTOS / SERVICIOS</strong><button type="button" class="invoice-action" id="invoiceAddItem">+ AGREGAR PRODUCTO</button></div>
+            <div class="invoice-table-scroll"><table class="invoice-table"><thead><tr><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>PRECIO UNITARIO</th><th>MONTO</th><th>QUITAR</th></tr></thead><tbody id="invoiceItems"></tbody></table></div>
+            <div class="invoice-summary"><span>TOTAL DE FACTURA</span><strong id="invoiceTotalPreview">B/. 0.00</strong></div>
+            <button id="invoiceSave" type="button" class="primary-btn">GUARDAR FACTURA EN SUPABASE</button>
+          </section>
+          <section id="invoiceHistory" class="invoice-panel">
+            <div class="invoice-history-tools"><input id="invoiceSearch" placeholder="Buscar por número, CUFE o proveedor"><button type="button" id="invoiceSearchButton" class="invoice-action primary">BUSCAR FACTURAS</button></div>
+            <div id="invoiceHistoryStatus" class="invoice-message">Seleccione BUSCAR FACTURAS.</div>
+            <div class="invoice-table-scroll"><table class="invoice-table"><thead><tr><th>FECHA</th><th>NÚMERO</th><th>PROVEEDOR</th><th>IMPORTE</th><th>PRODUCTOS</th></tr></thead><tbody id="invoiceHistoryRows"></tbody></table></div>
+          </section>
+        </div>
+      </article>
+
       <article id="userAdminView" class="card app-view-card user-admin-view view-hidden">
         <div class="card-header">
           <h2>REGISTRAR / ACTUALIZAR USUARIO</h2>
@@ -3577,6 +3656,8 @@
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script>
@@ -3726,6 +3807,7 @@
     const dashboardDieselRows = document.getElementById("dashboardDieselRows");
     const historyView = document.getElementById("historyView");
     const reportsView = document.getElementById("reportsView");
+    const invoicesView = document.getElementById("invoicesView");
     const oilControlView = document.getElementById("oilControlView");
     const weeklyHoursView = document.getElementById("weeklyHoursView");
     const weeklyHoursPrevBtn = document.getElementById("weeklyHoursPrevBtn");
@@ -4032,6 +4114,7 @@
       history:true,
       all:true,
       reports:true,
+      invoices:true,
       "oil-control":true,
       cuotas:true,
       "equipment-admin":true,
@@ -9767,6 +9850,7 @@
       inventoryView.classList.remove("view-hidden");
       historyView.classList.add("view-hidden");
       reportsView.classList.add("view-hidden");
+      invoicesView?.classList.add("view-hidden");
       weeklyHoursView?.classList.add("view-hidden");
       oilControlView?.classList.add("view-hidden");
       quotasView.classList.add("view-hidden");
@@ -9799,6 +9883,7 @@
       inventoryView.classList.remove("view-hidden");
       historyView.classList.add("view-hidden");
       reportsView.classList.add("view-hidden");
+      invoicesView?.classList.add("view-hidden");
       weeklyHoursView?.classList.add("view-hidden");
       oilControlView?.classList.add("view-hidden");
       quotasView.classList.add("view-hidden");
@@ -9806,7 +9891,13 @@
       userAdminView.classList.add("view-hidden");
       mainWorkspace.classList.remove("single-view");
 
-      if(view === "entry"){
+      if(view === "invoices"){
+        movementView.classList.add("view-hidden");
+        inventoryView.classList.add("view-hidden");
+        invoicesView.classList.remove("view-hidden");
+        mainWorkspace.classList.add("single-view");
+        currentViewLabel.textContent="GESTIÓN DE FACTURAS";
+      }else if(view === "entry"){
         entryTabs.classList.remove("view-hidden");
         mainWorkspace.classList.add("single-view");
         currentViewLabel.textContent = "INGRESO DE MOVIMIENTO E INVENTARIO";
@@ -10784,6 +10875,195 @@
 
 
   <script>
+    (()=>{
+      const $=id=>document.getElementById(id);
+      const fields={numero:'invoiceNumber',fecha:'invoiceDate',total:'invoiceTotal',emisor:'invoiceIssuer',ruc:'invoiceRuc',receptor:'invoiceReceiver',ruc_receptor:'invoiceReceiverRuc',cufe:'invoiceCufe',autorizacion:'invoiceAuthorization',itbms:'invoiceTax',forma_pago:'invoicePayment'};
+      let origin='manual', activeStream=null, frameId=0;
+      const status=(message,error=false)=>{const el=$('invoiceStatus');el.textContent=message;el.classList.toggle('error',error);};
+      const val=k=>($(fields[k])?.value||'').trim();
+      const set=(k,v)=>{if($(fields[k]) && v!==undefined && v!==null) $(fields[k]).value=String(v);};
+      const numeric=s=>Number(String(s??'').replace(/,/g,'').trim())||0;
+      const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const inputRow=(data={})=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td><input data-detail-field="descripcion" maxlength="500" value="${esc(data.descripcion||'')}"></td><td><input data-detail-field="cantidad" type="number" min="0.001" step="any" value="${esc(data.cantidad??1)}"></td><td><input data-detail-field="precio_unitario" type="number" min="0" step="any" value="${esc(data.precio_unitario??0)}"></td><td><input data-detail-field="valor_total" type="number" min="0" step="0.01" value="${esc(data.valor_total??0)}"></td><td><button type="button" class="invoice-action" data-invoice-remove="true" title="Quitar">×</button></td>`;
+        $('invoiceItems').append(tr);
+      };
+      const items=()=>[...$('invoiceItems').querySelectorAll('tr')].map(tr=>Object.fromEntries([...tr.querySelectorAll('[data-detail-field]')].map(i=>[i.dataset.detailField,i.type==='number'?numeric(i.value):i.value.trim()])));
+      const updateTotal=()=>{$('invoiceTotalPreview').textContent='B/. '+numeric(val('total')).toFixed(2);};
+      const reset=()=>{for(const k of Object.keys(fields))set(k,'');set('itbms',0);$('invoiceItems').innerHTML='';inputRow();origin='manual';$('invoiceQrUrl').value='';updateTotal();status('Formulario listo. Puede importar una factura.');};
+      function fromQr(text){
+        let url;
+        try{url=new URL(String(text||'').trim());}catch{throw Error('No es una dirección válida de factura electrónica.');}
+        if(url.protocol!=='https:' || url.hostname!=='dgi-fep.mef.gob.pa' || !/^\/Consultas\/FacturasPorQR\/?$/i.test(url.pathname)) throw Error('Solo se permiten enlaces QR de la DGI de Panamá.');
+        const cufe=url.searchParams.get('chFE')||'';
+        if(!/^FE[A-Za-z0-9-]{15,198}$/.test(cufe)) throw Error('El enlace no contiene un CUFE válido.');
+        set('cufe',cufe.toUpperCase());
+        if(origin!=='pdf')origin='qr';
+        // Nunca consultar una página externa de la DGI: no hay acceso automatizado probado.
+        status('QR leído. CUFE recuperado. Para obtener proveedor, productos y total, importe el PDF de la factura.');
+        return cufe;
+      }
+      const scanCanvas=canvas=>{
+        if(typeof jsQR!=='function')throw Error('El lector QR no está disponible; revise su conexión a Internet.');
+        const ctx=canvas.getContext('2d',{willReadFrequently:true});
+        const im=ctx.getImageData(0,0,canvas.width,canvas.height);
+        const code=jsQR(im.data,im.width,im.height,{inversionAttempts:'attemptBoth'});
+        return code?.data||'';
+      };
+      const imageQr=async file=>{
+        if(!file)return;
+        status('Leyendo imagen de QR...');
+        const bmp=await createImageBitmap(file);
+        const canvas=document.createElement('canvas');const scale=Math.min(1,1800/Math.max(bmp.width,bmp.height));canvas.width=Math.round(bmp.width*scale);canvas.height=Math.round(bmp.height*scale);
+        canvas.getContext('2d').drawImage(bmp,0,0,canvas.width,canvas.height);bmp.close();
+        const text=scanCanvas(canvas);if(!text)throw Error('No se encontró un QR legible en la imagen.');fromQr(text);
+      };
+      const pdfRows=(content)=>{
+        const lines=[];
+        for(const it of content.items||[]){
+          if(!String(it.str||'').trim())continue;
+          const x=it.transform[4],y=it.transform[5];
+          let line=lines.find(r=>Math.abs(r.y-y)<2.5);
+          if(!line){line={y,parts:[]};lines.push(line);}
+          line.parts.push({x,t:String(it.str).trim()});
+        }
+        return lines.sort((a,b)=>b.y-a.y).map(r=>({y:r.y,parts:r.parts.sort((a,b)=>a.x-b.x),text:r.parts.map(p=>p.t).join(' ').replace(/\s+/g,' ').trim()}));
+      };
+      function parsePdfRows(rows){
+        const line=(prefix)=>rows.find(r=>r.text.toLowerCase().startsWith(prefix.toLowerCase()))?.text||'';
+        const after=(prefix)=>line(prefix).slice(prefix.length).trim();
+        const labelled=(label)=>rows.find(r=>r.text.toLowerCase().startsWith(label.toLowerCase()))?.text.slice(label.length).trim()||'';
+        const choose=(regex)=>rows.map(r=>r.text.match(regex)?.[1]).find(Boolean)||'';
+        const pdf={};
+        pdf.emisor=after('Emisor:'); pdf.ruc=after('RUC:');pdf.receptor=after('Cliente:');
+        pdf.ruc_receptor=after('RUC/Cédula/Pasaporte:');pdf.numero=choose(/\bNúmero:\s*(\d+)/i);
+        pdf.cufe=choose(/\bCUFE:\s*(FE[A-Za-z0-9-]+)/i);
+        const date=choose(/Fecha de Emisi[oó]n:\s*(\d{2}\/\d{2}\/\d{4})/i);
+        if(date){const [d,m,y]=date.split('/');pdf.fecha=`${y}-${m}-${d}`;}
+        pdf.autorizacion=choose(/Protocolo de autorizaci[oó]n:\s*([A-Za-z0-9-]+)/i);
+        const totalLine=rows.find(r=>/^Total\s+\d+[.,]\d{2}$/i.test(r.text)&&r.parts.some(p=>p.x>430&&/^Total$/i.test(p.t))) || [...rows].reverse().find(r=>/^Total\s+\d+[.,]\d{2}$/i.test(r.text));
+        pdf.total=totalLine?numeric(totalLine.text.replace(/^total\s+/i,'')):null;
+        const taxLine=rows.find(r=>/^ITBMS\s+[\d.,]+$/i.test(r.text));
+        pdf.itbms=taxLine?numeric(taxLine.text.replace(/^ITBMS\s+/i,'')):0;
+        pdf.forma_pago=choose(/^(Cr[eé]dito|Contado|Efectivo|Tarjeta)\s+[\d.,]+$/i);
+        // Detalles sobre la línea de encabezados de la factura. Se separa por posición X,
+        // no por espacios: así se preservan descripciones compuestas y cantidades.
+        const header=rows.find(r=>/Descripci[oó]n/i.test(r.text)&&/Cantidad/i.test(r.text));
+        const footer=rows.find(r=>/Valor Total/i.test(r.text));
+        const details=[];
+        if(header){
+          for(const row of rows){
+            if(row.y>=header.y-2 || (footer && row.y<=footer.y-3))continue;
+            const description=row.parts.filter(p=>p.x<225).map(p=>p.t).join(' ').trim();
+            const match=description.match(/^(\d{1,3})\s+(.+)$/);
+            if(!match)continue;
+            const at=(lo,hi)=>row.parts.filter(p=>p.x>=lo&&p.x<hi).map(p=>p.t).join('').trim();
+            const qty=numeric(at(225,305)),price=numeric(at(305,385)),amount=numeric(at(525,610)||at(430,485));
+            if(!qty || !amount)continue;
+            details.push({descripcion:match[2],cantidad:qty,precio_unitario:price,valor_total:amount});
+          }
+        }
+        pdf.detalle=details;
+        return pdf;
+      }
+      async function parsePdf(file){
+        if(!file)return;
+        if(!/\.pdf$/i.test(file.name)&&file.type!=='application/pdf')throw Error('Seleccione un archivo PDF.');
+        if(file.size>15*1024*1024)throw Error('El PDF supera 15 MB.');
+        if(!window.pdfjsLib)throw Error('No se cargó el lector PDF. Compruebe su conexión a Internet.');
+        status('Extrayendo datos del PDF...');
+        const bytes=new Uint8Array(await file.arrayBuffer());
+        pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+        const pdf=await pdfjsLib.getDocument({data:bytes,useSystemFonts:true}).promise;
+        const rows=[];
+        for(let i=1;i<=Math.min(pdf.numPages,12);i++){
+          const page=await pdf.getPage(i);
+          rows.push(...pdfRows(await page.getTextContent()));
+          // QR de la primera página, incluso cuando PDF no tiene enlace en texto.
+          if(i===1){
+            try{const viewport=page.getViewport({scale:2});const canvas=document.createElement('canvas');canvas.width=Math.round(viewport.width);canvas.height=Math.round(viewport.height);await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;const qr=scanCanvas(canvas);if(qr)fromQr(qr);}catch(e){console.warn('QR PDF:',e);}
+          }
+        }
+        const data=parsePdfRows(rows);
+        if(!data.cufe && val('cufe'))data.cufe=val('cufe');
+        if(!data.cufe && !data.numero && !data.emisor)throw Error('Este PDF no contiene texto extraíble. Use un PDF digital o introduzca los datos manualmente.');
+        for(const [k,v] of Object.entries(data)){if(k!=='detalle'&&v!==null&&v!==undefined&&v!=='')set(k,v);}
+        $('invoiceItems').innerHTML='';(data.detalle?.length?data.detalle:[{}]).forEach(inputRow);
+        origin='pdf';updateTotal();
+        const missing=['numero','fecha','emisor','total','cufe'].filter(k=>!val(k));
+        status((data.detalle.length?'PDF leído: '+data.detalle.length+' producto(s) extraído(s). ':'No se detectaron productos automáticamente. ')+(missing.length?'Complete estos campos: '+missing.join(', ')+'. ':'Revise las cantidades y los totales antes de guardar.'));
+      }
+      async function startCamera(){
+        if(!navigator.mediaDevices?.getUserMedia)throw Error('La cámara requiere HTTPS y permiso del navegador.');
+        if(typeof jsQR!=='function')throw Error('El lector QR no está disponible.');
+        stopCamera();
+        activeStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+        $('invoiceVideo').srcObject=activeStream;$('invoiceCameraWrap').classList.add('show');await $('invoiceVideo').play();
+        status('Apunte la cámara al QR de la factura.');
+        const canvas=document.createElement('canvas');
+        const tick=()=>{
+          if(!activeStream)return;
+          const v=$('invoiceVideo');
+          if(v.readyState>=2&&v.videoWidth){
+            canvas.width=Math.min(v.videoWidth,900);canvas.height=Math.round(canvas.width*v.videoHeight/v.videoWidth);
+            canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
+            try{const code=scanCanvas(canvas);if(code){stopCamera();fromQr(code);return;}}catch(e){stopCamera();status(e.message,true);return;}
+          }
+          frameId=requestAnimationFrame(tick);
+        };tick();
+      }
+      function stopCamera(){cancelAnimationFrame(frameId);if(activeStream){activeStream.getTracks().forEach(t=>t.stop());activeStream=null;}$('invoiceVideo').srcObject=null;$('invoiceCameraWrap').classList.remove('show');}
+      async function saveInvoice(){
+        if(!currentSessionToken || !['admin','supervisor'].includes(currentUser?.rol)){status('Acceso denegado: se requiere ADMIN o SUPERVISOR.',true);return;}
+        const detail=items();
+        if(!val('cufe')||!val('numero')||!val('fecha')||!val('emisor')||val('total')===''){status('Complete CUFE, número, fecha, proveedor y total.',true);return;}
+        if(!detail.length||detail.some(d=>!d.descripcion||d.cantidad<=0||d.valor_total<0)){status('Complete los productos, cantidades y montos.',true);return;}
+        const btn=$('invoiceSave');btn.disabled=true;btn.textContent='GUARDANDO...';
+        try{
+          const payload=Object.fromEntries(Object.keys(fields).map(k=>[k,val(k)]));
+          payload.total=numeric(payload.total);payload.itbms=numeric(payload.itbms);payload.detalle=detail;payload.origen=origin;
+          const result=await sbRpc('combustible_guardar_factura',{p_token:currentSessionToken,p_factura:payload});
+          status('Factura guardada correctamente en Supabase. CUFE: '+result.cufe);showToast('Factura guardada en Supabase.');
+          reset();status('Factura guardada correctamente. Puede capturar otra factura.');
+        }catch(e){status('No se pudo guardar: '+e.message,true);}finally{btn.disabled=false;btn.textContent='GUARDAR FACTURA EN SUPABASE';}
+      }
+      async function history(){
+        const statusEl=$('invoiceHistoryStatus'),btn=$('invoiceSearchButton');btn.disabled=true;statusEl.textContent='Consultando facturas...';
+        try{
+          const data=await sbRpc('combustible_listar_facturas',{p_token:currentSessionToken,p_busqueda:$('invoiceSearch').value.trim(),p_limite:100});
+          const rows=Array.isArray(data)?data:[];
+          $('invoiceHistoryRows').innerHTML=rows.map(f=>`<tr><td>${esc(f.fecha)}</td><td>${esc(f.numero)}</td><td>${esc(f.emisor)}</td><td>B/. ${numeric(f.total).toFixed(2)}</td><td>${esc((f.detalle||[]).map(d=>d.descripcion).join(', '))}</td></tr>`).join('')||'<tr><td colspan="5">No se encontraron facturas.</td></tr>';
+          statusEl.textContent=`${rows.length} factura(s) encontrada(s).`;
+        }catch(e){statusEl.textContent='Error al consultar: '+e.message;$('invoiceHistoryRows').innerHTML='';}finally{btn.disabled=false;}
+      }
+      $('invoicePdfButton')?.addEventListener('click',()=>$('invoicePdfFile').click());
+      $('invoicePdfFile')?.addEventListener('change',async e=>{try{await parsePdf(e.target.files[0]);}catch(err){status(err.message,true);}finally{e.target.value='';}});
+      $('invoiceImageButton')?.addEventListener('click',()=>$('invoiceImageFile').click());
+      $('invoiceImageFile')?.addEventListener('change',async e=>{try{await imageQr(e.target.files[0]);}catch(err){status(err.message,true);}finally{e.target.value='';}});
+      $('invoiceCameraButton')?.addEventListener('click',async()=>{try{await startCamera();}catch(e){status(e.message,true);}});
+      $('invoiceStopCamera')?.addEventListener('click',stopCamera);
+      $('invoiceReadUrl')?.addEventListener('click',()=>{try{fromQr($('invoiceQrUrl').value);}catch(e){status(e.message,true);}});
+      $('invoiceClearButton')?.addEventListener('click',()=>{stopCamera();reset();});
+      $('invoiceAddItem')?.addEventListener('click',()=>inputRow());
+      $('invoiceItems')?.addEventListener('click',e=>{if(e.target.closest('[data-invoice-remove]')){e.target.closest('tr').remove();if(!$('invoiceItems').children.length)inputRow();}});
+      $('invoiceTotal')?.addEventListener('input',updateTotal);
+      $('invoiceSave')?.addEventListener('click',saveInvoice);
+      $('invoiceSearchButton')?.addEventListener('click',history);
+      $('invoiceSearch')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();history();}});
+      document.querySelectorAll('[data-invoice-tab]').forEach(btn=>btn.addEventListener('click',()=>{
+        document.querySelectorAll('[data-invoice-tab]').forEach(x=>x.classList.toggle('active',x===btn));
+        $('invoiceCapture').classList.toggle('active',btn.dataset.invoiceTab==='capture');
+        $('invoiceHistory').classList.toggle('active',btn.dataset.invoiceTab==='history');
+        stopCamera();if(btn.dataset.invoiceTab==='history')history();
+      }));
+      $('backToMenuBtn')?.addEventListener('click',stopCamera);
+      reset();
+    })();
+
+  </script>
+
+  <script>
     document.addEventListener("wheel", function(e){
       const target = e.target;
       if(target && target.matches('input[type="number"]')){
@@ -10866,3 +11146,4 @@
   </script>
 </body>
 </html>
+
